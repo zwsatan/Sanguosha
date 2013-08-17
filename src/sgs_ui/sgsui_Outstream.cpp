@@ -50,55 +50,55 @@ Outstream& Outstream::operator<<(const sgs::DataType::Message * message)
 	case sgs::ConstData::HITCARD:
 		printDebug("Outstream::operator<<: HITCARD message received");
 		printDebug(messageInterpret(static_cast<const CardMessage *>(message)));
-		MainWindow::mainWindowPtr()->MCardReceived(static_cast<const CardMessage *>(message));
+		MainWindow::mainWindowPtr()->CardMsgReceived(static_cast<const CardMessage *>(message));
 		break;
 
 	case sgs::ConstData::USECARD:
 		printDebug("Outstream::operator<<: USECARD message received");
 		printDebug(messageInterpret(static_cast<const CardMessage *>(message)));
-		MainWindow::mainWindowPtr()->MCardReceived(static_cast<const CardMessage *>(message));
+		MainWindow::mainWindowPtr()->CardMsgReceived(static_cast<const CardMessage *>(message));
 		break;
 
 		// TODO revise it later
 	case sgs::ConstData::USESKILL:
 		printDebug("Outstream::operator<<: USESKILL message received");
 		printDebug(messageInterpret(static_cast<const SkillMessage *>(message)));
-		MainWindow::mainWindowPtr()->MSkillReceived(static_cast<const SkillMessage *>(message));
+		MainWindow::mainWindowPtr()->SkillMsgReceived(static_cast<const SkillMessage *>(message));
 		break;
 	case sgs::ConstData::HURT:
 		printDebug("Outstream::operator<<: HURT message received");
 		printDebug(messageInterpret(static_cast<const HurtMessage *>(message)));
-		MainWindow::mainWindowPtr()->MHurtReceived(static_cast<const HurtMessage *>(message));
+		MainWindow::mainWindowPtr()->HurtMsgReceived(static_cast<const HurtMessage *>(message));
 		break;
 
 	case sgs::ConstData::TRANSCARD:
 		printDebug("Outstream::operator<<: TRANSCARD message received");
 		printDebug(messageInterpret(static_cast<const TransCardMessage *>(message)));
-		MainWindow::mainWindowPtr()->MTransCardReceived(static_cast<const TransCardMessage *>(message));
+		MainWindow::mainWindowPtr()->TransCardMsgReceived(static_cast<const TransCardMessage *>(message));
 		break;
 
 	case sgs::ConstData::SWITCHPHASE:
 		printDebug("Outstream::operator<<: SWITCHPHASE message received");
 		printDebug(messageInterpret(static_cast<const SwitchPhaseMessage *>(message)));
-		MainWindow::mainWindowPtr()->MSwitchPhaseReceived(static_cast<const SwitchPhaseMessage *>(message));
+		MainWindow::mainWindowPtr()->SwitchPhaseMsgReceived(static_cast<const SwitchPhaseMessage *>(message));
 		break;
 
 	case sgs::ConstData::DYING:
 		printDebug("Outstream::operator<<: DYING message received");
 		printDebug(messageInterpret(static_cast<const DyingMessage *>(message)));
-		MainWindow::mainWindowPtr()->MDyingReceived(static_cast<const DyingMessage *>(message));
+		MainWindow::mainWindowPtr()->DyingMsgReceived(static_cast<const DyingMessage *>(message));
 		break;
 
 	case sgs::ConstData::KILL:
 		printDebug("Outstream::operator<<: KILL message received");
 		printDebug(messageInterpret(static_cast<const KillMessage *>(message)));
-		MainWindow::mainWindowPtr()->MKillReceived(static_cast<const KillMessage *>(message));
+		MainWindow::mainWindowPtr()->KillMsgReceived(static_cast<const KillMessage *>(message));
 		break;
 
 	case sgs::ConstData::JUDGE:
 		printDebug("Outstream::operator<<: JUDGE message received");
 		printDebug(messageInterpret(static_cast<const JudgeMessage *>(message)));
-		MainWindow::mainWindowPtr()->MJudgeReceived(static_cast<const JudgeMessage *>(message));
+		MainWindow::mainWindowPtr()->JudgeMsgReceived(static_cast<const JudgeMessage *>(message));
 		break;
 
 	default:

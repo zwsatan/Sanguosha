@@ -26,19 +26,16 @@ void Platform::start(int playersCount)
 	ExternData::sgsout << 1;
 	for (int i = 0; i < playersCount; ++i)
 	{
-		TransCardMessage * m = 0;
-		if (m_player->seat() == 0)
-			m = new TransCardMessage(POOLTOP, PLAYER, true, 0, playerRegionTypeNone, m_player);
-		else
-			m = new TransCardMessage(POOLTOP, PLAYER, false, 0, playerRegionTypeNone, m_player);
+		bool isOpen = m_player->seat() == 0;
+		TransCardMessage * transMsg = new TransCardMessage(POOLTOP, PLAYER, isOpen, 0, playerRegionTypeNone, m_player);
 
 		for (int j = 0; j < 4; j++)
 		{
-			const Card * c = get();
-			m->transpush(c);
+			const Card * card = get();	// 从牌堆顶部获取卡牌
+			transMsg->transpush(card);	// 将卡牌压入转移信息中
 		}
 
-		analyze(m);
+		analyze(transMsg);				// 传递转移信息,进行发牌
 		m_player = m_player->after();
 	}
 }
@@ -46,26 +43,28 @@ void Platform::start(int playersCount)
 char Platform::run()
 {
 	bool end = false;
-	Message * r = 0;
+	Message * readMsg = 0;
 	while (!end)
 	{
-		msgInsert(m_player->round(*this));
+		msgInsert(m_player->round());
 		while (!msgEmpty())
 		{
-			r = msgRead();
+			readMsg = msgRead();
 			msgPop();
-			r = analyze(r);
-			if (r != 0 && r->type() == FINALE)
+
+			readMsg = analyze(readMsg);
+			if (readMsg != 0 && readMsg->type() == FINALE)
 			{
 				end = true;
 				break;
 			}
 
-			msgInsert(r);
+			msgInsert(readMsg);
 		}
 	}
-	FinaleMessage * f = static_cast<FinaleMessage *>(r);
-	return f->finale();
+
+	FinaleMessage * finaleMsg = static_cast<FinaleMessage *>(readMsg);
+	return finaleMsg->finale();
 }
 void Platform::end()
 {
@@ -80,20 +79,20 @@ void Platform::end()
 		m_groove.pop();
 	}
 }
-Message * Platform::analyze(Message * m)
+Message * Platform::analyze(Message * msg)
 {
-	if (m == 0)
+	if (msg == 0)
 		return 0;
 
 	Message * result = 0;
-	switch (m->type())
+	switch (msg->type())
 	{
 	case HITCARD:
 	{
-		CardMessage * message = static_cast<CardMessage*>(m);
+		CardMessage * cardMsg = static_cast<CardMessage*>(msg);
 		bool jinnang = false;
 
-		switch (message->card()->mask())
+		switch (cardMsg->card()->mask())
 		{
 		case SHUNQIAN:
 		case GUOCHAI:
@@ -110,37 +109,37 @@ Message * Platform::analyze(Message * m)
 			break;
 		}
 
-		if (message->from()->type() == HUANGYUEYING && jinnang && message->from()->input()->useSkillOrNot(JIZHI))
+		if (cardMsg->from()->type() == HUANGYUEYING && jinnang && cardMsg->from()->input()->useSkillOrNot(JIZHI))
 		{
-			SkillMessage * jizhi = new SkillMessage(message->from(), JIZHI);
+			SkillMessage * jizhi = new SkillMessage(cardMsg->from(), JIZHI);
 			ExternData::sgsout << jizhi;
 			ExternData::history.push(jizhi);
 
-			bool isOpen = message->from()->seat() == 0;
-			TransCardMessage * trans = new TransCardMessage(POOLTOP, PLAYER, isOpen, 0, playerRegionTypeNone, message->from());
+			bool isOpen = cardMsg->from()->seat() == 0;
+			TransCardMessage * trans = new TransCardMessage(POOLTOP, PLAYER, isOpen, 0, playerRegionTypeNone, cardMsg->from());
 			trans->transpush(get());
 			analyze(trans);
 		}
-		result = message->card()->settle(message);
+		result = cardMsg->card()->settle(cardMsg);
 		return result;
 	}
 
 	case USECARD:
 	{
-		CardMessage* message = static_cast<CardMessage*>(m);
-		switch (message->card()->mask())
+		CardMessage * cardMsg = static_cast<CardMessage*>(msg);
+		switch (cardMsg->card()->mask())
 		{
 		case SISHU:
-			result = func::pcsishu(message);
+			result = func::pcsishu(cardMsg);
 			break;
 
 		case SHANDIAN:
-			result = func::pcshandian(message);
+			result = func::pcshandian(cardMsg);
 			break;
 
 		case ZHANGBA:
 			printDebug("Platform::analyze: In case USECARD/ZHANGBA");
-			result = func::pcsha(static_cast<ZhangBaMessage *>(message));
+			result = func::pcsha(static_cast<ZhangBaMessage *>(cardMsg));
 			break;
 
 		default:
@@ -151,65 +150,65 @@ Message * Platform::analyze(Message * m)
 
 	case USESKILL:
 	{
-		SkillMessage * message = static_cast<SkillMessage *>(m);
-		result = message->settle(message);
+		SkillMessage * skillMsg = static_cast<SkillMessage *>(msg);
+		result = skillMsg->settle(skillMsg);
 		return result;
 	}
 
 	case SWITCHPHASE:
 	{
-		SwitchPhaseMessage * message = static_cast<SwitchPhaseMessage*>(m);
-		if (message->from()->phase() == OTHERPHASE)
+		SwitchPhaseMessage * switchPhaseMsg = static_cast<SwitchPhaseMessage*>(msg);
+		if (switchPhaseMsg->from()->phase() == OTHERPHASE)
 			m_player = m_player->after();
 
-		ExternData::history.push(m);
-		ExternData::sgsout << m;
+		ExternData::history.push(msg);
+		ExternData::sgsout << msg;
 		return 0;
 	}
 
 	case TRANSCARD:
 	{
-		TransCardMessage* message = static_cast<TransCardMessage*>(m);
-		switch (message->totype())
+		TransCardMessage * transCardMsg = static_cast<TransCardMessage*>(msg);
+		switch (transCardMsg->totype())
 		{
 		case PLAYER:
 		{
-			if (message->tojudge())
+			if (transCardMsg->tojudge())
 			{
-				int n = message->cards();
+				int n = transCardMsg->cards();
 				for (int i = 0; i < n; i++)
-					message->to()->setjudge().push(message->trans(i));
+					transCardMsg->to()->setjudge().push(transCardMsg->trans(i));
 			}
 			else
 			{
-				int n = message->cards();
+				int n = transCardMsg->cards();
 				for (int i = 0; i < n; i++)
-					message->to()->pushHand(message->trans(i));
+					transCardMsg->to()->pushHand(transCardMsg->trans(i));
 			}
 		}
 			break;
 
 		case POOLTOP:
 		{
-			int n = message->cards();
+			int n = transCardMsg->cards();
 			for (int i = 0; i < n; i++)
-				ExternData::platform.pooltop(message->trans(n - 1 - i));
+				ExternData::platform.pooltop(transCardMsg->trans(n - 1 - i));
 		}
 			break;
 
 		case POOLBOTTOM:
 		{
-			int n = message->cards();
+			int n = transCardMsg->cards();
 			for (int i = 0; i < n; i++)
-				ExternData::platform.poolbottom(message->trans(n - 1 - i));
+				ExternData::platform.poolbottom(transCardMsg->trans(n - 1 - i));
 		}
 			break;
 
 		case DUST:
 		{
-			int n = message->cards();
+			int n = transCardMsg->cards();
 			for (int i = 0; i < n; i++)
-				ExternData::platform.abandon(message->trans(i));
+				ExternData::platform.abandon(transCardMsg->trans(i));
 		}
 			break;
 
@@ -217,22 +216,22 @@ Message * Platform::analyze(Message * m)
 			break;
 		}
 
-		ExternData::sgsout << m;
-		ExternData::history.push(m);
+		ExternData::sgsout << msg;
+		ExternData::history.push(msg);
 
 		// 孙尚香
-		if (message->fromtype() == PLAYER
-			&& message->from()->type() == SUNSHANGXIANG
-			&& !(message->from()->status() & DEAD)
-			&& message->frompos() == PEQUIP
-			&& message->from()->input()->useSkillOrNot(XIAOJI))
+		if (transCardMsg->fromtype() == PLAYER
+			&& transCardMsg->from()->type() == SUNSHANGXIANG
+			&& !(transCardMsg->from()->status() & DEAD)
+			&& transCardMsg->frompos() == PEQUIP
+			&& transCardMsg->from()->input()->useSkillOrNot(XIAOJI))
 		{
-			SkillMessage * xiaoji = new SkillMessage(message->from(), XIAOJI);
+			SkillMessage * xiaoji = new SkillMessage(transCardMsg->from(), XIAOJI);
 			ExternData::sgsout << xiaoji;
 			ExternData::history.push(xiaoji);
 
-			bool isOpen = message->from()->seat() == 0;
-			TransCardMessage * trans = new TransCardMessage(POOLTOP, PLAYER, isOpen, 0, playerRegionTypeNone, message->from());
+			bool isOpen = transCardMsg->from()->seat() == 0;
+			TransCardMessage * trans = new TransCardMessage(POOLTOP, PLAYER, isOpen, 0, playerRegionTypeNone, transCardMsg->from());
 			for (int i = 0; i < 2; i++)
 				trans->transpush(get());
 			analyze(trans);
@@ -243,117 +242,116 @@ Message * Platform::analyze(Message * m)
 	case HURT:
 	{
 		printDebug("Platform::analyze: case HURT start");
-		HurtMessage * h = static_cast<HurtMessage *>(m);
-		ExternData::sgsout << m;
-		ExternData::history.push(m);
-		DyingMessage * d = 0;
-		while (h->to()->hp() <= 0)
+		HurtMessage * hurtMsg = static_cast<HurtMessage *>(msg);
+		ExternData::sgsout << msg;
+		ExternData::history.push(msg);
+		DyingMessage * dyingMsg = 0;
+		while (hurtMsg->to()->hp() <= 0)
 		{
 			printDebug("Platform::analyze: case HURT ask for Tao (self)");
-			d = new DyingMessage(h->to(), h->from(), 1 - h->to()->hp());
-			ExternData::sgsout << d;
-			ExternData::history.push(d);
-			Message * rescue = d->from()->TaoOrNot(d);
+			dyingMsg = new DyingMessage(hurtMsg->to(), hurtMsg->from(), 1 - hurtMsg->to()->hp());
+			ExternData::sgsout << dyingMsg;
+			ExternData::history.push(dyingMsg);
+			Message * rescue = dyingMsg->from()->TaoOrNot(dyingMsg);
 			if (rescue == 0)
 				break;
 
-			CardMessage * c = static_cast<CardMessage *>(rescue);
-			Message * res = c->card()->settle(c);
+			CardMessage * cardMsg = static_cast<CardMessage *>(rescue);
+			Message * res = cardMsg->card()->settle(cardMsg);
 			ExternData::sgsout << res;
 			ExternData::history.push(res);
 		}
 
-		if (h->to()->hp() <= 0)
+		if (hurtMsg->to()->hp() <= 0)
 		{
-			for (Player * temp = d->from()->after(); temp != d->from(); temp = temp->after())
+			for (Player * temp = dyingMsg->from()->after(); temp != dyingMsg->from(); temp = temp->after())
 			{
 				printDebug("Platform::analyze: case HURT in loop");
-				if (h->to()->hp() > 0)
+				if (hurtMsg->to()->hp() > 0)
 					break;
 
 				printDebug("Platform::analyze: case HURT ask for Tao (others)");
-				Message * rescue = temp->TaoOrNot(d);
+				Message * rescue = temp->TaoOrNot(dyingMsg);
 				while (rescue != 0)
 				{
-					CardMessage * c = static_cast<CardMessage *>(rescue);
-					Message * res = c->card()->settle(c);
+					CardMessage * cardMsg = static_cast<CardMessage *>(rescue);
+					Message * res = cardMsg->card()->settle(cardMsg);
 					ExternData::sgsout << res;
 					ExternData::history.push(res);
 
-					if (h->to()->hp() > 0)
+					if (hurtMsg->to()->hp() > 0)
 						break;
 
-					d = new DyingMessage(h->to(), h->from(), 1 - h->to()->hp());
-					ExternData::sgsout << d;
-					ExternData::history.push(d);
-					rescue = temp->TaoOrNot(d);
+					dyingMsg = new DyingMessage(hurtMsg->to(), hurtMsg->from(), 1 - hurtMsg->to()->hp());
+					ExternData::sgsout << dyingMsg;
+					ExternData::history.push(dyingMsg);
+					rescue = temp->TaoOrNot(dyingMsg);
 				}
 			}
 		}
 
 		printDebug("Platform::analyze: case HURT over");
-		if (h->to()->hp() <= 0)
+		if (hurtMsg->to()->hp() <= 0)
 		{
-			result = new KillMessage(d->murderer(), d->from());
+			result = new KillMessage(dyingMsg->murderer(), dyingMsg->from());
 			return result;
+		}
+
+		HeroType heroType = hurtMsg->to()->type();
+		bool isFromPlayerDead = hurtMsg->from()->status() & DEAD;
+		Interface * ai = hurtMsg->to()->input();
+		if (heroType == XIAHOUDUN && hurtMsg->from() != 0 && !isFromPlayerDead && hurtMsg->hurt() > 0 && ai->useSkillOrNot(GANGLIE, hurtMsg->from()))
+		{
+			GangLieMessage * ganglieMsg = new GangLieMessage(hurtMsg->to(), hurtMsg->from());
+			return ganglieMsg;
+		}
+		else if (heroType == SIMAYI && hurtMsg->from() != 0 && !isFromPlayerDead && hurtMsg->hurt() > 0 && ai->useSkillOrNot(FANKUI, hurtMsg->from()))
+		{
+			FanKuiMessage * fankuiMsg = new FanKuiMessage(hurtMsg->to(), hurtMsg->from());
+			return fankuiMsg;
+
+		}
+		else if (heroType == GUOJIA)
+		{
+			for (int i = 0; i < hurtMsg->hurt(); i++)
+			{
+				bool isUseYiJi = hurtMsg->to()->input()->useSkillOrNot(YIJI);
+				if (!isUseYiJi)
+					break;
+
+				YiJiMessage * yijiMsg = dynamic_cast<YiJiMessage *>(hurtMsg->to()->input()->getYiji(
+																	 ExternData::platform.get(),
+																	 ExternData::platform.get()));
+				ExternData::sgsout << yijiMsg;
+				ExternData::history.push(yijiMsg);
+
+				for (int i = 0; i < 2; i++)
+				{
+					bool isOpen = yijiMsg->from()->seat() == 0;
+					TransCardMessage * transMsg = new TransCardMessage(POOLTOP, PLAYER, isOpen, 0, playerRegionTypeNone, yijiMsg->trans(i).first);
+					transMsg->transpush(yijiMsg->trans(i).second);
+					analyze(transMsg);
+				}
+			}
+
+			return 0;
 		}
 		else
 		{
-			if (h->to()->type() == XIAHOUDUN && h->from() != 0
-					&& !(h->from()->status() & DEAD) && h->hurt() > 0
-					&& h->to()->input()->useSkillOrNot(GANGLIE, h->from()))
-			{
-				GangLieMessage * m = new GangLieMessage(h->to(), h->from());
-				return m;
-			} else if (h->to()->type() == SIMAYI && h->from() != 0
-					&& !(h->from()->status() & DEAD) && h->hurt() > 0
-					&& h->to()->input()->useSkillOrNot(FANKUI, h->from()))
-			{
-				FanKuiMessage * m = new FanKuiMessage(h->to(), h->from());
-				return m;
-
-			} else if (h->to()->type() == GUOJIA)
-			{
-				for (int i = 0; i < h->hurt(); i++)
-				{
-					if (h->to()->input()->useSkillOrNot(YIJI))
-					{
-						YiJiMessage * yiji =
-								dynamic_cast<YiJiMessage *>(h->to()->input()->getYiji(
-										ExternData::platform.get(),
-										ExternData::platform.get()));
-						ExternData::sgsout << yiji;
-						ExternData::history.push(yiji);
-
-						for (int i = 0; i < 2; i++)
-						{
-							TransCardMessage * trans = new TransCardMessage(POOLTOP, PLAYER,
-									yiji->from()->seat() == 0, 0, playerRegionTypeNone,
-									yiji->trans(i).first);
-							trans->transpush(yiji->trans(i).second);
-							ExternData::platform.analyze(trans);
-						}
-
-					} else
-						break;
-				}
-				return 0;
-			} else
-				return 0;
+			return 0;
 		}
 	}
 
 	case KILL:
 	{
 		printDebug("Platform::analyze: case KILL start");
-		KillMessage * killMsg = static_cast<KillMessage *>(m);
-		ExternData::sgsout << m;
-		ExternData::history.push(m);
+		KillMessage * killMsg = static_cast<KillMessage *>(msg);
+		ExternData::sgsout << msg;
+		ExternData::history.push(msg);
 		killMsg->to()->setstatus() |= DEAD;
 		if (m_player == killMsg->to())
 			m_player = killMsg->to()->after();
 
-		/*these code has been revised by Hu Ronghang, May 12*/
 		char result = endOrNot();
 		if (result != 0)
 		{
@@ -363,18 +361,18 @@ Message * Platform::analyze(Message * m)
 
 		// 被杀死的人弃掉所有的手牌和装备牌
 		TransCardMessage * transMsg = new TransCardMessage(PLAYER, DUST, true, killMsg->to(), PHAND);
-		while (killMsg->to()->handnum()>0)
+		while (killMsg->to()->handnum() > 0)
 		{
 			transMsg->transpush(killMsg->to()->handnum() - 1);
-			killMsg->to()->popCard(std::pair<PlayerRegionType,int>(PHAND,killMsg->to()->handnum()-1));
+			killMsg->to()->popCard(std::pair<PlayerRegionType, int>(PHAND, killMsg->to()->handnum() - 1));
 		}
+
 		if (transMsg->cards())
 			analyze(transMsg);
 		else
 			delete transMsg;
 
-		TransCardMessage * judge = new TransCardMessage(PLAYER, DUST, true, killMsg->to(),
-				PJUDGE);
+		TransCardMessage * judge = new TransCardMessage(PLAYER, DUST, true, killMsg->to(), PJUDGE);
 		for (int i = 0; i < killMsg->to()->judgenum(); ++i)
 			judge->transpush(i);
 
@@ -422,112 +420,104 @@ Message * Platform::analyze(Message * m)
 		transMsg = 0;
 
 		// 别忘了还要弃装备和判定区的牌 TODO
+		bool isFromKillerDead = killMsg->from() && !(killMsg->from()->status() & DEAD);
+		if (!isFromKillerDead)
+			return 0;
 
-		if (killMsg->from() && !(killMsg->from()->status() & DEAD))
+		// 如果主公杀了忠臣，在内部发出消息t，然后返回主公弃牌的消息
+		if (killMsg->from() && killMsg->from()->role() == ZHU && killMsg->to()->role() == ZHONG)
 		{
-			// 如果主公杀了忠臣，在内部发出消息t，然后返回主公弃牌的消息
-			if (killMsg->from() && killMsg->from()->role() == ZHU
-					&& killMsg->to()->role() == ZHONG)
+			printDebug("Platform::analyze: case KILL: lord discards all hand and equip cards");
+			Player * lord = killMsg->from();
+
+			TransCardMessage * lordDiscardAll = new TransCardMessage(PLAYER, DUST, true, lord, PHAND);
+			while (lord->handnum() > 0)
 			{
-				printDebug("Platform::analyze: case KILL: lord discards all hand and equip cards");
-				Player * lord = killMsg->from();
-
-				TransCardMessage * lordDiscardAll = new TransCardMessage(PLAYER, DUST, true, lord, PHAND);
-				while (lord->handnum() > 0)
-				{
-					lordDiscardAll->transpush(lord->handnum() - 1);
-					lord->popCard(std::pair<PlayerRegionType,int>(PHAND,lord->handnum()-1));
-				}
-
-				if (lordDiscardAll->cards())
-					analyze(lordDiscardAll);
-				else
-					delete lordDiscardAll;
-
-				lordDiscardAll = new TransCardMessage(PLAYER, DUST, true, lord, PEQUIP);
-				bool lordHasEquip = false;
-				if (lord->weapon())
-				{
-					lordDiscardAll->transpush(0);
-					lordHasEquip = true;
-					lord->setweapon(0);
-				}
-				if (lord->armor())
-				{
-					lordDiscardAll->transpush(1);
-					lordHasEquip = true;
-					lord->setarmor(0);
-				}
-				if (lord->atkhorse())
-				{
-					lordDiscardAll->transpush(2);
-					lordHasEquip = true;
-					lord->setatk(0);
-				}
-				if (lord->dfdhorse())
-				{
-					lordDiscardAll->transpush(3);
-					lordHasEquip = true;
-					lord->setdfd(0);
-				}
-
-				if (lordHasEquip)
-					analyze(lordDiscardAll);
-				else
-					delete lordDiscardAll;
-
-				return 0;
+				lordDiscardAll->transpush(lord->handnum() - 1);
+				lord->popCard(std::pair<PlayerRegionType,int>(PHAND,lord->handnum()-1));
 			}
 
-			// 如果杀了反贼，在内部发出消息t，然后返回凶手摸牌的消息
-			if (killMsg->from() && killMsg->to()->role() == FAN)
+			if (lordDiscardAll->cards())
+				analyze(lordDiscardAll);
+			else
+				delete lordDiscardAll;
+
+			lordDiscardAll = new TransCardMessage(PLAYER, DUST, true, lord, PEQUIP);
+			bool lordHasEquip = false;
+			if (lord->weapon())
 			{
-				printDebug("Platform::analyze: case KILL: murderer gets 3 cards");
-				Player * murderer = killMsg->from();
-				bool isOpen = ((murderer->seat() == 0) ? true : false);
-				TransCardMessage * murdererGetCard = new TransCardMessage(POOLTOP, PLAYER, isOpen, 0, playerRegionTypeNone, murderer);
-				for (int i = 0; i < 3; i++)
-				{
-					const Card * temp = get();
-					murdererGetCard->transpush(temp);
-				}
-				return murdererGetCard;
+				lordDiscardAll->transpush(0);
+				lordHasEquip = true;
+				lord->setweapon(0);
 			}
-			printDebug("Platform::analyze: case KILL start");
-			return transMsg;
-		}
-		else
-		{
+			if (lord->armor())
+			{
+				lordDiscardAll->transpush(1);
+				lordHasEquip = true;
+				lord->setarmor(0);
+			}
+			if (lord->atkhorse())
+			{
+				lordDiscardAll->transpush(2);
+				lordHasEquip = true;
+				lord->setatk(0);
+			}
+			if (lord->dfdhorse())
+			{
+				lordDiscardAll->transpush(3);
+				lordHasEquip = true;
+				lord->setdfd(0);
+			}
+
+			if (lordHasEquip)
+				analyze(lordDiscardAll);
+			else
+				delete lordDiscardAll;
+
 			return 0;
 		}
-		break;
+
+		// 如果杀了反贼，在内部发出消息t，然后返回凶手摸牌的消息
+		if (killMsg->from() && killMsg->to()->role() == FAN)
+		{
+			printDebug("Platform::analyze: case KILL: murderer gets 3 cards");
+			Player * murderer = killMsg->from();
+			bool isOpen = ((murderer->seat() == 0) ? true : false);
+			TransCardMessage * murdererGetCard = new TransCardMessage(POOLTOP, PLAYER, isOpen, 0, playerRegionTypeNone, murderer);
+			for (int i = 0; i < 3; i++)
+			{
+				const Card * temp = get();
+				murdererGetCard->transpush(temp);
+			}
+			return murdererGetCard;
+		}
+		printDebug("Platform::analyze: case KILL start");
+		return transMsg;
 	}
 
 	case JUDGE:
 	{
-		ExternData::history.push(m);
-		ExternData::sgsout << m;
-		JudgeMessage * temp = static_cast<JudgeMessage *>(m);
+		ExternData::history.push(msg);
+		ExternData::sgsout << msg;
+		JudgeMessage * temp = static_cast<JudgeMessage *>(msg);
 		if (temp->from()->type() == GUOJIA && temp->from()->input()->useSkillOrNot(TIANDU))
 		{
 			SkillMessage * tiandu = new SkillMessage(temp->from(), TIANDU);
 			ExternData::sgsout << tiandu;
 			ExternData::history.push(tiandu);
 
-			TransCardMessage* trans = new TransCardMessage(POOLTOP, PLAYER, true, 0, playerRegionTypeNone, temp->from());
+			TransCardMessage * trans = new TransCardMessage(POOLTOP, PLAYER, true, 0, playerRegionTypeNone, temp->from());
 			trans->transpush(temp->result());
 			analyze(trans);
 			return 0;
 		}
-		else
-		{
-			abandon(temp->result());
-			return 0;
-		}
+
+		abandon(temp->result());
+		return 0;
 	}
 
 	default:
-		delete m;
+		delete msg;
 		return 0;
 	}
 }

@@ -99,7 +99,7 @@ public:
 
 	// 逻辑用函数头
 	// 执行过程
-	sgs::DataType::Message * round(sgs::DataType::Platform&);
+	sgs::DataType::Message * round();
 	// 请求出闪
 	sgs::DataType::Message * ShanOrNot(sgs::DataType::Message *);
 	// 请求出桃

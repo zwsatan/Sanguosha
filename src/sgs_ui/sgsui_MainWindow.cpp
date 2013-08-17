@@ -49,12 +49,12 @@ void MainWindow::appendDebug(const QString &textInput)
 
 void MainWindow::exec()
 {
-	if (!blockLoop.isRunning())
+	if (!m_blockLoop.isRunning())
 	{
 		emit blocked();
 		printDebug("<font color=red><b>Notice: </b></font>"
 				   "MainWindow::exec: MainWindow is blocked");
-		blockLoop.exec();
+		m_blockLoop.exec();
 		emit unblocked();
 		printDebug("<font color=red><b>Notice: </b></font>"
 				   "MainWindow::exec: MainWindow is unblocked");
@@ -68,14 +68,14 @@ void MainWindow::exec()
 
 void MainWindow::sleepSomeTime(int sleepTime)
 {
-	if (blockTimer)
-		blockTimer->block(sleepTime);
+	if (m_blockTimer)
+		m_blockTimer->block(sleepTime);
 }
 
 void MainWindow::unblock()
 {
-	if (blockLoop.isRunning())
-		blockLoop.quit();
+	if (m_blockLoop.isRunning())
+		m_blockLoop.quit();
 }
 
 bool MainWindow::isSingleStep() const
@@ -90,7 +90,7 @@ void MainWindow::pause()
 
 void MainWindow::pauseClicked()
 {
-	if (m_responseType != NotResponding || !blockingFrameList.empty())
+	if (m_responseType != NotResponding || !m_blockingFrameList.empty())
 	{
 		pauseButton->setChecked(!pauseButton->isChecked());
 		return;
@@ -100,7 +100,7 @@ void MainWindow::pauseClicked()
 	{
 		showPauseMessage(singleCheckBox->isChecked() ? GUIStaticData::singleStep : GUIStaticData::gamePaused);
 		exec();
-		pauseBox->hide();
+		m_pauseBox->hide();
 		statusbar->clearMessage();
 	}
 	else
@@ -111,23 +111,23 @@ void MainWindow::pauseClicked()
 
 bool MainWindow::isBlocked() const
 {
-	return blockLoop.isRunning();
+	return m_blockLoop.isRunning();
 }
 
 bool MainWindow::isResponding() const
 {
-	if (!GUIresponding && blockingFrameMovingAnimation->state() != QAbstractAnimation::Running)
+	if (!m_GUIresponding && m_blockingFrameMovingAnimation->state() != QAbstractAnimation::Running)
 	{
-		if (!blockingFrameList.empty())
+		if (!m_blockingFrameList.empty())
 		{
-			QPoint position = blockingFrameList.back()->pos();
+			QPoint position = m_blockingFrameList.back()->pos();
 			QPoint translate(10, 0);
-			blockingFrameMovingAnimation->setTargetObject(blockingFrameList.back());
-			blockingFrameMovingAnimation->setStartValue(position);
-			blockingFrameMovingAnimation->setKeyValueAt(0.25, position + translate);
-			blockingFrameMovingAnimation->setKeyValueAt(0.75, position - translate);
-			blockingFrameMovingAnimation->setEndValue(position);
-			blockingFrameMovingAnimation->start();
+			m_blockingFrameMovingAnimation->setTargetObject(m_blockingFrameList.back());
+			m_blockingFrameMovingAnimation->setStartValue(position);
+			m_blockingFrameMovingAnimation->setKeyValueAt(0.25, position + translate);
+			m_blockingFrameMovingAnimation->setKeyValueAt(0.75, position - translate);
+			m_blockingFrameMovingAnimation->setEndValue(position);
+			m_blockingFrameMovingAnimation->start();
 		}
 		else
 		{
@@ -136,25 +136,25 @@ bool MainWindow::isResponding() const
 					   "MainWindow has been set NOT responding while no widget is blocking it");
 		}
 	}
-	return GUIresponding && m_responseType != NotResponding;
+	return m_GUIresponding && m_responseType != NotResponding;
 }
 
 bool MainWindow::isRespondingNoAnimation() const
 {
-	return (m_responseType != NotResponding) && GUIresponding;
+	return (m_responseType != NotResponding) && m_GUIresponding;
 }
 
 void MainWindow::setResponding(bool responding, BlockingFrame *blockWidget)
 {
 	if (responding)
 	{
-		blockingFrameList.remove(blockWidget);
-		GUIresponding = blockingFrameList.empty();
+		m_blockingFrameList.remove(blockWidget);
+		m_GUIresponding = m_blockingFrameList.empty();
 	}
 	else
 	{
-		blockingFrameList.push_back(blockWidget);
-		GUIresponding = false;
+		m_blockingFrameList.push_back(blockWidget);
+		m_GUIresponding = false;
 	}
 }
 
@@ -174,14 +174,14 @@ void MainWindow::addShoupai(const sgs::DataType::Card * card)
 {
 	Shoupai* addedShoupai = new Shoupai(card, this);
 	shoupaiLayout->addWidget(addedShoupai);
-	shoupaiList.push_back(addedShoupai);
+	m_shoupaiList.push_back(addedShoupai);
 	printDebug("MainWindow::addShoupai: adding card " + cardFullDisplayName(card, false));
 }
 
 void MainWindow::removeShoupai(Shoupai * shoupaiToRemove)
 {
 	shoupaiLayout->removeWidget(shoupaiToRemove);
-	shoupaiList.remove(shoupaiToRemove);
+	m_shoupaiList.remove(shoupaiToRemove);
 	delete shoupaiToRemove;
 }
 
@@ -232,7 +232,7 @@ void MainWindow::terminatePlayerSelect()
 
 void MainWindow::terminateCardSelect()
 {
-	for (auto iter = shoupaiList.begin(); iter != shoupaiList.end(); ++iter)
+	for (auto iter = m_shoupaiList.begin(); iter != m_shoupaiList.end(); ++iter)
 	{
 		(*iter)->setUnselected();
 		(*iter)->setSelectable();
@@ -277,7 +277,7 @@ QPoint MainWindow::lastShoupaiPoint() const
 {
 	int cardFrameWidth = 93, verticalMargin = 37;
 	int maxHorizontalPos = shoupaiArea->width() - cardFrameWidth;
-	int existingDeckWidth = static_cast<int>(cardFrameWidth * shoupaiList.size());
+	int existingDeckWidth = static_cast<int>(cardFrameWidth * m_shoupaiList.size());
 	int offsetX = existingDeckWidth > maxHorizontalPos ? maxHorizontalPos : existingDeckWidth;
 	int offsetY = verticalMargin;
 	return realPos(shoupaiArea) + QPoint(offsetX, offsetY);
@@ -328,7 +328,7 @@ QPoint MainWindow::realPos(QWidget * widgetToCal)
 
 void MainWindow::showWugu(const std::vector<std::pair<const sgs::DataType::Card *, bool> >& wuguCards)
 {
-	wugufengdengBox->showContainer(wuguCards);
+	m_wugufengdengBox->showContainer(wuguCards);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -460,8 +460,8 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 	if ((event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter)
 		&& event->modifiers() == Qt::NoModifier)
 	{
-		if (!blockingFrameList.empty())
-			blockingFrameList.back()->enterKeyPressedEvent();
+		if (!m_blockingFrameList.empty())
+			m_blockingFrameList.back()->enterKeyPressedEvent();
 		else
 			okButton->click();
 		return;
@@ -469,8 +469,8 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 
 	if (event->key() == Qt::Key_Escape && event->modifiers() == Qt::NoModifier)
 	{
-		if (!blockingFrameList.empty())
-			blockingFrameList.back()->escapeKeyPressedEvent();
+		if (!m_blockingFrameList.empty())
+			m_blockingFrameList.back()->escapeKeyPressedEvent();
 		else
 			cancelButton->click();
 		return;
@@ -502,7 +502,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 
 		if (m_responseType == DiscardCard)
 		{
-			std::vector<Shoupai *> selected_copy(selectedAbandonList.begin(), selectedAbandonList.end());
+			std::vector<Shoupai *> selected_copy(m_selectedAbandonList.begin(), m_selectedAbandonList.end());
 			for (auto iter = selected_copy.begin(); iter != selected_copy.end(); ++iter)
 				(*iter)->click();
 		}
@@ -520,9 +520,9 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 CardButton* MainWindow::goToShoupai(unsigned shoupaiIndex)
 {
 	// shoupaiIndex starts from 0
-	if (shoupaiList.size() > shoupaiIndex)
+	if (m_shoupaiList.size() > shoupaiIndex)
 	{
-		auto iter = shoupaiList.begin();
+		auto iter = m_shoupaiList.begin();
 		for (unsigned i = 0; i < shoupaiIndex; ++i)
 			++iter;
 		return *iter;
@@ -552,19 +552,19 @@ void MainWindow::runPixmapAnimation(int targetPlayerIndex, PixmapAnimationType a
 	printDebug("MainWindow::runPixmapAnimation: start, target index (seat + 1) = " + QString::number(targetPlayerIndex));
 
 	QPoint targetPoint = animationPointAtIndex(targetPlayerIndex);
-	pixmapAnimationWidget->pixmapAnimation(targetPoint, animationType);
+	m_pixmapAnimationWidget->pixmapAnimation(targetPoint, animationType);
 
 	if (animationType == DamageAnimation || animationType == LightningAnimation)
 	{
 		if (targetPlayerIndex != m_playerIndex)
 		{
 			QWidget* target = otherPlayerAreaAtIndex(targetPlayerIndex)->parentWidget();
-			damageMovingAnimation->setTargetObject(target);
+			m_damageMovingAnimation->setTargetObject(target);
 			QPoint originPos = target->pos();
-			damageMovingAnimation->setStartValue(originPos);
-			damageMovingAnimation->setKeyValueAt(0.5, originPos + QPoint(20, 0));
-			damageMovingAnimation->setEndValue(originPos);
-			damageMovingAnimation->start();
+			m_damageMovingAnimation->setStartValue(originPos);
+			m_damageMovingAnimation->setKeyValueAt(0.5, originPos + QPoint(20, 0));
+			m_damageMovingAnimation->setEndValue(originPos);
+			m_damageMovingAnimation->start();
 		}
 
 		if (animationType == DamageAnimation)
@@ -579,20 +579,20 @@ void MainWindow::showTipMessage(const QString &tip, bool richText/* = false*/, i
 	if (duration <= 0)
 		duration = GUIStaticData::showTipDuration;
 
-	QPoint pos = mainFrame->geometry().center() - QPoint(tipBox->width() / 2, tipBox->height() / 2);
-	QRect rect(pos, tipBox->size());
-	tipBox->setGeometry(rect);
-	tipBox->showTipMessage(tip, richText, duration);
+	QPoint pos = mainFrame->geometry().center() - QPoint(m_tipBox->width() / 2, m_tipBox->height() / 2);
+	QRect rect(pos, m_tipBox->size());
+	m_tipBox->setGeometry(rect);
+	m_tipBox->showTipMessage(tip, richText, duration);
 	statusbar->showStatusBarMessage(tip, richText, duration);
 }
 
 void MainWindow::showPauseMessage(const QString &pause, bool richText)
 {
-	QPoint pos = mainFrame->geometry().center() - QPoint(pauseBox->width() / 2, pauseBox->height() / 2);
-	QRect rect(pos, pauseBox->size());
+	QPoint pos = mainFrame->geometry().center() - QPoint(m_pauseBox->width() / 2, m_pauseBox->height() / 2);
+	QRect rect(pos, m_pauseBox->size());
 
-	pauseBox->setGeometry(rect);
-	pauseBox->showPauseMessage(pause);
+	m_pauseBox->setGeometry(rect);
+	m_pauseBox->showPauseMessage(pause);
 
 	// -1 means that this statusbar message does not disappear automatically
 	statusbar->showStatusBarMessage(pause, richText, -1);
@@ -605,12 +605,12 @@ void MainWindow::showStatusBarMessage(const QString &tip, bool richText, int dur
 
 int MainWindow::getDialogResponse(const QString &message)
 {
-	dialogBox = new SGS_DialogBox(this);
-	QPoint pos = mainFrame->geometry().center() - QPoint(dialogBox->width() / 2, dialogBox->height() / 2);
-	dialogBox->setGeometry(QRect(pos, dialogBox->size()));
-	int returnValue = dialogBox->exec(message);
-	delete dialogBox;
-	dialogBox = 0;
+	m_dialogBox = new SGS_DialogBox(this);
+	QPoint pos = mainFrame->geometry().center() - QPoint(m_dialogBox->width() / 2, m_dialogBox->height() / 2);
+	m_dialogBox->setGeometry(QRect(pos, m_dialogBox->size()));
+	int returnValue = m_dialogBox->exec(message);
+	delete m_dialogBox;
+	m_dialogBox = 0;
 
 	return returnValue;
 }
@@ -622,7 +622,7 @@ sgs::ConstData::HeroType MainWindow::chooseWujiang(
 		sgs::ConstData::HeroType avaliable2,
 		sgs::ConstData::HeroType avaliable3)
 {
-	sgs::ConstData::HeroType result = wujiangChooseBox->chooseWujiang(zhugong, shenfen, avaliable1, avaliable2, avaliable3);
+	sgs::ConstData::HeroType result = m_wujiangChooseBox->chooseWujiang(zhugong, shenfen, avaliable1, avaliable2, avaliable3);
 	m_audioPlayer->playSound(PlayersCreated);
 	return result;
 }
@@ -634,7 +634,7 @@ sgs::ConstData::HeroType MainWindow::chooseZhugongWujiang(
 		sgs::ConstData::HeroType avaliable4,
 		sgs::ConstData::HeroType avaliable5)
 {
-	sgs::ConstData::HeroType result = wujiangChooseBox->chooseZhugongWujiang(avaliable1, avaliable2, avaliable3, avaliable4, avaliable5);
+	sgs::ConstData::HeroType result = m_wujiangChooseBox->chooseZhugongWujiang(avaliable1, avaliable2, avaliable3, avaliable4, avaliable5);
 	m_audioPlayer->playSound(PlayersCreated);
 	return result;
 }
@@ -651,9 +651,9 @@ void MainWindow::runWugufengdeng()
 
 sgs::ConstData::CardColor MainWindow::runFanjian()
 {
-	QPoint pos = mainFrame->geometry().center() - QPoint(fanjianBox->width() / 2, fanjianBox->height() / 2);
-	fanjianBox->setGeometry(QRect(pos, fanjianBox->size()));
-	return fanjianBox->getFanjianColor();
+	QPoint pos = mainFrame->geometry().center() - QPoint(m_fanjianBox->width() / 2, m_fanjianBox->height() / 2);
+	m_fanjianBox->setGeometry(QRect(pos, m_fanjianBox->size()));
+	return m_fanjianBox->getFanjianColor();
 }
 
 void MainWindow::runLineAnimation(
@@ -678,7 +678,7 @@ void MainWindow::runLineAnimation(
 	};
 
 	int verticalDifference = 50;
-	lineAnimationWidget->setGeometry(mainFrame->geometry().adjusted(0, 0, 0, verticalDifference));
+	m_lineAnimationWidget->setGeometry(mainFrame->geometry().adjusted(0, 0, 0, verticalDifference));
 
 	QPoint startPoint = animationPointAtIndex(sourcePlayerIndex);
 
@@ -688,7 +688,7 @@ void MainWindow::runLineAnimation(
 		if (targetCandidates[i])
 			targetPointVec.push_back(animationPointAtIndex(targetCandidates[i]));
 	}
-	lineAnimationWidget->lineAnimation(startPoint, targetPointVec);
+	m_lineAnimationWidget->lineAnimation(startPoint, targetPointVec);
 }
 
 PlayerArea* MainWindow::otherPlayerAreaAtIndex(int index) const
@@ -887,8 +887,8 @@ void MainWindow::showZhuangbeiAtIndex(int index, sgs::ConstData::CardType equipC
 	if (index == m_playerIndex)
 	{
 		QPoint zhuangbeiLabelMargin(10, -60);
-		zhuangbeiLabel->move(zhuangbeiPoint() + zhuangbeiLabelMargin);
-		zhuangbeiLabel->showZhuangbei(equipCard);
+		m_zhuangbeiLabel->move(zhuangbeiPoint() + zhuangbeiLabelMargin);
+		m_zhuangbeiLabel->showZhuangbei(equipCard);
 	}
 	else
 	{
@@ -898,7 +898,7 @@ void MainWindow::showZhuangbeiAtIndex(int index, sgs::ConstData::CardType equipC
 
 void MainWindow::gameOver(char result)
 {
-	gameOverBox->showResult(result);
+	m_gameOverBox->showResult(result);
 }
 
 AudioPlayer * MainWindow::getAudioPlayer() const

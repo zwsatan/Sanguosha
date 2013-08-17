@@ -46,17 +46,17 @@ Player * Manager::create(int playersCount)
 
 	m_playersCount = playersCount;
 	PlayerRole roles[8] = { ZHU, FAN, NEI, ZHONG, FAN, FAN, ZHONG, FAN };
-	PlayerRole s[8] = { };
+	PlayerRole seat[8] = { };
 
 	for (int i = 0; i < playersCount; ++i)
 	{
 		int p = rand() % (playersCount - i);
-		s[i] = roles[p];
+		seat[i] = roles[p];
 		for (int j = p; j < 7 - i; j++)
 			roles[j] = roles[j + 1];
 	}
 
-	m_players = new Player(0, s[0]);
+	m_players = new Player(0, seat[0]);
 	/*
 	 * Use this function to create AI:
 	 * Interface::createInterface(int playerseat, sgs::ConstData::HeroType heroType = sgs::ConstData::SUJIANG)
@@ -65,15 +65,14 @@ Player * Manager::create(int playersCount)
 	 */
 
 	Player * begin = 0;
-	if (s[0] == ZHU)
+	if (seat[0] == ZHU)
 		begin = m_players;
 
 	Player * creator = m_players;
 	for (int i = 1; i < playersCount; i++)
 	{
-		creator->m_next = new Player(i, s[i]);
-
-		if (s[i] == ZHU)
+		creator->m_next = new Player(i, seat[i]);
+		if (seat[i] == ZHU)
 			begin = creator->m_next;
 
 		creator = creator->m_next;

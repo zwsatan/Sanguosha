@@ -102,14 +102,14 @@ public:
 	virtual sgs::DataType::Message * getLiuli(sgs::DataType::Player * attacker);
 	virtual std::pair<sgs::ConstData::CardColor, int> respondFanjian(sgs::DataType::Player * zhouyu);
 
-	void MCardReceived(const sgs::Derive::CardMessage * message);
-	void MSkillReceived(const sgs::Derive::SkillMessage * message);
-	void MHurtReceived(const sgs::Derive::HurtMessage * message);
-	void MTransCardReceived(const sgs::Derive::TransCardMessage * message);
-	void MSwitchPhaseReceived(const sgs::Derive::SwitchPhaseMessage * message);
-	void MDyingReceived(const sgs::Derive::DyingMessage * message);
-	void MKillReceived(const sgs::Derive::KillMessage * message);
-	void MJudgeReceived(const sgs::Derive::JudgeMessage * message);
+	void CardMsgReceived(const sgs::Derive::CardMessage * msg);
+	void SkillMsgReceived(const sgs::Derive::SkillMessage * message);
+	void HurtMsgReceived(const sgs::Derive::HurtMessage * message);
+	void TransCardMsgReceived(const sgs::Derive::TransCardMessage * message);
+	void SwitchPhaseMsgReceived(const sgs::Derive::SwitchPhaseMessage * message);
+	void DyingMsgReceived(const sgs::Derive::DyingMessage * message);
+	void KillMsgReceived(const sgs::Derive::KillMessage * message);
+	void JudgeMsgReceived(const sgs::Derive::JudgeMessage * message);
 
 	bool isSingleStep() const;
 	void pause();

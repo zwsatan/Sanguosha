@@ -20,35 +20,24 @@
 
 namespace sgsui {
 
-void MainWindow::MCardReceived(const sgs::Derive::CardMessage * message)
+void MainWindow::CardMsgReceived(const sgs::Derive::CardMessage * msg)
 {
-	bool isResponse = message->from()->phase() == sgs::ConstData::OTHERPHASE;
-	bool abandon = true;
-
-	QPoint sourcePoint, targetPoint;
-
 	// when maskType is ctNone, change it to cardType
-	sgs::ConstData::CardType cardType = message->card()->type();
-	sgs::ConstData::CardType maskType = message->card()->mask();
+	sgs::ConstData::CardType cardType = msg->card()->type();
+	sgs::ConstData::CardType maskType = msg->card()->mask();
 	if (maskType != cardType)
 		printDebug("MainWindow::MCardReceived: card has mask");
 
-	sgs::ConstData::CardColor cardColor = message->card()->color();
-	int number = message->card()->number();
-	EquipType equipType = getEquipType(maskType);
-	bool toJudge = isJudgeCard(maskType) && message->type() == sgs::ConstData::HITCARD;
-	bool isJudgeResult = isJudgeCard(maskType) && message->type() == sgs::ConstData::USECARD;
-
 	// Convert platform player Index to GUI player index
 	// no matter whether the to is the from
-	int sourcePlayerIndex = message->from()->seat() + 1;
+	int sourcePlayerIndex = msg->from()->seat() + 1;
 
 	int targetPlayerIndex[7] = {0};
-	for (int i = 0, j = 0; i < message->targets(); ++i)
-		targetPlayerIndex[j++] = message->to(i)->seat() + 1;
+	for (int i = 0, j = 0; i < msg->targets(); ++i)
+		targetPlayerIndex[j++] = msg->to(i)->seat() + 1;
 
 	// only run line animation for HITCARD
-	if (message->type() == sgs::ConstData::HITCARD)
+	if (msg->type() == sgs::ConstData::HITCARD)
 	{
 		runLineAnimation(sourcePlayerIndex, targetPlayerIndex[0],
 				targetPlayerIndex[1], targetPlayerIndex[2],
@@ -57,6 +46,7 @@ void MainWindow::MCardReceived(const sgs::Derive::CardMessage * message)
 	}
 
 	// set PlayerArea's phase to responding (if it is responding)
+	bool isResponse = msg->from()->phase() == sgs::ConstData::OTHERPHASE;
 	if (isResponse)
 		setRespodingPhase(sourcePlayerIndex, true);
 
@@ -69,13 +59,15 @@ void MainWindow::MCardReceived(const sgs::Derive::CardMessage * message)
 	Shoupai * shoupai = 0;
 	bool useZhuangbei = false, hitZhuangbei = false;
 
-	switch (message->pos().first)
+	QPoint sourcePoint, targetPoint;
+	bool abandon = true;
+	switch (msg->pos().first)
 	{
 	case sgs::ConstData::PHAND:
 		if (sourcePlayerIndex == m_playerIndex)
 		{
 			printDebug("MainWindow::MCardReceived: source player is human player, trying to remove shoupai");
-			shoupai = goToCard(message->card());
+			shoupai = goToCard(msg->card());
 			sourcePoint = realPos(shoupai);
 			printDebug("MainWindow::MCardReceived: remove shoupai "
 					   + cardFullDisplayName(shoupai->platformCard(), false));
@@ -85,13 +77,13 @@ void MainWindow::MCardReceived(const sgs::Derive::CardMessage * message)
 		{
 			sourcePoint = cardPointAtIndex(sourcePlayerIndex);
 			otherPlayerAreaAtIndex(sourcePlayerIndex)->setShoupaiNumber(
-					message->from()->handnum());
+					msg->from()->handnum());
 		}
 		break;
 
 	case sgs::ConstData::PEQUIP:
-		useZhuangbei = message->type() == sgs::ConstData::USECARD;
-		hitZhuangbei = message->type() == sgs::ConstData::HITCARD;
+		useZhuangbei = msg->type() == sgs::ConstData::USECARD;
+		hitZhuangbei = msg->type() == sgs::ConstData::HITCARD;
 		sourcePoint = zhuangbeiPointAtIndex(sourcePlayerIndex);
 		break;
 
@@ -105,10 +97,11 @@ void MainWindow::MCardReceived(const sgs::Derive::CardMessage * message)
 	}
 
 	// if a card is judge result card, play sound UseEquip
+	bool isJudgeResult = isJudgeCard(maskType) && msg->type() == sgs::ConstData::USECARD;
 	if (useZhuangbei || isJudgeResult)
 		m_audioPlayer->playSound(UseEquip);
 	else
-		m_audioPlayer->playSound(maskType, (message->from()->sex() == sgs::ConstData::MALE));
+		m_audioPlayer->playSound(maskType, (msg->from()->sex() == sgs::ConstData::MALE));
 
 	if (isZhuangbeiCard(maskType))
 	{
@@ -125,6 +118,7 @@ void MainWindow::MCardReceived(const sgs::Derive::CardMessage * message)
 		targetPoint = usedCardPoint();
 	}
 
+	sgs::ConstData::CardColor cardColor = msg->card()->color();
 	if (maskType == sgs::ConstData::SHA)
 	{
 		if (cardColor == sgs::ConstData::SPADE || cardColor == sgs::ConstData::CLUB)
@@ -182,29 +176,32 @@ void MainWindow::MCardReceived(const sgs::Derive::CardMessage * message)
 		}
 	}
 
-	m_cardAnimation->addCard(sourcePoint, targetPoint, new CardFrame(cardType, cardColor, number, this), abandon);
+	int cardNumber = msg->card()->number();
+	m_cardAnimation->addCard(sourcePoint, targetPoint, new CardFrame(cardType, cardColor, cardNumber, this), abandon);
 	m_cardAnimation->runAnimation();
 
 	printDebug("MainWindow::MCardReceived: runAnimation over");
 
+	EquipType equipType = getEquipType(maskType);
 	switch (equipType)
 	{
 	case Wuqi:
-		addWuqiAtIndex(sourcePlayerIndex, new CardFrame(maskType, cardColor, number));
+		addWuqiAtIndex(sourcePlayerIndex, new CardFrame(maskType, cardColor, cardNumber));
 		break;
 	case Fangju:
-		addFangjuAtIndex(sourcePlayerIndex, new CardFrame(maskType, cardColor, number));
+		addFangjuAtIndex(sourcePlayerIndex, new CardFrame(maskType, cardColor, cardNumber));
 		break;
 	case Jianma:
-		addJianmaAtIndex(sourcePlayerIndex, new CardFrame(maskType, cardColor, number));
+		addJianmaAtIndex(sourcePlayerIndex, new CardFrame(maskType, cardColor, cardNumber));
 		break;
 	case Jiama:
-		addJiamaAtIndex(sourcePlayerIndex, new CardFrame(maskType, cardColor, number));
+		addJiamaAtIndex(sourcePlayerIndex, new CardFrame(maskType, cardColor, cardNumber));
 		break;
 	default:
 		break;
 	}
 
+	bool toJudge = isJudgeCard(maskType) && msg->type() == sgs::ConstData::HITCARD;
 	if (toJudge)
 		addJudgeAtIndex(targetPlayerIndex[0], maskType);
 
@@ -214,31 +211,31 @@ void MainWindow::MCardReceived(const sgs::Derive::CardMessage * message)
 	if (isResponse)
 		setRespodingPhase(sourcePlayerIndex, false);
 
-	sgs::ConstData::HeroType heroType = message->from()->type();
+	sgs::ConstData::HeroType heroType = msg->from()->type();
 	QString historyString(wujiangDisplayName(heroType));
 
 	if (maskType == sgs::ConstData::JIEDAO)
 	{
 		historyString.append(trUtf8("使用了"));
-		historyString.append(cardFullDisplayName(message->card()));
+		historyString.append(cardFullDisplayName(msg->card()));
 		historyString.append( trUtf8("，杀手是"));
-		historyString.append(wujiangDisplayName(message->to(0)->type()));
+		historyString.append(wujiangDisplayName(msg->to(0)->type()));
 		historyString.append( trUtf8("，目标是"));
-		historyString.append(wujiangDisplayName(message->to(1)->type()));
+		historyString.append(wujiangDisplayName(msg->to(1)->type()));
 	}
 	else if (useZhuangbei)
 	{
 		historyString.append(trUtf8("使用了已经装备的"));
-		historyString.append(cardFullDisplayName(message->card()));
+		historyString.append(cardFullDisplayName(msg->card()));
 	}
 	else
 	{
-		if (message->targets() > 0)
+		if (msg->targets() > 0)
 		{
 			historyString.append(trUtf8("对 "));
-			for (int i = 0; i < message->targets(); ++i)
+			for (int i = 0; i < msg->targets(); ++i)
 			{
-				heroType = message->to(i)->type();
+				heroType = msg->to(i)->type();
 				historyString.append(wujiangDisplayName(heroType));
 				historyString.append(' ');
 			}
@@ -247,12 +244,12 @@ void MainWindow::MCardReceived(const sgs::Derive::CardMessage * message)
 		if (cardType == maskType)
 		{
 			historyString.append(trUtf8("使用了"));
-			historyString.append(cardFullDisplayName(message->card()));
+			historyString.append(cardFullDisplayName(msg->card()));
 		}
 		else
 		{
 			historyString.append(trUtf8("把"));
-			historyString.append(cardFullDisplayName(message->card()));
+			historyString.append(cardFullDisplayName(msg->card()));
 			historyString.append(trUtf8("当作"));
 			historyString.append(cardDisplayName(maskType));
 			historyString.append(trUtf8("使用"));
@@ -267,7 +264,7 @@ void MainWindow::MCardReceived(const sgs::Derive::CardMessage * message)
 	printDebug("MainWindow::MCardReceived: over");
 }
 
-void MainWindow::MSkillReceived(const sgs::Derive::SkillMessage * message)
+void MainWindow::SkillMsgReceived(const sgs::Derive::SkillMessage * message)
 {
 	int sourcePlayerIndex = message->from()->seat() + 1;
 	m_skillPlayer->playSound(message->skill(), sourcePlayerIndex);
@@ -283,7 +280,7 @@ void MainWindow::MSkillReceived(const sgs::Derive::SkillMessage * message)
 		sleepSomeTime(GUIStaticData::skillBlockDuration);
 }
 
-void MainWindow::MHurtReceived(const sgs::Derive::HurtMessage * message)
+void MainWindow::HurtMsgReceived(const sgs::Derive::HurtMessage * message)
 {
 	bool fromGod = !(message->from());
 	sgs::ConstData::HeroType sourceHero = sgs::ConstData::heroTypeNone;
@@ -336,7 +333,7 @@ void MainWindow::MHurtReceived(const sgs::Derive::HurtMessage * message)
 	}
 }
 
-void MainWindow::MTransCardReceived(const sgs::Derive::TransCardMessage * message)
+void MainWindow::TransCardMsgReceived(const sgs::Derive::TransCardMessage * message)
 {
 	printDebug("MainWindow::MTransCardReceived: start");
 
@@ -575,7 +572,7 @@ void MainWindow::MTransCardReceived(const sgs::Derive::TransCardMessage * messag
 	printDebug("MainWindow::MTransCardReceived: over");
 }
 
-void MainWindow::MSwitchPhaseReceived(const sgs::Derive::SwitchPhaseMessage * message)
+void MainWindow::SwitchPhaseMsgReceived(const sgs::Derive::SwitchPhaseMessage * message)
 {
 	int targetPlayerIndex = message->from()->seat() + 1;
 	if (m_currentPlayerSeat + 1 != targetPlayerIndex && m_currentPlayerSeat >= 0)
@@ -593,14 +590,14 @@ void MainWindow::MSwitchPhaseReceived(const sgs::Derive::SwitchPhaseMessage * me
 	}
 }
 
-void MainWindow::MDyingReceived(const sgs::Derive::DyingMessage * message)
+void MainWindow::DyingMsgReceived(const sgs::Derive::DyingMessage * message)
 {
 	using sgs::ExternData::gamedata;
 	setDying(message->from()->seat() + 1, true);
 	sleepSomeTime(GUIStaticData::dyingDuration);
 }
 
-void MainWindow::MKillReceived(const sgs::Derive::KillMessage * message)
+void MainWindow::KillMsgReceived(const sgs::Derive::KillMessage * message)
 {
 	bool fromGod = !(message->from());
 	sgs::ConstData::HeroType sourceHero, targetHero = message->to()->type();
@@ -618,7 +615,7 @@ void MainWindow::MKillReceived(const sgs::Derive::KillMessage * message)
 	sleepSomeTime(GUIStaticData::killDuration);
 }
 
-void MainWindow::MJudgeReceived(const sgs::Derive::JudgeMessage * message)
+void MainWindow::JudgeMsgReceived(const sgs::Derive::JudgeMessage * message)
 {
 	sgs::ConstData::HeroType heroType = message->from()->type();
 	sgs::ConstData::CardType cardType = message->result()->type();

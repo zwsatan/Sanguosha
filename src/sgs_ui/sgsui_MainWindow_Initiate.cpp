@@ -28,19 +28,19 @@
 namespace sgsui {
 
 MainWindow * MainWindow::mainWindowPointer = 0;
-const QSize MainWindow::minSize(1024, 650);
+const QSize MainWindow::ms_minSize(1024, 650);
 
 MainWindow::MainWindow()
 	: Interface(GUIStaticData::getHumanIndex() - 1)
 	, m_playerCount(GUIStaticData::getPlayerCount())
 	, m_playerIndex(GUIStaticData::getHumanIndex())
-	, GUIresponding(true)
-	, currentPlayerSeat(-1)
+	, m_GUIresponding(true)
+	, m_currentPlayerSeat(-1)
 	, m_responseType(NotResponding)
 	, m_skillVerShaOrNot(false)
 	, m_isGoingToAbandon(false)
 	, m_cancelResponse(false)
-	, shoupaiNumToDiscard(0)
+	, m_shoupaiNumToDiscard(0)
 	, m_maxShoupaiSelect(0)
 	, m_minShoupaiSelect(0)
 	, m_maxPlayerSelect(0)
@@ -60,7 +60,7 @@ MainWindow::MainWindow()
 
 	// create GUI objects
 	setupUi(this);
-	setMinimumSize(minSize);
+	setMinimumSize(ms_minSize);
 	GUIStaticData::resetData();
 	setOptions(GUIStaticData::getOptions());
 
@@ -105,7 +105,7 @@ MainWindow::~MainWindow()
 
 	// Shoupai are card buttons which have no parent
 	// they need to be deleted here
-	for (auto iter = shoupaiList.begin(); iter != shoupaiList.end(); ++iter)
+	for (auto iter = m_shoupaiList.begin(); iter != m_shoupaiList.end(); ++iter)
 		delete *iter;
 }
 
@@ -149,45 +149,45 @@ void MainWindow::initiateWindowWidgets()
 	helpButton->setDisabledPixmap(QPixmap("images/button/disabled-large.png"));
 	helpButton->setPressedPixmap(QPixmap("images/button/pressed-large.png"));
 
-	tipBox = new SGSMessageBox(this);
-	tipBox->hide();
-	pauseBox = new SGSMessageBox(this);
-	pauseBox->hide();
-	cardContainer = new CardContainer(this);
-	cardContainer->hide();
-	wujiangChooseBox = new WujiangChooseBox(this);
-	wujiangChooseBox->hide();
-	guanxingBox = new GuanxingBox(this);
-	guanxingBox->hide();
+	m_tipBox = new SGSMessageBox(this);
+	m_tipBox->hide();
+	m_pauseBox = new SGSMessageBox(this);
+	m_pauseBox->hide();
+	m_cardContainer = new CardContainer(this);
+	m_cardContainer->hide();
+	m_wujiangChooseBox = new WujiangChooseBox(this);
+	m_wujiangChooseBox->hide();
+	m_guanxingBox = new GuanxingBox(this);
+	m_guanxingBox->hide();
 
-	zhuangbeiLabel = new ZhuangbeiLabel(this);
-	zhuangbeiLabel->hide();
+	m_zhuangbeiLabel = new ZhuangbeiLabel(this);
+	m_zhuangbeiLabel->hide();
 
-	aboutFrame = new AboutFrame(this);
-	aboutFrame->hide();
-	connect(aboutButton, SIGNAL(clicked()), aboutFrame, SLOT(showAboutInfo()));
+	m_aboutFrame = new AboutFrame(this);
+	m_aboutFrame->hide();
+	connect(aboutButton, SIGNAL(clicked()), m_aboutFrame, SLOT(showAboutInfo()));
 
-	helpBox = new HelpBox(this);
-	helpBox->hide();
-	connect(helpButton, SIGNAL(clicked()), helpBox, SLOT(displayHelp()));
+	m_helpBox = new HelpBox(this);
+	m_helpBox->hide();
+	connect(helpButton, SIGNAL(clicked()), m_helpBox, SLOT(displayHelp()));
 
-	wugufengdengBox = new WugufengdengBox(this);
-	wugufengdengBox->hide();
+	m_wugufengdengBox = new WugufengdengBox(this);
+	m_wugufengdengBox->hide();
 
-	fanjianBox = new FanjianBox(this);
-	fanjianBox->hide();
+	m_fanjianBox = new FanjianBox(this);
+	m_fanjianBox->hide();
 
-	cardViewer = new CardViewer(this);
-	cardViewer->hide();
+	m_cardViewer = new CardViewer(this);
+	m_cardViewer->hide();
 
-	gameOverBox = new GameOverBox(this);
-	gameOverBox->hide();
+	m_gameOverBox = new GameOverBox(this);
+	m_gameOverBox->hide();
 
 	cardDeckLabel->hide();
 
-	blockingFrameMovingAnimation = new QPropertyAnimation(this);
-	blockingFrameMovingAnimation->setPropertyName("pos");
-	blockingFrameMovingAnimation->setDuration(GUIStaticData::blockingFrameMovingDuration);
+	m_blockingFrameMovingAnimation = new QPropertyAnimation(this);
+	m_blockingFrameMovingAnimation->setPropertyName("pos");
+	m_blockingFrameMovingAnimation->setDuration(GUIStaticData::blockingFrameMovingDuration);
 
 	debugCheckBox->hide();
 	debugTabWidget->hide();
@@ -208,7 +208,7 @@ void MainWindow::createPlayers()
 	// initiate myself
 	m_zhuangbeiArea = new ZhuangbeiArea(this, zhuangbeiArea);
 	m_wujiangArea = new WujiangArea(m_playerIndex, wujiangArea);
-	innerAI = Interface::createInterface(m_playerIndex - 1, m_wujiangArea->getHeroType(), true);
+	m_innerAI = Interface::createInterface(m_playerIndex - 1, m_wujiangArea->getHeroType(), true);
 
 	// initiate others
 	switch (m_playerCount - 1)
@@ -336,19 +336,19 @@ void MainWindow::initiateStyleSheet()
 
 void MainWindow::initiateAnimation()
 {
-	cardAnimation = new PosAnimation(usedCardFrame, usedCardLayout, this);
+	m_cardAnimation = new PosAnimation(usedCardFrame, usedCardLayout, this);
 
-	damageMovingAnimation = new QPropertyAnimation(this);
-	damageMovingAnimation->setPropertyName("pos");
-	damageMovingAnimation->setDuration(GUIStaticData::damageAnimationDuration);
+	m_damageMovingAnimation = new QPropertyAnimation(this);
+	m_damageMovingAnimation->setPropertyName("pos");
+	m_damageMovingAnimation->setDuration(GUIStaticData::damageAnimationDuration);
 
-	lineAnimationWidget = new LineAnimationWidget(this);
-	lineAnimationWidget->hide();
+	m_lineAnimationWidget = new LineAnimationWidget(this);
+	m_lineAnimationWidget->hide();
 
-	pixmapAnimationWidget = new PixmapAnimationWidget(this);
-	pixmapAnimationWidget->hide();
+	m_pixmapAnimationWidget = new PixmapAnimationWidget(this);
+	m_pixmapAnimationWidget->hide();
 
-	blockTimer = new BlockTimer(this);
+	m_blockTimer = new BlockTimer(this);
 }
 
 void MainWindow::initiateMusic() {

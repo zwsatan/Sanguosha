@@ -394,44 +394,44 @@ const Card * Player::visitCard(std::pair<PlayerRegionType, int> pos)
 	}
 }
 
-Message * Player::round(Platform&)
+Message * Player::round()
 {
-	Message * m = 0;
+	Message * msg = 0;
 	switch (m_phase)
 	{
 	case OTHERPHASE:
-		m = new SwitchPhaseMessage(this, OTHERPHASE, STARTPHASE);
+		msg = new SwitchPhaseMessage(this, OTHERPHASE, STARTPHASE);
 		m_phase = STARTPHASE;
 		break;
 
 	case STARTPHASE:
-		m = m_hero->startPhase(this);
+		msg = m_hero->startPhase(this);
 		break;
 
 	case JUDGEMENTPHASE:
-		m = m_hero->judgePhase(this);
+		msg = m_hero->judgePhase(this);
 		break;
 
 	case GETCARDPHASE:
-		m = m_hero->getPhase(this);
+		msg = m_hero->getPhase(this);
 		break;
 
 	case MAINPHASE:
-		m = m_hero->mainPhase(this);
+		msg = m_hero->mainPhase(this);
 		break;
 
 	case ABANDONCARDPHASE:
-		m = m_hero->abandonPhase(this);
+		msg = m_hero->abandonPhase(this);
 		break;
 
 	case ENDPHASE:
-		m = m_hero->endPhase(this);
+		msg = m_hero->endPhase(this);
 		break;
 
 	default:
 		break;
 	}
-	return m;
+	return msg;
 }
 
 char& Player::setstatus()
@@ -495,7 +495,7 @@ void Player::choosehero(std::vector<HeroType> &herovec, HeroType lord/* = sgs::C
 	{
 		// 主公选将,这里逆序是因为,最后默认三个为刘备,曹操,孙权
 		HeroType avaliable[5];
-		std::vector<HeroType>::reverse_iterator riter = herovec.rbegin();
+		auto riter = herovec.rbegin();
 		for (int i = 0; i < 5; ++i)
 			avaliable[i] = *riter++;
 

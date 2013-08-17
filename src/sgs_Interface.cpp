@@ -54,7 +54,7 @@ Interface::~Interface()
 {
 }
 
-Interface * Interface::createInterface(int seat, ConstData::HeroType heroType, bool forceToBeAI)
+Interface * Interface::createInterface(int seat, ConstData::HeroType heroType, bool forceToBeAI/* = false*/)
 {
 	if (!forceToBeAI && (seat + 1 == sgsui::GUIStaticData::getHumanIndex()))
 		return sgsui::MainWindow::mainWindowPtr();
