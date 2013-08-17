@@ -17,10 +17,10 @@ namespace sgsui {
 
 void MainWindow::initiateDebug()
 {
-	debugTimer = new QTimer(this);
+	m_debugTimer = new QTimer(this);
 	connect(autorefreshCheckBox, SIGNAL(clicked(bool)), this, SLOT(setAutoRefresh(bool)));
 	connect(autorefreshSpinBox, SIGNAL(valueChanged(int)), this, SLOT(refreshFrequencyChanged(int)));
-	connect(debugTimer, SIGNAL(timeout()), this, SLOT(refreshData()));
+	connect(m_debugTimer, SIGNAL(timeout()), this, SLOT(refreshData()));
 	connect(refreshPlayerButton, SIGNAL(clicked()), this, SLOT(refreshPlayer()));
 	connect(playerSpinBox, SIGNAL(valueChanged(int)), this, SLOT(refreshPlayer()));
 	connect(refreshDataButton, SIGNAL(clicked()), this, SLOT(refreshData()));
@@ -479,9 +479,9 @@ void MainWindow::setHPDebug()
 void MainWindow::setAutoRefresh(bool autorefresh)
 {
 	if (autorefresh)
-		debugTimer->start(1000 * autorefreshSpinBox->value());
+		m_debugTimer->start(1000 * autorefreshSpinBox->value());
 	else
-		debugTimer->stop();
+		m_debugTimer->stop();
 
 	refreshDataButton->setDisabled(autorefresh);
 }
@@ -489,7 +489,7 @@ void MainWindow::setAutoRefresh(bool autorefresh)
 void MainWindow::refreshFrequencyChanged(int time)
 {
 	if (autorefreshCheckBox->isChecked())
-		debugTimer->start(1000 * time);
+		m_debugTimer->start(1000 * time);
 }
 
 } /* namespace sgsui */

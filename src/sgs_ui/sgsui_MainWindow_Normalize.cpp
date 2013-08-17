@@ -63,7 +63,7 @@ void MainWindow::cardNormalize()
 	case UseCard:
 		m_maxShoupaiSelect = 1;
 		m_minShoupaiSelect = 1;
-		for (auto iter = shoupaiList.begin(); iter != shoupaiList.end(); ++iter)
+		for (auto iter = m_shoupaiList.begin(); iter != m_shoupaiList.end(); ++iter)
 		{
 			sgs::ConstData::CardType cardType = (*iter)->card()->getCardType();
 			switch (cardType)
@@ -147,7 +147,7 @@ void MainWindow::cardNormalize()
 	case ShanOrNot:
 		m_maxShoupaiSelect = 1;
 		m_minShoupaiSelect = 1;
-		for (auto iter = shoupaiList.begin(); iter != shoupaiList.end(); ++iter)
+		for (auto iter = m_shoupaiList.begin(); iter != m_shoupaiList.end(); ++iter)
 		{
 			if ((*iter)->card()->getCardType() == sgs::ConstData::SHAN)
 				(*iter)->setSelectable();
@@ -159,7 +159,7 @@ void MainWindow::cardNormalize()
 	case TaoOrNot:
 		m_maxShoupaiSelect = 1;
 		m_minShoupaiSelect = 1;
-		for (auto iter = shoupaiList.begin(); iter != shoupaiList.end(); ++iter)
+		for (auto iter = m_shoupaiList.begin(); iter != m_shoupaiList.end(); ++iter)
 		{
 			if ((*iter)->card()->getCardType() == sgs::ConstData::TAO)
 				(*iter)->setSelectable();
@@ -171,7 +171,7 @@ void MainWindow::cardNormalize()
 	case ShaOrNot:
 		m_maxShoupaiSelect = 1;
 		m_minShoupaiSelect = 1;
-		for (auto iter = shoupaiList.begin(); iter != shoupaiList.end(); ++iter)
+		for (auto iter = m_shoupaiList.begin(); iter != m_shoupaiList.end(); ++iter)
 		{
 			if ((*iter)->card()->getCardType() == sgs::ConstData::SHA)
 				(*iter)->setSelectable();
@@ -183,7 +183,7 @@ void MainWindow::cardNormalize()
 	case WuxieOrNot:
 		m_maxShoupaiSelect = 1;
 		m_minShoupaiSelect = 1;
-		for (auto iter = shoupaiList.begin(); iter != shoupaiList.end(); ++iter)
+		for (auto iter = m_shoupaiList.begin(); iter != m_shoupaiList.end(); ++iter)
 		{
 			if ((*iter)->card()->getCardType() == sgs::ConstData::WUXIE)
 				(*iter)->setSelectable();
@@ -208,7 +208,7 @@ void MainWindow::cardNormalize()
 		disableAllShoupai();
 		m_maxShoupaiSelect = 0;
 		m_minShoupaiSelect = 0;
-		m_selectedSkillCardVec = cardContainer->chooseSkillCard(LIULI);
+		m_selectedSkillCardVec = m_cardContainer->chooseSkillCard(LIULI);
 		if (m_selectedSkillCardVec.empty())
 		{
 			m_cancelResponse = true;
@@ -609,7 +609,7 @@ void MainWindow::skillCardNormalize()
 		disableAllShoupai();
 		m_maxShoupaiSelect = 0;
 		m_minShoupaiSelect = 0;
-		m_selectedSkillCardVec = cardContainer->chooseSkillCard(m_selectedSkill);
+		m_selectedSkillCardVec = m_cardContainer->chooseSkillCard(m_selectedSkill);
 		if (m_selectedSkillCardVec.empty())
 		{
 			resetSkillSelect();
@@ -635,7 +635,7 @@ void MainWindow::skillCardNormalize()
 		disableAllShoupai();
 		m_maxShoupaiSelect = 0;
 		m_minShoupaiSelect = 0;
-		m_selectedSkillCardVec = cardContainer->chooseSkillCard(m_selectedSkill);
+		m_selectedSkillCardVec = m_cardContainer->chooseSkillCard(m_selectedSkill);
 		if (m_selectedSkillCardVec.empty())
 		{
 			printDebug("MainWindow::skillChooseCardNormalize: zhiheng canceled");
@@ -655,7 +655,7 @@ void MainWindow::skillCardNormalize()
 		disableAllShoupai();
 		m_maxShoupaiSelect = 0;
 		m_minShoupaiSelect = 0;
-		m_selectedSkillCardVec = cardContainer->chooseSkillCard(m_selectedSkill);
+		m_selectedSkillCardVec = m_cardContainer->chooseSkillCard(m_selectedSkill);
 		if (m_selectedSkillCardVec.empty())
 		{
 			resetSkillSelect();
@@ -701,7 +701,7 @@ void MainWindow::skillCardNormalize()
 	case JIJIU:
 		m_maxShoupaiSelect = 0;
 		m_minShoupaiSelect = 0;
-		m_selectedSkillCardVec = cardContainer->chooseSkillCard(m_selectedSkill);
+		m_selectedSkillCardVec = m_cardContainer->chooseSkillCard(m_selectedSkill);
 		if (m_selectedSkillCardVec.empty())
 		{
 			resetSkillSelect();
@@ -719,7 +719,7 @@ void MainWindow::skillCardNormalize()
 		disableAllShoupai();
 		m_maxShoupaiSelect = 0;
 		m_minShoupaiSelect = 0;
-		m_selectedSkillCardVec = cardContainer->chooseSkillCard(m_selectedSkill);
+		m_selectedSkillCardVec = m_cardContainer->chooseSkillCard(m_selectedSkill);
 		if (m_selectedSkillCardVec.empty())
 		{
 			resetSkillSelect();
@@ -737,7 +737,7 @@ void MainWindow::skillCardNormalize()
 		case ShaOrNot:
 			// enable all shan
 			showTipMessage(trUtf8("选择一张闪"));
-			for (auto iter = shoupaiList.begin(); iter != shoupaiList.end(); ++iter)
+			for (auto iter = m_shoupaiList.begin(); iter != m_shoupaiList.end(); ++iter)
 			{
 				bool selectAble = (*iter)->card()->getCardType() == sgs::ConstData::SHAN;
 				(*iter)->setSelectable(selectAble);
@@ -749,7 +749,7 @@ void MainWindow::skillCardNormalize()
 		case ShanOrNot:
 			// enable all sha
 			showTipMessage(trUtf8("选择一张杀"));
-			for (auto iter = shoupaiList.begin(); iter != shoupaiList.end(); ++iter)
+			for (auto iter = m_shoupaiList.begin(); iter != m_shoupaiList.end(); ++iter)
 			{
 				bool selectAble = (*iter)->card()->getCardType() == sgs::ConstData::SHA;
 				(*iter)->setSelectable(selectAble);
@@ -767,7 +767,7 @@ void MainWindow::skillCardNormalize()
 		disableAllShoupai();
 		m_maxShoupaiSelect = 0;
 		m_minShoupaiSelect = 0;
-		m_selectedSkillCardVec = cardContainer->chooseSkillCard(m_selectedSkill);
+		m_selectedSkillCardVec = m_cardContainer->chooseSkillCard(m_selectedSkill);
 		if (m_selectedSkillCardVec.empty())
 		{
 			resetSkillSelect();
@@ -779,7 +779,7 @@ void MainWindow::skillCardNormalize()
 	case QINGGUO:
 		// enable all red shoupai
 		showTipMessage(trUtf8("选择一张黑色手牌"));
-		for (auto iter = shoupaiList.begin(); iter != shoupaiList.end(); ++iter)
+		for (auto iter = m_shoupaiList.begin(); iter != m_shoupaiList.end(); ++iter)
 		{
 			sgs::ConstData::CardColor color = (*iter)->card()->getCardColor();
 			bool selectAble = color == sgs::ConstData::SPADE || color == sgs::ConstData::CLUB;

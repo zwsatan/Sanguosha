@@ -23,22 +23,22 @@ namespace sgsui {
 std::vector<int> MainWindow::discardCard(unsigned int cardNumToDiscard)
 {
 	if (AICheckBox->isChecked())
-		return innerAI->discardCard(cardNumToDiscard);
+		return m_innerAI->discardCard(cardNumToDiscard);
 
 	printDebug("MainWindow::discardCard: start");
 
 	m_responseType = DiscardCard;
 
 	showTipMessage(trUtf8("弃") + QString::number(cardNumToDiscard) + trUtf8("张手牌"));
-	shoupaiNumToDiscard = cardNumToDiscard;
+	m_shoupaiNumToDiscard = cardNumToDiscard;
 
 	// Ensure that all cards are available and unselected
-	for (auto iter = shoupaiList.begin(); iter != shoupaiList.end(); ++iter)
+	for (auto iter = m_shoupaiList.begin(); iter != m_shoupaiList.end(); ++iter)
 	{
 		(*iter)->setUnselected();
 		(*iter)->setSelectable();
 	}
-	selectedAbandonList.clear();
+	m_selectedAbandonList.clear();
 
 	okButton->setDisabled();
 	cancelButton->setDisabled();
@@ -55,20 +55,20 @@ std::vector<int> MainWindow::discardCard(unsigned int cardNumToDiscard)
 
 	exec();
 
-	discardIndexList.clear();
+	m_discardIndexList.clear();
 	collectDiscardedShoupai();
 	clearAbandonData();
 
 	printDebug("MainWindow::discardCard");
-	printDebug(discardInterpret(discardIndexList, myPlayer()));
+	printDebug(discardInterpret(m_discardIndexList, myPlayer()));
 	endResponse();
-	return discardIndexList;
+	return m_discardIndexList;
 }
 
 sgs::DataType::Message * MainWindow::useCardResponse()
 {
 	if (AICheckBox->isChecked())
-		return innerAI->useCardResponse();
+		return m_innerAI->useCardResponse();
 
 	printDebug("MainWindow::useCardResponse: start");
 	m_responseType = UseCard;
@@ -145,7 +145,7 @@ sgs::DataType::Message * MainWindow::useCardResponse()
 sgs::DataType::Message * MainWindow::taoOrNot(sgs::DataType::Player * from, int neededTaoNumber)
 {
 	if (AICheckBox->isChecked())
-		return innerAI->taoOrNot(from, neededTaoNumber);
+		return m_innerAI->taoOrNot(from, neededTaoNumber);
 
 	printDebug("MainWindow::taoOrNot: start");
 
@@ -202,7 +202,7 @@ sgs::DataType::Message * MainWindow::taoOrNot(sgs::DataType::Player * from, int 
 sgs::DataType::Message * MainWindow::shanOrNot(sgs::DataType::Player * from, const sgs::DataType::Card * card)
 {
 	if (AICheckBox->isChecked())
-		return innerAI->shanOrNot(from, card);
+		return m_innerAI->shanOrNot(from, card);
 
 	printDebug("MainWindow::shanOrNot: start");
 
@@ -257,7 +257,7 @@ sgs::DataType::Message * MainWindow::shanOrNot(sgs::DataType::Player * from, con
 sgs::DataType::Message * MainWindow::shanOrNot(sgs::DataType::Player * from, sgs::ConstData::HeroSkill skillType)
 {
 	if (AICheckBox->isChecked()) {
-		return innerAI->shanOrNot(from, skillType);
+		return m_innerAI->shanOrNot(from, skillType);
 	}
 	printDebug("MainWindow::shanOrNot (skill version): start");
 
@@ -300,7 +300,7 @@ sgs::DataType::Message * MainWindow::shanOrNot(sgs::DataType::Player * from, sgs
 sgs::DataType::Message * MainWindow::shaOrNot(sgs::DataType::Player * from,
 											  const sgs::DataType::Card * card) {
 	if (AICheckBox->isChecked()) {
-		return innerAI->shaOrNot(from, card);
+		return m_innerAI->shaOrNot(from, card);
 	}
 	printDebug("MainWindow::shaOrNot: start");
 
@@ -356,7 +356,7 @@ sgs::DataType::Message * MainWindow::shaOrNot(sgs::DataType::Player * from,
 sgs::DataType::Message * MainWindow::shaOrNot(sgs::DataType::Player * from,
 											  sgs::ConstData::HeroSkill skillType) {
 	if (AICheckBox->isChecked()) {
-		return innerAI->shaOrNot(from, skillType);
+		return m_innerAI->shaOrNot(from, skillType);
 	}
 	printDebug("MainWindow::shaOrNot (skill version): start");
 
@@ -400,7 +400,7 @@ sgs::DataType::Message * MainWindow::shaOrNot(sgs::DataType::Player * from,
 sgs::DataType::Message * MainWindow::wuxieOrNot(
 		sgs::DataType::Message * originMsg, int count) {
 	if (AICheckBox->isChecked()) {
-		return innerAI->wuxieOrNot(originMsg, count);
+		return m_innerAI->wuxieOrNot(originMsg, count);
 	}
 	printDebug("MainWindow::wuxieOrNot: start");
 
@@ -471,7 +471,7 @@ sgs::DataType::Message * MainWindow::wuxieOrNot(
 bool MainWindow::useEquipOrNot(sgs::ConstData::CardType equipCardType,
 							   sgs::DataType::Player *targetPlayer) {
 	if (AICheckBox->isChecked()) {
-		return innerAI->useEquipOrNot(equipCardType, targetPlayer);
+		return m_innerAI->useEquipOrNot(equipCardType, targetPlayer);
 	}
 	printDebug("MainWindow::useEquipOrNot: start");
 	QString question;
@@ -492,7 +492,7 @@ bool MainWindow::useEquipOrNot(sgs::ConstData::CardType equipCardType,
 bool MainWindow::useSkillOrNot(sgs::ConstData::HeroSkill skillType,
 							   sgs::DataType::Player * targetPlayer) {
 	if (AICheckBox->isChecked()) {
-		return innerAI->useSkillOrNot(skillType, targetPlayer);
+		return m_innerAI->useSkillOrNot(skillType, targetPlayer);
 	}
 	printDebug("MainWindow::useSkillOrNot: start");
 	QString question(trUtf8("是否要"));
@@ -512,7 +512,7 @@ bool MainWindow::useSkillOrNot(sgs::ConstData::HeroSkill skillType,
 bool MainWindow::useSkillOrNot(sgs::ConstData::HeroSkill skillType,
 							   sgs::DataType::Message * message) {
 	if (AICheckBox->isChecked()) {
-		return innerAI->useSkillOrNot(skillType, message);
+		return m_innerAI->useSkillOrNot(skillType, message);
 	}
 	printDebug("MainWindow::useSkillOrNot: start");
 
@@ -549,14 +549,14 @@ std::vector<std::pair<sgs::ConstData::PlayerRegionType, int> > MainWindow::choos
 		bool isEquipSelectable, bool isJudgeSelectable, int num,
 		sgs::ConstData::CardType reason) {
 	if (AICheckBox->isChecked()) {
-		return innerAI->chooseCardResponse(targetPlayer, isHandSelectable,
+		return m_innerAI->chooseCardResponse(targetPlayer, isHandSelectable,
 										   isEquipSelectable, isJudgeSelectable, num, reason);
 	}
 
 	QString text(trUtf8("选择"));
 	text.append(QString::number(num));
 	text.append(trUtf8("张卡牌"));
-	return cardContainer->chooseCard(text, targetPlayer, isHandSelectable,
+	return m_cardContainer->chooseCard(text, targetPlayer, isHandSelectable,
 									 isEquipSelectable, isJudgeSelectable, num, reason);
 }
 
@@ -565,21 +565,21 @@ std::vector<std::pair<sgs::ConstData::PlayerRegionType, int> > MainWindow::choos
 		bool isEquipSelectable, bool isJudgeSelectable, int num,
 		sgs::ConstData::HeroSkill reason) {
 	if (AICheckBox->isChecked()) {
-		return innerAI->chooseCardResponse(targetPlayer, isHandSelectable,
+		return m_innerAI->chooseCardResponse(targetPlayer, isHandSelectable,
 										   isEquipSelectable, isJudgeSelectable, num, reason);
 	}
 
 	QString text(trUtf8("选择"));
 	text.append(QString::number(num));
 	text.append(trUtf8("张卡牌"));
-	return cardContainer->chooseCard(text, targetPlayer, isHandSelectable,
+	return m_cardContainer->chooseCard(text, targetPlayer, isHandSelectable,
 									 isEquipSelectable, isJudgeSelectable, num, reason);
 }
 
 bool MainWindow::yesOrNot(sgs::ConstData::CardType reason)
 {
 	if (AICheckBox->isChecked())
-		return innerAI->yesOrNot(reason);
+		return m_innerAI->yesOrNot(reason);
 
 	printDebug("MainWindow::yesOrNot(card version): start");
 	QString question;
@@ -597,7 +597,7 @@ bool MainWindow::yesOrNot(sgs::ConstData::CardType reason)
 bool MainWindow::yesOrNot(sgs::ConstData::HeroSkill reason)
 {
 	if (AICheckBox->isChecked())
-		return innerAI->yesOrNot(reason);
+		return m_innerAI->yesOrNot(reason);
 
 	printDebug("MainWindow::yesOrNot(skill version): start");
 	QString question;
@@ -615,27 +615,27 @@ bool MainWindow::yesOrNot(sgs::ConstData::HeroSkill reason)
 int MainWindow::chooseWugu(const std::vector<std::pair<const sgs::DataType::Card *, bool> >& wuguCards)
 {
 	if (AICheckBox->isChecked())
-		return innerAI->chooseWugu(wuguCards);
+		return m_innerAI->chooseWugu(wuguCards);
 
 	showWugu(wuguCards);
-	return wugufengdengBox->chooseWugu(wuguCards);
+	return m_wugufengdengBox->chooseWugu(wuguCards);
 }
 
 void MainWindow::chooseGuanxing(std::vector<const sgs::DataType::Card *>& top, std::vector<const sgs::DataType::Card *>& buttom)
 {
 	if (AICheckBox->isChecked())
 	{
-		innerAI->chooseGuanxing(top, buttom);
+		m_innerAI->chooseGuanxing(top, buttom);
 		return;
 	}
 
-	guanxingBox->chooseGuanxing(top, buttom);
+	m_guanxingBox->chooseGuanxing(top, buttom);
 }
 
 sgs::DataType::Message * MainWindow::getTuxi()
 {
 	if (AICheckBox->isChecked())
-		return innerAI->getTuxi();
+		return m_innerAI->getTuxi();
 
 	m_responseType = GetTuxi;
 	printDebug("MainWindow::getTuxi: start");
@@ -685,19 +685,19 @@ sgs::DataType::Message * MainWindow::getTuxi()
 sgs::DataType::Message * MainWindow::getYiji(const sgs::DataType::Card * card1,
 											 const sgs::DataType::Card * card2) {
 	if (AICheckBox->isChecked()) {
-		return innerAI->getYiji(card1, card2);
+		return m_innerAI->getYiji(card1, card2);
 	}
 	printDebug("MainWindow::getYiji: start");
 	m_responseType = GetYiji;
 	sgs::DataType::Player * player1, *player2;
 
-	cardViewer->setGeometry(
+	m_cardViewer->setGeometry(
 				QRect(
 					mainFrame->geometry().center()
-					- QPoint(cardViewer->width() / 2,
-							 cardViewer->height() / 5),
-					cardViewer->size()));
-	cardViewer->showViewer(card1, card2);
+					- QPoint(m_cardViewer->width() / 2,
+							 m_cardViewer->height() / 5),
+					m_cardViewer->size()));
+	m_cardViewer->showViewer(card1, card2);
 
 	cardNormalize();
 	playerChooseNormalize();
@@ -705,19 +705,19 @@ sgs::DataType::Message * MainWindow::getYiji(const sgs::DataType::Card * card1,
 	exec();
 	player1 = m_selectedPlayerAreaList.back()->getPlayer();
 
-	cardViewer->setGeometry(
+	m_cardViewer->setGeometry(
 				QRect(
 					mainFrame->geometry().center()
-					- QPoint(cardViewer->width() / 2,
-							 cardViewer->height() / 5),
-					cardViewer->size()));
-	cardViewer->showSecondViewer();
+					- QPoint(m_cardViewer->width() / 2,
+							 m_cardViewer->height() / 5),
+					m_cardViewer->size()));
+	m_cardViewer->showSecondViewer();
 
 	cardNormalize();
 	playerChooseNormalize();
 	checkButtons();
 	exec();
-	cardViewer->hide();
+	m_cardViewer->hide();
 	player2 = m_selectedPlayerAreaList.back()->getPlayer();
 	sgs::Derive::SkillMessage * returnMessage = new sgs::Derive::YiJiMessage(myPlayer(),
 																 player1, card1, player2, card2);
@@ -730,7 +730,7 @@ sgs::DataType::Message * MainWindow::getYiji(const sgs::DataType::Card * card1,
 sgs::DataType::Message * MainWindow::getLiuli(
 		sgs::DataType::Player * attacker) {
 	if (AICheckBox->isChecked()) {
-		return innerAI->getLiuli(attacker);
+		return m_innerAI->getLiuli(attacker);
 	}
 	m_responseType = GetLiuli;
 	m_liuliAttacker = attacker;
@@ -767,21 +767,21 @@ std::pair<sgs::ConstData::CardColor, int> MainWindow::respondFanjian(
 	QString text(trUtf8("选择周瑜的一张手牌"));
 	std::pair<sgs::ConstData::CardColor, int> choosen;
 	choosen.first = choosenColor;
-	choosen.second = cardContainer->chooseCard(text, zhouyu, true, false, false,
+	choosen.second = m_cardContainer->chooseCard(text, zhouyu, true, false, false,
 											   1, sgs::ConstData::heroSkillNone).back().second;
 	return choosen;
 }
 
 void MainWindow::collectDiscardedShoupai()
 {
-	for (auto iter = selectedAbandonList.begin(); iter != selectedAbandonList.end(); ++iter)
-		discardIndexList.push_back(getIndex(*iter));
+	for (auto iter = m_selectedAbandonList.begin(); iter != m_selectedAbandonList.end(); ++iter)
+		m_discardIndexList.push_back(getIndex(*iter));
 }
 
 void MainWindow::clearAbandonData()
 {
-	selectedAbandonList.clear();
-	shoupaiNumToDiscard = 0;
+	m_selectedAbandonList.clear();
+	m_shoupaiNumToDiscard = 0;
 	// DO NOT clear discardIndexList herer because it is return value!!
 }
 

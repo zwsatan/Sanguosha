@@ -19,7 +19,7 @@ namespace sgsui {
 
 void MainWindow::enableAllShoupai()
 {
-	for (auto iter = shoupaiList.begin(); iter != shoupaiList.end(); ++iter)
+	for (auto iter = m_shoupaiList.begin(); iter != m_shoupaiList.end(); ++iter)
 	{
 		(*iter)->setSelectable();
 		(*iter)->setUnselected();
@@ -29,7 +29,7 @@ void MainWindow::enableAllShoupai()
 
 void MainWindow::disableAllShoupai()
 {
-	for (auto iter = shoupaiList.begin(); iter != shoupaiList.end(); ++iter)
+	for (auto iter = m_shoupaiList.begin(); iter != m_shoupaiList.end(); ++iter)
 		(*iter)->setUnselectable();
 	m_selectedShoupaiList.clear();
 }
@@ -65,7 +65,7 @@ void MainWindow::clearCardPlayerEquipSelect()
 
 void MainWindow::unselectAllShoupai()
 {
-	for (auto iter = shoupaiList.begin(); iter != shoupaiList.end(); ++iter)
+	for (auto iter = m_shoupaiList.begin(); iter != m_shoupaiList.end(); ++iter)
 		(*iter)->setUnselected();
 	m_selectedShoupaiList.clear();
 }
@@ -393,10 +393,10 @@ void MainWindow::cancelClicked()
 	if (m_responseType == DiscardCard)
 	{
 		// Ensure that all cards are available and unselected
-		for (auto iter = shoupaiList.begin(); iter != shoupaiList.end(); ++iter)
+		for (auto iter = m_shoupaiList.begin(); iter != m_shoupaiList.end(); ++iter)
 			(*iter)->setUnselected();
 
-		selectedAbandonList.clear();
+		m_selectedAbandonList.clear();
 		okButton->setDisabled();
 	}
 	else
@@ -465,20 +465,20 @@ void MainWindow::cardClicked(CardButton * clickedCard)
 		if (clickedCard->isSelected())
 		{
 			clickedCard->setUnselected();
-			selectedAbandonList.remove(clickedShoupai);
+			m_selectedAbandonList.remove(clickedShoupai);
 		}
 		else
 		{
 			clickedCard->setSelected();
-			selectedAbandonList.push_back(clickedShoupai);
-			if (selectedAbandonList.size() > shoupaiNumToDiscard)
+			m_selectedAbandonList.push_back(clickedShoupai);
+			if (m_selectedAbandonList.size() > m_shoupaiNumToDiscard)
 			{
-				selectedAbandonList.front()->setUnselected();
-				selectedAbandonList.pop_front();
+				m_selectedAbandonList.front()->setUnselected();
+				m_selectedAbandonList.pop_front();
 			}
 		}
 
-		if (selectedAbandonList.size() == shoupaiNumToDiscard)
+		if (m_selectedAbandonList.size() == m_shoupaiNumToDiscard)
 			okButton->setEnabled();
 		else
 			okButton->setDisabled();
@@ -541,7 +541,7 @@ int MainWindow::getIndex(Shoupai * clickedCard) const
 
 Shoupai* MainWindow::goToCard(const sgs::DataType::Card * card) const
 {
-	for (auto iter = shoupaiList.begin(); iter != shoupaiList.end(); ++iter)
+	for (auto iter = m_shoupaiList.begin(); iter != m_shoupaiList.end(); ++iter)
 	{
 		if ((*iter)->platformCard() == card)
 			return *iter;
@@ -620,7 +620,7 @@ void MainWindow::newSelectedPlayer(AbstractPlayerArea * playerArea)
 		QString text(trUtf8("选择目标的一张手牌"));
 		sgs::DataType::Player * targetPlayer = playerArea->getPlayer();
 
-		std::pair<sgs::ConstData::PlayerRegionType, int> temp1(cardContainer->chooseCard(text, targetPlayer, true, false, false, 1, sgs::ConstData::TUXI).back());
+		std::pair<sgs::ConstData::PlayerRegionType, int> temp1(m_cardContainer->chooseCard(text, targetPlayer, true, false, false, 1, sgs::ConstData::TUXI).back());
 
 		std::pair<int, AbstractPlayerArea*> temp2(temp1.second, playerArea);
 		m_tuxiList.push_back(temp2);

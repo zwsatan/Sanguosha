@@ -182,8 +182,8 @@ void MainWindow::MCardReceived(const sgs::Derive::CardMessage * message)
 		}
 	}
 
-	cardAnimation->addCard(sourcePoint, targetPoint, new CardFrame(cardType, cardColor, number, this), abandon);
-	cardAnimation->runAnimation();
+	m_cardAnimation->addCard(sourcePoint, targetPoint, new CardFrame(cardType, cardColor, number, this), abandon);
+	m_cardAnimation->runAnimation();
 
 	printDebug("MainWindow::MCardReceived: runAnimation over");
 
@@ -456,11 +456,11 @@ void MainWindow::MTransCardReceived(const sgs::Derive::TransCardMessage * messag
 	}
 	else
 	{
-		if (message->fromtype() == sgs::ConstData::DESK && wugufengdengBox->isVisible())
+		if (message->fromtype() == sgs::ConstData::DESK && m_wugufengdengBox->isVisible())
 		{
 			fromWugu = true;
 			for (int i = 0; i < message->cards(); ++i)
-				wuguPoint[i] = wugufengdengBox->removeCard(message->pos(i));
+				wuguPoint[i] = m_wugufengdengBox->removeCard(message->pos(i));
 		}
 		else
 		{
@@ -532,13 +532,13 @@ void MainWindow::MTransCardReceived(const sgs::Derive::TransCardMessage * messag
 
 		if (fromWugu)
 		{
-			cardAnimation->addCard(wuguPoint[i], targetPoint,
+			m_cardAnimation->addCard(wuguPoint[i], targetPoint,
 								   (open ? new CardFrame(card->type(), card->color(), card->number(), this)
 										 : new CardFrame(this)), abandonCards);
 		}
 		else
 		{
-			cardAnimation->addCard(sourcePoint, targetPoint,
+			m_cardAnimation->addCard(sourcePoint, targetPoint,
 								   (open ? new CardFrame(card->type(), card->color(), card->number(), this)
 										 : new CardFrame(this)), abandonCards);
 		}
@@ -551,7 +551,7 @@ void MainWindow::MTransCardReceived(const sgs::Derive::TransCardMessage * messag
 			removeShoupai(*iter);
 	}
 
-	cardAnimation->runAnimation();
+	m_cardAnimation->runAnimation();
 
 	// add should be done after animation
 	if (addCardsToShoupai)
@@ -578,10 +578,10 @@ void MainWindow::MTransCardReceived(const sgs::Derive::TransCardMessage * messag
 void MainWindow::MSwitchPhaseReceived(const sgs::Derive::SwitchPhaseMessage * message)
 {
 	int targetPlayerIndex = message->from()->seat() + 1;
-	if (currentPlayerSeat + 1 != targetPlayerIndex && currentPlayerSeat >= 0)
+	if (m_currentPlayerSeat + 1 != targetPlayerIndex && m_currentPlayerSeat >= 0)
 	{
 		// currentPlayerSeat is set to -1 when initializing
-		otherPlayerAreaAtIndex(currentPlayerSeat + 1)->setPhase(sgs::ConstData::OTHERPHASE);
+		otherPlayerAreaAtIndex(m_currentPlayerSeat + 1)->setPhase(sgs::ConstData::OTHERPHASE);
 	}
 
 	if (targetPlayerIndex != m_playerIndex)
@@ -624,8 +624,8 @@ void MainWindow::MJudgeReceived(const sgs::Derive::JudgeMessage * message)
 	sgs::ConstData::CardType cardType = message->result()->type();
 	sgs::ConstData::CardColor cardColor = message->result()->color();
 	int number = message->result()->number();
-	cardAnimation->addCard(cardDeckPoint(), usedCardPoint(), new CardFrame(heroType, cardType, cardColor, number, message->effect(), this), true);
-	cardAnimation->runAnimation();
+	m_cardAnimation->addCard(cardDeckPoint(), usedCardPoint(), new CardFrame(heroType, cardType, cardColor, number, message->effect(), this), true);
+	m_cardAnimation->runAnimation();
 
 	QString historyString(wujiangDisplayName(heroType));
 	if (message->cardJudge())

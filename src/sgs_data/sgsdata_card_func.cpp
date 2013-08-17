@@ -26,46 +26,50 @@ Message * func::pcsha(Message * msg)
 	bool checkLvbu = message->from()->type() == LVBU;
 	bool checkCaocao = false; //是否已经被曹操把牌拿走
 	bool checkMachao = false; //是否已经检查过马超的效果
-	bool checkXuchu = (message->from()->type() == XUCHU)
-			&& (message->from()->status() & SkillOneUsed); //是否满足许褚裸衣的条件
+	bool checkXuchu = (message->from()->type() == XUCHU) && (message->from()->status() & SkillOneUsed); //是否满足许褚裸衣的条件
 
 	static bool qingLong = false; //是否因为青龙的追杀效果
-	if (!qingLong) {
+	if (!qingLong)
+	{
 		message->from()->setstatus() |= ATTACKED;
-		message->from()->addShaCount(); // added by Hu Ronghang
+		message->from()->addShaCount();
 	}
-	if (message->targets() > 1) {
+
+	if (message->targets() > 1)
+	{
 		CardMessage * useEquip = new CardMessage(true, message->from(), PEQUIP, 0);
-		for (int i = 0; i < message->targets(); i++) {
+		for (int i = 0; i < message->targets(); i++)
 			useEquip->addto(message->to(i));
-		}
+
 		ExternData::sgsout << useEquip;
 		ExternData::history.push(useEquip);
 	}
-	while (message->targets()) {
+	while (message->targets())
+	{
 		CardMessage * temp = new CardMessage(message);
 		temp->setdissolve(true);
 		message->popto();
 		groove.push(temp);
 	}
 
-	while (!groove.empty()) {
+	while (!groove.empty())
+	{
 		Message * grooveTop = groove.top();
 		groove.pop();
-		if (grooveTop->dissolved() == true) {
+		if (grooveTop->dissolved() == true)
+		{
 			CardMessage * temp = static_cast<CardMessage *>(grooveTop);
 
 			// LIULI
-			if (temp->to()->type() == DAQIAO) {
-				LiuLiMessage * liuli =
-						static_cast<LiuLiMessage *>(temp->to()->input()->getLiuli(
-								temp->from()));
-				if (liuli != 0) {
+			if (temp->to()->type() == DAQIAO)
+			{
+				LiuLiMessage * liuli = static_cast<LiuLiMessage *>(temp->to()->input()->getLiuli(temp->from()));
+				if (liuli != 0)
+				{
 					ExternData::sgsout << liuli;
 					ExternData::history.push(liuli);
 
-					TransCardMessage * trans = new TransCardMessage(PLAYER, DUST, true,
-							liuli->from(), liuli->pos().first);
+					TransCardMessage * trans = new TransCardMessage(PLAYER, DUST, true, liuli->from(), liuli->pos().first);
 					trans->transpush(liuli->pos().second);
 					liuli->from()->popCard(liuli->pos());
 					ExternData::platform.analyze(trans);
@@ -76,11 +80,11 @@ Message * func::pcsha(Message * msg)
 			}
 
 			func::pccixiong(temp);
-			if (!temp->from()->weapon()
-					|| temp->from()->weapon()->type() != QINGGANG) {
-				printDebug(
-						"func::pcsha: in condition, going to process hangbing and renwang");
-				if (func::pcrenwang(temp)) {
+			if (!temp->from()->weapon() || temp->from()->weapon()->type() != QINGGANG)
+			{
+				printDebug("func::pcsha: in condition, going to process hangbing and renwang");
+				if (func::pcrenwang(temp))
+				{
 					printDebug("func::pcsha: over, renwang used");
 					delete grooveTop;
 					continue;
@@ -88,31 +92,30 @@ Message * func::pcsha(Message * msg)
 			}
 
 			//检查马超的铁骑
-			if (temp->from()->type() == MACHAO) {
+			if (temp->from()->type() == MACHAO)
+			{
 				checkMachao = true;
-				bool useTieQi = temp->from()->input()->useSkillOrNot(TIEQI,
-						temp->to());
-				if (useTieQi) {
+				bool useTieQi = temp->from()->input()->useSkillOrNot(TIEQI, temp->to());
+				if (useTieQi)
+				{
 					SkillMessage * tieqi = new SkillMessage(temp->from(), TIEQI);
 					ExternData::sgsout << tieqi;
 					ExternData::history.push(tieqi);
 					const Card * judge = ExternData::platform.getJudge();
 					JudgeMessage * judgeResult = 0;
-					if (judge->color() == HEART || judge->color() == DIAMOND) {
-						judgeResult = new JudgeMessage(temp->from(), TIEQI, judge,
-								true);
-					} else {
-						judgeResult = new JudgeMessage(temp->from(), TIEQI, judge,
-								false);
-					}
-					judgeResult = static_cast<JudgeMessage *>(func::pcguicai(
-							judgeResult));
+					if (judge->color() == HEART || judge->color() == DIAMOND)
+						judgeResult = new JudgeMessage(temp->from(), TIEQI, judge, true);
+					else
+						judgeResult = new JudgeMessage(temp->from(), TIEQI, judge, false);
+
+					judgeResult = static_cast<JudgeMessage *>(func::pcguicai( judgeResult));
 					ExternData::sgsout << judgeResult;
 					ExternData::history.push(judgeResult);
 					ExternData::platform.abandon(judgeResult->result());
-					if (judgeResult->effect()) {
-						temp->to()->sethp()--;Message
-						* hurt = new HurtMessage(temp->from(), temp->to(), 1);
+					if (judgeResult->effect())
+					{
+						temp->to()->sethp()--;
+						Message * hurt = new HurtMessage(temp->from(), temp->to(), 1);
 						groove.push(hurt);
 					}
 					delete grooveTop;
@@ -122,74 +125,89 @@ Message * func::pcsha(Message * msg)
 			//检查马超的铁骑完毕
 
 			bool avoided = true;
-			for (int i = 0; i < 1 + checkLvbu; i++) {
-				if (i == 1) {
+			for (int i = 0; i < 1 + checkLvbu; i++)
+			{
+				if (i == 1)
+				{
 					SkillMessage* wushuang = new SkillMessage(temp->from(), WUSHUANG);
 					ExternData::sgsout << wushuang;
 					ExternData::history.push(wushuang);
 				}
-				if ((!temp->from()->weapon()
-						|| temp->from()->weapon()->type() != QINGGANG)
-						&& func::pcbagua(temp)) {
+
+				if ((!temp->from()->weapon() || temp->from()->weapon()->type() != QINGGANG) && func::pcbagua(temp))
+				{
 					continue;
-				} else {
+				}
+				else
+				{
 					Message * shanornot = temp->to()->ShanOrNot(temp);
 					if (shanornot == 0) {
 						avoided = false;
-						if (!func::pchanbing(temp)) {
+						if (!func::pchanbing(temp))
+						{
 							qingLong = false;
 							temp->to()->sethp() -= 1 + checkXuchu;
-							Message * hurt = new HurtMessage(temp->from(), temp->to(),
-									1 + checkXuchu);
+							Message * hurt = new HurtMessage(temp->from(), temp->to(), 1 + checkXuchu);
 							groove.push(hurt);
 						}
 						break;
-					} else {
+					}
+					else
+					{
 						while (shanornot != 0)
 							shanornot = ExternData::platform.analyze(shanornot);
 					}
 				}
 			}
-			if (avoided) {
-				if (func::pcqinglong(temp)) {
+			if (avoided)
+			{
+				if (func::pcqinglong(temp))
+				{
 					Message * shaornot = temp->from()->ShaOrNot(temp);
-					if (shaornot != 0) {
+					if (shaornot != 0)
+					{
 						qingLong = true;
 						delete grooveTop;
 						return shaornot;
 					}
-				} else if (func::pcguanshi(temp)) {
+				}
+				else if (func::pcguanshi(temp))
+				{
 					temp->to()->sethp() -= 1 + checkXuchu;
-					Message * hurt = new HurtMessage(temp->from(), temp->to(),
-							1 + checkXuchu);
+					Message * hurt = new HurtMessage(temp->from(), temp->to(), 1 + checkXuchu);
 					groove.push(hurt);
 				}
 			}
 			delete grooveTop;
 			continue;
-		} else {
-			if (grooveTop->type() == HURT
-					&& static_cast<HurtMessage *>(grooveTop)->to()->type() == CAOCAO) {
+		}
+		else
+		{
+			if (grooveTop->type() == HURT && static_cast<HurtMessage *>(grooveTop)->to()->type() == CAOCAO)
+			{
 				Message * res = ExternData::platform.analyze(grooveTop);
-				if (res == 0
-						&& static_cast<HurtMessage *>(grooveTop)->to()->input()->useSkillOrNot(
-								JIANXIONG)) {
-					SkillMessage * jianxiong = new SkillMessage(
-							static_cast<HurtMessage *>(grooveTop)->to(), JIANXIONG);
+				if (res == 0 && static_cast<HurtMessage *>(grooveTop)->to()->input()->useSkillOrNot(JIANXIONG))
+				{
+					SkillMessage * jianxiong = new SkillMessage(static_cast<HurtMessage *>(grooveTop)->to(), JIANXIONG);
 					ExternData::sgsout << jianxiong;
 					ExternData::history.push(jianxiong);
 
 					checkCaocao = true;
-					TransCardMessage * trans = new TransCardMessage(DESK, PLAYER, true, 0,
-							playerRegionTypeNone, static_cast<HurtMessage *>(grooveTop)->to());
+					TransCardMessage * trans = new TransCardMessage(DESK, PLAYER, true, 0, playerRegionTypeNone, static_cast<HurtMessage *>(grooveTop)->to());
 					trans->transpush(message->card());
 					message->card()->setmask();
 					groove.push(trans);
-				} else
+				}
+				else
+				{
 					groove.push(res);
-			} else {
+				}
+			}
+			else
+			{
 				Message * res = ExternData::platform.analyze(grooveTop);
-				if (res != 0) {
+				if (res != 0)
+				{
 					if (res->type() == FINALE)
 						return res;
 					else
@@ -205,56 +223,52 @@ Message * func::pcsha(Message * msg)
 	return 0;
 }
 
-Message * func::pcsha(ZhangBaMessage * m) {
+Message * func::pcsha(ZhangBaMessage * msg)
+{
 	printDebug("func::pcsha(zhangba version): start");
 
 	//发出消息
-	ExternData::sgsout << m;
-	ExternData::history.push(m);
+	ExternData::sgsout << msg;
+	ExternData::history.push(msg);
 
-	bool checkLvbu = m->from()->type() == LVBU;
+	bool checkLvbu = msg->from()->type() == LVBU;
 	bool checkCaocao = false;
-	bool checkXuchu = (m->from()->type() == XUCHU)
-			&& (m->from()->status() & SkillOneUsed); //是否满足许褚裸衣的条件
+	bool checkXuchu = (msg->from()->type() == XUCHU) && (msg->from()->status() & SkillOneUsed); //是否满足许褚裸衣的条件
 
 	printDebug("func::pcsha(zhangba version): message 2 sent");
 
 	//结算杀的效果
-	m->from()->setstatus() |= ATTACKED;
-	m->from()->addShaCount(); // added by Hu Ronghang
+	msg->from()->setstatus() |= ATTACKED;
+	msg->from()->addShaCount(); // added by Hu Ronghang
 	printDebug("func::pcsha(zhangba version): check point 1");
 
 	//debug
 	{
-		printDebug(
-				"func::pcsha(zhangba version): Cost 0 is "
-						+ sgsui::cardFullDisplayName(m->cost(0).first, false));
+		printDebug("func::pcsha(zhangba version): Cost 0 is " + sgsui::cardFullDisplayName(msg->cost(0).first, false));
 
-		printDebug(
-				"func::pcsha(zhangba version): Cost 1 is "
-						+ sgsui::cardFullDisplayName(m->cost(1).first, false));
+		printDebug("func::pcsha(zhangba version): Cost 1 is " + sgsui::cardFullDisplayName(msg->cost(1).first, false));
 	}
 
-	CardColor c = cardColorNone;
-	if (m->cost(0).first->color() == m->cost(1).first->color())
-		c = m->cost(0).first->color();
+	CardColor cardColor = cardColorNone;
+	if (msg->cost(0).first->color() == msg->cost(1).first->color())
+		cardColor = msg->cost(0).first->color();
 
 	printDebug("func::pcsha(zhangba version): check point 2");
-	const Card * fakeCard = new Card(c, 0, SHA);
+	const Card * fakeCard = new Card(cardColor, 0, SHA);
 	printDebug("func::pcsha(zhangba version): fake card created");
 
-	CardMessage * temp = new CardMessage(false, m->from(), fakeCard, m->to());
+	CardMessage * temp = new CardMessage(false, msg->from(), fakeCard, msg->to());
 
 	// LIULI
-	if (temp->to()->type() == DAQIAO) {
-		LiuLiMessage * liuli = static_cast<LiuLiMessage *>(temp->to()->input()->getLiuli(
-				temp->from()));
-		if (liuli != 0) {
+	if (temp->to()->type() == DAQIAO)
+	{
+		LiuLiMessage * liuli = static_cast<LiuLiMessage *>(temp->to()->input()->getLiuli(temp->from()));
+		if (liuli != 0)
+		{
 			ExternData::sgsout << liuli;
 			ExternData::history.push(liuli);
 
-			TransCardMessage * trans = new TransCardMessage(PLAYER, DUST, true,
-					liuli->from(), liuli->pos().first);
+			TransCardMessage * trans = new TransCardMessage(PLAYER, DUST, true, liuli->from(), liuli->pos().first);
 			trans->transpush(liuli->pos().second);
 			liuli->from()->popCard(liuli->pos());
 			ExternData::platform.analyze(trans);
@@ -264,61 +278,65 @@ Message * func::pcsha(ZhangBaMessage * m) {
 		}
 	}
 
-	if (!func::pcrenwang(temp)) {
-
+	if (!func::pcrenwang(temp))
+	{
 		printDebug("func::pcsha(zhangba version): in condition");
 
-		if (temp->from()->type() == MACHAO) {
-			bool useTieQi = temp->from()->input()->useSkillOrNot(TIEQI,
-					temp->to());
-			if (useTieQi) {
+		if (temp->from()->type() == MACHAO)
+		{
+			bool useTieQi = temp->from()->input()->useSkillOrNot(TIEQI, temp->to());
+			if (useTieQi)
+			{
 				SkillMessage * tieqi = new SkillMessage(temp->from(), TIEQI);
 				ExternData::sgsout << tieqi;
 				ExternData::history.push(tieqi);
 				const Card * judge = ExternData::platform.getJudge();
 				JudgeMessage * judgeResult = 0;
-				if (judge->color() == HEART || judge->color() == DIAMOND) {
+				if (judge->color() == HEART || judge->color() == DIAMOND)
 					judgeResult = new JudgeMessage(temp->from(), TIEQI, judge, true);
-				} else {
+				else
 					judgeResult = new JudgeMessage(temp->from(), TIEQI, judge, false);
-				}
-				judgeResult =
-						static_cast<JudgeMessage *>(func::pcguicai(judgeResult));
+				judgeResult = static_cast<JudgeMessage *>(func::pcguicai(judgeResult));
+
 				ExternData::sgsout << judgeResult;
 				ExternData::history.push(judgeResult);
-				if (judgeResult->from()->type() == GUOJIA
-						&& judgeResult->from()->input()->useSkillOrNot(TIANDU)) {
+				if (judgeResult->from()->type() == GUOJIA && judgeResult->from()->input()->useSkillOrNot(TIANDU))
+				{
 					SkillMessage * tiandu = new SkillMessage(judgeResult->from(), TIANDU);
 					ExternData::sgsout << tiandu;
 					ExternData::history.push(tiandu);
 
-					TransCardMessage * trans = new TransCardMessage(POOLTOP, PLAYER, true,
-							0, playerRegionTypeNone, judgeResult->from());
+					TransCardMessage * trans = new TransCardMessage(POOLTOP, PLAYER, true, 0, playerRegionTypeNone, judgeResult->from());
 					trans->transpush(judgeResult->result());
 					ExternData::platform.analyze(trans);
-				} else
+				}
+				else
+				{
 					ExternData::platform.abandon(judgeResult->result());
-				if (judgeResult->effect()) {
-					temp->to()->sethp()--;HurtMessage
-					* hurt = new HurtMessage(temp->from(), temp->to(), 1);
+				}
+
+				if (judgeResult->effect())
+				{
+					temp->to()->sethp()--;
+					HurtMessage * hurt = new HurtMessage(temp->from(), temp->to(), 1);
 					Message * res = hurt;
-					if (hurt->to()->type() == CAOCAO && (res =
-							ExternData::platform.analyze(hurt)) == 0
-							&& temp->to()->input()->useSkillOrNot(JIANXIONG)) {
+					if (hurt->to()->type() == CAOCAO && (res = ExternData::platform.analyze(hurt)) == 0 && temp->to()->input()->useSkillOrNot(JIANXIONG))
+					{
 						SkillMessage * jianxiong = new SkillMessage(temp->to(), JIANXIONG);
 						ExternData::sgsout << jianxiong;
 						ExternData::history.push(jianxiong);
 
 						checkCaocao = true;
-						TransCardMessage * trans = new TransCardMessage(DESK, PLAYER, true,
-								0, playerRegionTypeNone, temp->to());
-						trans->transpush(m->cost(0).first);
-						trans->transpush(m->cost(1).first);
+						TransCardMessage * trans = new TransCardMessage(DESK, PLAYER, true, 0, playerRegionTypeNone, temp->to());
+						trans->transpush(msg->cost(0).first);
+						trans->transpush(msg->cost(1).first);
 						delete fakeCard;
 						return trans;
-					} else {
-						ExternData::platform.abandon(m->cost(0).first);
-						ExternData::platform.abandon(m->cost(1).first);
+					}
+					else
+					{
+						ExternData::platform.abandon(msg->cost(0).first);
+						ExternData::platform.abandon(msg->cost(1).first);
 						delete fakeCard;
 						return res;
 					}
@@ -328,7 +346,7 @@ Message * func::pcsha(ZhangBaMessage * m) {
 
 		for (int i = 0; i < 1 + checkLvbu; i++) {
 			if (i == 1) {
-				SkillMessage * wushuang = new SkillMessage(m->from(), WUSHUANG);
+				SkillMessage * wushuang = new SkillMessage(msg->from(), WUSHUANG);
 				ExternData::sgsout << wushuang;
 				ExternData::history.push(wushuang);
 			}
@@ -348,8 +366,8 @@ Message * func::pcsha(ZhangBaMessage * m) {
 						checkCaocao = true;
 						TransCardMessage * trans = new TransCardMessage(DESK, PLAYER, true,
 								0, playerRegionTypeNone, temp->to());
-						trans->transpush(m->cost(0).first);
-						trans->transpush(m->cost(1).first);
+						trans->transpush(msg->cost(0).first);
+						trans->transpush(msg->cost(1).first);
 						delete fakeCard;
 						return trans;
 					}
@@ -368,8 +386,8 @@ Message * func::pcsha(ZhangBaMessage * m) {
 	}
 
 	//处理卡牌
-	ExternData::platform.abandon(m->cost(0).first);
-	ExternData::platform.abandon(m->cost(1).first);
+	ExternData::platform.abandon(msg->cost(0).first);
+	ExternData::platform.abandon(msg->cost(1).first);
 	delete fakeCard;
 	return 0;
 }

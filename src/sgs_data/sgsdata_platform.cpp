@@ -67,13 +67,15 @@ char Platform::run()
 	FinaleMessage * f = static_cast<FinaleMessage *>(r);
 	return f->finale();
 }
-void Platform::end() {
+void Platform::end()
+{
 	printDebug("Platform::end: cleaning cards");
 	clearcard();
 	printDebug("Platform::end: cleaning players");
 	clearplayer();
 	printDebug("Platform::end: over");
-	while (!m_groove.empty()) {
+	while (!m_groove.empty())
+	{
 		delete m_groove.top();
 		m_groove.pop();
 	}
@@ -341,168 +343,184 @@ Message * Platform::analyze(Message * m)
 		}
 	}
 
-	case KILL: {
+	case KILL:
+	{
 		printDebug("Platform::analyze: case KILL start");
-		KillMessage * k = static_cast<KillMessage *>(m);
+		KillMessage * killMsg = static_cast<KillMessage *>(m);
 		ExternData::sgsout << m;
 		ExternData::history.push(m);
-		k->to()->setstatus() |= DEAD;
-		if (m_player == k->to())
-			m_player = k->to()->after();
+		killMsg->to()->setstatus() |= DEAD;
+		if (m_player == killMsg->to())
+			m_player = killMsg->to()->after();
 
 		/*these code has been revised by Hu Ronghang, May 12*/
 		char result = endOrNot();
-		if (result != 0) {
-			FinaleMessage * f = new FinaleMessage(result);
-			return f;
+		if (result != 0)
+		{
+			FinaleMessage * finaleMsg = new FinaleMessage(result);
+			return finaleMsg;
 		}
 
 		// 被杀死的人弃掉所有的手牌和装备牌
-		TransCardMessage * t = new TransCardMessage(PLAYER, DUST, true, k->to(), PHAND);
-		while (k->to()->handnum()>0) {
-			t->transpush(k->to()->handnum() - 1);
-			k->to()->popCard(std::pair<PlayerRegionType,int>(PHAND,k->to()->handnum()-1));
+		TransCardMessage * transMsg = new TransCardMessage(PLAYER, DUST, true, killMsg->to(), PHAND);
+		while (killMsg->to()->handnum()>0)
+		{
+			transMsg->transpush(killMsg->to()->handnum() - 1);
+			killMsg->to()->popCard(std::pair<PlayerRegionType,int>(PHAND,killMsg->to()->handnum()-1));
 		}
-		if (t->cards()) {
-			analyze(t);
-		} else {
-			delete t;
-		}
+		if (transMsg->cards())
+			analyze(transMsg);
+		else
+			delete transMsg;
 
-		TransCardMessage * judge = new TransCardMessage(PLAYER, DUST, true, k->to(),
+		TransCardMessage * judge = new TransCardMessage(PLAYER, DUST, true, killMsg->to(),
 				PJUDGE);
-		for (int i = 0; i < k->to()->judgenum(); ++i) {
+		for (int i = 0; i < killMsg->to()->judgenum(); ++i)
 			judge->transpush(i);
-		}
-		k->to()->setjudge().clear();
-		if (judge->cards()) {
+
+		killMsg->to()->setjudge().clear();
+		if (judge->cards())
 			analyze(judge);
-		} else {
+		else
 			delete judge;
-		}
 
-		t = new TransCardMessage(PLAYER, DUST, true, k->to(), PEQUIP);
+		transMsg = new TransCardMessage(PLAYER, DUST, true, killMsg->to(), PEQUIP);
 		bool existEquip = 0;
-		if (k->to()->weapon() != 0) {
-			t->transpush(0);
-			k->to()->setweapon(0);
-			existEquip = true;
-		}
-		if (k->to()->armor()) {
-			t->transpush(1);
-			k->to()->setarmor(0);
-			existEquip = true;
-		}
-		if (k->to()->atkhorse()) {
-			t->transpush(2);
-			k->to()->setatk(0);
-			existEquip = true;
-		}
-		if (k->to()->dfdhorse()) {
-			t->transpush(3);
-			k->to()->setdfd(0);
+		if (killMsg->to()->weapon() != 0)
+		{
+			transMsg->transpush(0);
+			killMsg->to()->setweapon(0);
 			existEquip = true;
 		}
 
-		if (existEquip) {
-			analyze(t);
-		} else {
-			delete t;
+		if (killMsg->to()->armor())
+		{
+			transMsg->transpush(1);
+			killMsg->to()->setarmor(0);
+			existEquip = true;
 		}
-		t = 0;
+
+		if (killMsg->to()->atkhorse())
+		{
+			transMsg->transpush(2);
+			killMsg->to()->setatk(0);
+			existEquip = true;
+		}
+
+		if (killMsg->to()->dfdhorse())
+		{
+			transMsg->transpush(3);
+			killMsg->to()->setdfd(0);
+			existEquip = true;
+		}
+
+		if (existEquip)
+			analyze(transMsg);
+		else
+			delete transMsg;
+
+		transMsg = 0;
 
 		// 别忘了还要弃装备和判定区的牌 TODO
 
-		if (k->from() && !(k->from()->status() & DEAD)) {
-
+		if (killMsg->from() && !(killMsg->from()->status() & DEAD))
+		{
 			// 如果主公杀了忠臣，在内部发出消息t，然后返回主公弃牌的消息
-			if (k->from() && k->from()->role() == ZHU
-					&& k->to()->role() == ZHONG) {
-				//			ExternData::sgsout << t;
-				//			ExternData::history.push(t);
+			if (killMsg->from() && killMsg->from()->role() == ZHU
+					&& killMsg->to()->role() == ZHONG)
+			{
+				printDebug("Platform::analyze: case KILL: lord discards all hand and equip cards");
+				Player * lord = killMsg->from();
 
-				printDebug(
-						"Platform::analyze: case KILL: lord discards all hand and equip cards");
-				Player * lord = k->from();
-
-				TransCardMessage * lordDiscardAll = new TransCardMessage(PLAYER, DUST, true,
-						lord, PHAND);
-				while (lord->handnum() > 0) {
+				TransCardMessage * lordDiscardAll = new TransCardMessage(PLAYER, DUST, true, lord, PHAND);
+				while (lord->handnum() > 0)
+				{
 					lordDiscardAll->transpush(lord->handnum() - 1);
 					lord->popCard(std::pair<PlayerRegionType,int>(PHAND,lord->handnum()-1));
 				}
+
 				if (lordDiscardAll->cards())
 					analyze(lordDiscardAll);
 				else
 					delete lordDiscardAll;
-				lordDiscardAll = new TransCardMessage(PLAYER, DUST, true, lord,
-						PEQUIP);
+
+				lordDiscardAll = new TransCardMessage(PLAYER, DUST, true, lord, PEQUIP);
 				bool lordHasEquip = false;
-				if (lord->weapon()) {
+				if (lord->weapon())
+				{
 					lordDiscardAll->transpush(0);
 					lordHasEquip = true;
 					lord->setweapon(0);
 				}
-				if (lord->armor()) {
+				if (lord->armor())
+				{
 					lordDiscardAll->transpush(1);
 					lordHasEquip = true;
 					lord->setarmor(0);
 				}
-				if (lord->atkhorse()) {
+				if (lord->atkhorse())
+				{
 					lordDiscardAll->transpush(2);
 					lordHasEquip = true;
 					lord->setatk(0);
 				}
-				if (lord->dfdhorse()) {
+				if (lord->dfdhorse())
+				{
 					lordDiscardAll->transpush(3);
 					lordHasEquip = true;
 					lord->setdfd(0);
 				}
-				if (lordHasEquip) {
+
+				if (lordHasEquip)
 					analyze(lordDiscardAll);
-				} else {
+				else
 					delete lordDiscardAll;
-				}
+
 				return 0;
 			}
 
 			// 如果杀了反贼，在内部发出消息t，然后返回凶手摸牌的消息
-			if (k->from() && k->to()->role() == FAN) {
-				printDebug(
-						"Platform::analyze: case KILL: murderer gets 3 cards");
-				Player * murderer = k->from();
-				TransCardMessage * murdererGetCard = new TransCardMessage(POOLTOP, PLAYER,
-						((murderer->seat() == 0) ? true : false), 0, playerRegionTypeNone,
-						murderer);
-				for (int i = 0; i < 3; i++) {
+			if (killMsg->from() && killMsg->to()->role() == FAN)
+			{
+				printDebug("Platform::analyze: case KILL: murderer gets 3 cards");
+				Player * murderer = killMsg->from();
+				bool isOpen = ((murderer->seat() == 0) ? true : false);
+				TransCardMessage * murdererGetCard = new TransCardMessage(POOLTOP, PLAYER, isOpen, 0, playerRegionTypeNone, murderer);
+				for (int i = 0; i < 3; i++)
+				{
 					const Card * temp = get();
 					murdererGetCard->transpush(temp);
 				}
 				return murdererGetCard;
 			}
 			printDebug("Platform::analyze: case KILL start");
-			return t;
-		} else {
+			return transMsg;
+		}
+		else
+		{
 			return 0;
 		}
 		break;
 	}
-	case JUDGE: {
+
+	case JUDGE:
+	{
 		ExternData::history.push(m);
 		ExternData::sgsout << m;
 		JudgeMessage * temp = static_cast<JudgeMessage *>(m);
-		if (temp->from()->type() == GUOJIA
-				&& temp->from()->input()->useSkillOrNot(TIANDU)) {
+		if (temp->from()->type() == GUOJIA && temp->from()->input()->useSkillOrNot(TIANDU))
+		{
 			SkillMessage * tiandu = new SkillMessage(temp->from(), TIANDU);
 			ExternData::sgsout << tiandu;
 			ExternData::history.push(tiandu);
 
-			TransCardMessage* trans = new TransCardMessage(POOLTOP, PLAYER, true, 0,
-					playerRegionTypeNone, temp->from());
+			TransCardMessage* trans = new TransCardMessage(POOLTOP, PLAYER, true, 0, playerRegionTypeNone, temp->from());
 			trans->transpush(temp->result());
 			analyze(trans);
 			return 0;
-		} else {
+		}
+		else
+		{
 			abandon(temp->result());
 			return 0;
 		}
@@ -513,6 +531,7 @@ Message * Platform::analyze(Message * m)
 		return 0;
 	}
 }
+
 char Platform::endOrNot()
 {
 	int zhugongNum(0), zhongchenNum(0), fanzeiNum(0), neijianNum(0);

@@ -304,73 +304,73 @@ private:
 	void showZhuangbeiAtIndex(int index, sgs::ConstData::CardType equipCard);
 
 private:
-	SGSMessageBox * tipBox;
-	SGSMessageBox * pauseBox;
-	SGS_DialogBox * dialogBox;
-	CardContainer * cardContainer;
-	WujiangChooseBox * wujiangChooseBox;
-	GuanxingBox * guanxingBox;
-	AboutFrame * aboutFrame;
-	HelpBox * helpBox;
-	WugufengdengBox * wugufengdengBox;
-	FanjianBox * fanjianBox;
-	GameOverBox * gameOverBox;
-	CardViewer * cardViewer;
-	ZhuangbeiLabel * zhuangbeiLabel;
+	SGSMessageBox *				m_tipBox;
+	SGSMessageBox *				m_pauseBox;
+	SGS_DialogBox *				m_dialogBox;
+	CardContainer *				m_cardContainer;
+	WujiangChooseBox *			m_wujiangChooseBox;
+	GuanxingBox *				m_guanxingBox;
+	AboutFrame *				m_aboutFrame;
+	HelpBox *					m_helpBox;
+	WugufengdengBox *			m_wugufengdengBox;
+	FanjianBox *				m_fanjianBox;
+	GameOverBox *				m_gameOverBox;
+	CardViewer *				m_cardViewer;
+	ZhuangbeiLabel *			m_zhuangbeiLabel;
 
-	std::list<Shoupai *> shoupaiList;
+	std::list<Shoupai *>		m_shoupaiList;
 
-	PosAnimation * cardAnimation;
-	PixmapAnimationWidget * pixmapAnimationWidget;
-	LineAnimationWidget * lineAnimationWidget;
-	QPropertyAnimation * damageMovingAnimation;
+	PosAnimation *				m_cardAnimation;
+	PixmapAnimationWidget *		m_pixmapAnimationWidget;
+	LineAnimationWidget *		m_lineAnimationWidget;
+	QPropertyAnimation *		m_damageMovingAnimation;
 
-	BlockTimer * blockTimer;
+	BlockTimer *				m_blockTimer;
 
-	ZhuangbeiArea * m_zhuangbeiArea;
-	WujiangArea * m_wujiangArea;
-	AudioPlayer * m_audioPlayer;
-	AudioPlayer * m_skillPlayer;
+	ZhuangbeiArea *				m_zhuangbeiArea;
+	WujiangArea *				m_wujiangArea;
+	AudioPlayer *				m_audioPlayer;
+	AudioPlayer *				m_skillPlayer;
 
-	int m_playerCount;
-	int m_playerIndex;
-	std::vector<PlayerArea *> m_otherPlayerAreaVector;
+	int							m_playerCount;
+	int							m_playerIndex;
+	std::vector<PlayerArea *>	m_otherPlayerAreaVector;
 
-	BlockLoop blockLoop;
-	bool GUIresponding;
-	std::list<BlockingFrame *> blockingFrameList;
-	QPropertyAnimation * blockingFrameMovingAnimation;
+	BlockLoop					m_blockLoop;
+	bool						m_GUIresponding;
+	std::list<BlockingFrame *>	m_blockingFrameList;
+	QPropertyAnimation *		m_blockingFrameMovingAnimation;
 
-	int currentPlayerSeat;
+	int							m_currentPlayerSeat;
 
-	ResponseType m_responseType;
-	bool m_skillVerShaOrNot;
-	bool m_isGoingToAbandon;
-	bool m_cancelResponse;
+	ResponseType				m_responseType;
+	bool						m_skillVerShaOrNot;
+	bool						m_isGoingToAbandon;
+	bool						m_cancelResponse;
 
 	// for abandonCard
-	std::vector<int> discardIndexList;
-	std::list<Shoupai *> selectedAbandonList;
-	unsigned shoupaiNumToDiscard;
+	std::vector<int>			m_discardIndexList;
+	std::list<Shoupai *>		m_selectedAbandonList;
+	unsigned					m_shoupaiNumToDiscard;
 
-	std::list<Shoupai *> m_selectedShoupaiList;
-	unsigned m_maxShoupaiSelect;
-	unsigned m_minShoupaiSelect;
+	std::list<Shoupai *>		m_selectedShoupaiList;
+	unsigned					m_maxShoupaiSelect;
+	unsigned					m_minShoupaiSelect;
 	std::list<AbstractPlayerArea *> m_selectedPlayerAreaList;
-	unsigned m_maxPlayerSelect;
-	unsigned m_minPlayerSelect;
+	unsigned					m_maxPlayerSelect;
+	unsigned					m_minPlayerSelect;
 
-	ZhuangbeiPic * m_selectedZhuangbei;
-	sgs::ConstData::HeroSkill m_selectedSkill;
+	ZhuangbeiPic *				m_selectedZhuangbei;
+	sgs::ConstData::HeroSkill	m_selectedSkill;
 	std::vector<std::pair<sgs::ConstData::PlayerRegionType, int> > m_selectedSkillCardVec;
 	std::list<std::pair<int, AbstractPlayerArea*> > m_tuxiList;
-	sgs::DataType::Player * m_liuliAttacker;
+	sgs::DataType::Player *		m_liuliAttacker;
 
-	Interface * innerAI;
+	Interface *					m_innerAI;
 
-	QTimer * debugTimer;
+	QTimer *					m_debugTimer;
 
-	const static QSize minSize;
+	const static QSize			ms_minSize;
 	friend class GameOverBox;
 };
 
