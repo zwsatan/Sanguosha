@@ -173,16 +173,15 @@ sgs::DataType::Message * AIBasic::taoOrNot(sgs::DataType::Player * from,
 	return returnMessage;
 }
 
-sgs::DataType::Message * AIBasic::shanOrNot(sgs::DataType::Player * /*from*/,
-		const sgs::DataType::Card * /*card*/) {
-	printDebug(
-			"AIBasic::shanOrNot: start, AI's seat = "
-					+ QString::number(mySeat()));
+sgs::DataType::Message * AIBasic::shanOrNot(sgs::DataType::Player * /*from*/, const sgs::DataType::Card * /*card*/)
+{
+	printDebug("AIBasic::shanOrNot: start, AI's seat = " + QString::number(mySeat()));
 	sgs::Derive::CardMessage * returnMessage = 0;
-	for (int i = 0; i < myPlayer()->handnum(); ++i) {
-		if (myPlayer()->hand(i)->type() == sgs::ConstData::SHAN) {
-			returnMessage = new sgs::Derive::CardMessage(false, myPlayer(),
-					sgs::ConstData::PHAND, i);
+	for (int i = 0; i < myPlayer()->handnum(); ++i)
+	{
+		if (myPlayer()->hand(i)->type() == sgs::ConstData::SHAN)
+		{
+			returnMessage = new sgs::Derive::CardMessage(false, myPlayer(), sgs::ConstData::PHAND, i);
 			printDebug(sgsui::messageInterpret(returnMessage));
 			printDebug("AIBasic::shanOrNot: over");
 			return returnMessage;
@@ -196,61 +195,60 @@ sgs::DataType::Message * AIBasic::shanOrNot(sgs::DataType::Player * /*from*/,
 	return returnMessage;
 }
 
-sgs::DataType::Message * AIBasic::shanOrNot(sgs::DataType::Player * from,
-		sgs::ConstData::HeroSkill skillType) {
-	printDebug(
-			"AIBasic::shanOrNot (skill version): start, AI's seat = "
-					+ QString::number(mySeat()));
+sgs::DataType::Message * AIBasic::shanOrNot(sgs::DataType::Player * from, sgs::ConstData::HeroSkill skillType)
+{
+	printDebug("AIBasic::shanOrNot (skill version): start, AI's seat = " + QString::number(mySeat()));
 
-	if (skillType != sgs::ConstData::HUJIA) {
-		printDebug(
-				"<font color=red><b>Warning: </b></font>AIBasic::shanOrNot (skill version): skill is not HUJIA");
+	if (skillType != sgs::ConstData::HUJIA)
+	{
+		printDebug("<font color=red><b>Warning: </b></font>"
+				   "AIBasic::shanOrNot (skill version): skill is not HUJIA");
 	}
 
 	sgs::Derive::CardMessage * returnMessage = 0;
-	if (!isMyFriend(from)) {
+	if (!isMyFriend(from))
+	{
 		printDebug(sgsui::messageInterpret(returnMessage));
-		printDebug(
-				"AIBasic::shanOrNot (skill version): from-player is not my friend");
+		printDebug("AIBasic::shanOrNot (skill version): from-player is not my friend");
 		printDebug("AIBasic::shanOrNot (skill version): over");
 		return returnMessage;
 	}
 
-	for (int i = 0; i < myPlayer()->handnum(); ++i) {
-		if (myPlayer()->hand(i)->type() == sgs::ConstData::SHAN) {
-			returnMessage = new sgs::Derive::CardMessage(false, myPlayer(),
-					sgs::ConstData::PHAND, i);
+	for (int i = 0; i < myPlayer()->handnum(); ++i)
+	{
+		if (myPlayer()->hand(i)->type() == sgs::ConstData::SHAN)
+		{
+			returnMessage = new sgs::Derive::CardMessage(false, myPlayer(), sgs::ConstData::PHAND, i);
 			printDebug(sgsui::messageInterpret(returnMessage));
 			printDebug("AIBasic::shanOrNot (skill version): over");
 			return returnMessage;
 		}
 	}
 
-	printDebug(
-			"AIBasic::shanOrNot (skill version): no shan to use. response cancelled");
+	printDebug("AIBasic::shanOrNot (skill version): no shan to use. response cancelled");
 	returnMessage = 0;
 	printDebug(sgsui::messageInterpret(returnMessage));
 	printDebug("AIBasic::shanOrNot (skill version): over");
 	return returnMessage;
 }
 
-sgs::DataType::Message * AIBasic::shaOrNot(sgs::DataType::Player * /*from*/,
-		const sgs::DataType::Card * /*card*/) {
-	printDebug(
-			"AIBasic::shaOrNot: start, AI's seat = "
-					+ QString::number(mySeat()));
+sgs::DataType::Message * AIBasic::shaOrNot(sgs::DataType::Player * /*from*/, const sgs::DataType::Card * /*card*/)
+{
+	printDebug("AIBasic::shaOrNot: start, AI's seat = " + QString::number(mySeat()));
 	sgs::Derive::CardMessage * returnMessage = 0;
-	for (int i = 0; i < myPlayer()->handnum(); ++i) {
-		if (myPlayer()->hand(i)->type() == sgs::ConstData::SHA) {
-			returnMessage = new sgs::Derive::CardMessage(false, myPlayer(),
-					sgs::ConstData::PHAND, i);
+	for (int i = 0; i < myPlayer()->handnum(); ++i)
+	{
+		if (myPlayer()->hand(i)->type() == sgs::ConstData::SHA)
+		{
+			returnMessage = new sgs::Derive::CardMessage(false, myPlayer(), sgs::ConstData::PHAND, i);
 			printDebug(sgsui::messageInterpret(returnMessage));
 			printDebug("AIBasic::shaOrNot: over");
 			return returnMessage;
 		}
 	}
 
-	if (!returnMessage) {
+	if (!returnMessage)
+	{
 		printDebug("AIBasic::shaOrNot: trying to use zhangba");
 		returnMessage = useZhangba();
 	}
@@ -545,14 +543,14 @@ sgs::Derive::CardMessage * AIBasic::useJinnang() {
 	return returnMessage;
 }
 
-sgs::Derive::CardMessage * AIBasic::useZhangba() {
+sgs::Derive::CardMessage * AIBasic::useZhangba()
+{
 	sgs::Derive::CardMessage * returnMessage = 0;
-	if (canUseZhangba()) {
-		const PlayerVec& attackTargetVec = shaTarget();
-		if (!attackTargetVec.empty()) {
-			returnMessage = new sgs::Derive::CardMessage(true, myPlayer(),
-					sgs::ConstData::PEQUIP, 0, attackTargetVec.back());
-		}
+	if (canUseZhangba())
+	{
+		const PlayerVec &attackTargetVec = shaTarget();
+		if (!attackTargetVec.empty())
+			returnMessage = new sgs::Derive::CardMessage(true, myPlayer(), sgs::ConstData::PEQUIP, 0, attackTargetVec.back());
 	}
 	return returnMessage;
 }
