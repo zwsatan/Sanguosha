@@ -390,7 +390,8 @@ Message * func::pchujia(Message * msg)
 
 	for (Player * temp = skillMsg->from()->after(); temp != skillMsg->from(); temp = temp->after())
 	{
-		if (temp->side() == WEI && temp->input()->yesOrNot(HUJIA))
+		bool isWei = temp->side() == WEI;
+		if (isWei && temp->input()->yesOrNot(HUJIA))
 		{
 			result = temp->input()->shanOrNot(skillMsg->from(), HUJIA);
 			if (result == 0)

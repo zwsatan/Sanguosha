@@ -256,9 +256,9 @@ sgs::DataType::Message * MainWindow::shanOrNot(sgs::DataType::Player * from, con
 
 sgs::DataType::Message * MainWindow::shanOrNot(sgs::DataType::Player * from, sgs::ConstData::HeroSkill skillType)
 {
-	if (AICheckBox->isChecked()) {
+	if (AICheckBox->isChecked())
 		return m_innerAI->shanOrNot(from, skillType);
-	}
+
 	printDebug("MainWindow::shanOrNot (skill version): start");
 
 	m_responseType = ShanOrNot;
@@ -267,14 +267,12 @@ sgs::DataType::Message * MainWindow::shanOrNot(sgs::DataType::Player * from, sgs
 	skillNormalize();
 	checkButtons();
 
-	showTipMessage(
-				wujiangDisplayName(from->type())
-				+ trUtf8("使用了技能")
-				+ skillDisplayName(skillType)
-				+ trUtf8("，是否出闪？"));
+	showTipMessage(wujiangDisplayName(from->type()) + trUtf8("使用了技能") + skillDisplayName(skillType) + trUtf8("，是否出闪？"));
+
 	exec();
 	sgs::Derive::SkillMessage * useSkill = collectSkill();
-	if (useSkill) {
+	if (useSkill)
+	{
 		printDebug("MainWindow::shanOrNot (skill version): (use skill)");
 		printDebug(messageInterpret(useSkill));
 		endResponse();
@@ -282,14 +280,14 @@ sgs::DataType::Message * MainWindow::shanOrNot(sgs::DataType::Player * from, sgs
 	}
 
 	sgs::Derive::CardMessage * returnMessage = 0;
-	if (m_cancelResponse) {
+	if (m_cancelResponse)
+	{
 		returnMessage = 0;
-	} else {
-
+	}
+	else
+	{
 		// Do not add target here
-		returnMessage = new sgs::Derive::CardMessage(false,
-											   GUIStaticData::getPlayer(m_playerIndex), sgs::ConstData::PHAND,
-											   getIndex(m_selectedShoupaiList.back()));
+		returnMessage = new sgs::Derive::CardMessage(false, GUIStaticData::getPlayer(m_playerIndex), sgs::ConstData::PHAND, getIndex(m_selectedShoupaiList.back()));
 	}
 	printDebug("MainWindow::shanOrNot (skill version): ");
 	printDebug(messageInterpret(returnMessage));
@@ -605,6 +603,11 @@ bool MainWindow::yesOrNot(sgs::ConstData::HeroSkill reason)
 	{
 		// 处理刚烈的情况
 		question.append(trUtf8("是否弃2张手牌（否则受到1点伤害）"));
+	}
+	else if (reason == sgs::ConstData::HUJIA)
+	{
+		// 处理护驾的情况
+		question.append(trUtf8("是否为曹操提供一张闪"));
 	}
 
 	bool result = getDialogResponse(question);

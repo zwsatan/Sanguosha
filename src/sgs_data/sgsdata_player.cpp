@@ -493,7 +493,7 @@ void Player::choosehero(std::vector<HeroType> &herovec, HeroType lord/* = sgs::C
 {
 	if (lord == sgs::ConstData::heroTypeNone)
 	{
-		// 主公选将,这里逆序是因为,最后默认三个为刘备,曹操,孙权
+		// 主公选将,这里逆序是因为,最后默认三个为刘备,孙权,曹操
 		HeroType avaliable[5];
 		auto riter = herovec.rbegin();
 		for (int i = 0; i < 5; ++i)
@@ -503,7 +503,7 @@ void Player::choosehero(std::vector<HeroType> &herovec, HeroType lord/* = sgs::C
 		if (m_seat == 0)
 			choosenHero = sgsui::lordChoose(avaliable[0], avaliable[1], avaliable[2], avaliable[3], avaliable[4]);
 		else
-			choosenHero = avaliable[rand() % 5];
+			choosenHero = avaliable[2]; // avaliable[rand() % 5]; // 这里下默认选曹操作主公
 		herotrans(choosenHero);
 
 		// 将已选武将移除选将列表
@@ -596,7 +596,7 @@ void Player::pushHand(const Card * card)
 Message * Player::ShanOrNot(Message * msg)
 {
 	CardMessage * cardMsg = static_cast<CardMessage *>(msg);
-	Message *response =  m_input->shanOrNot(cardMsg->from(), cardMsg->card());
+	Message * response =  m_input->shanOrNot(cardMsg->from(), cardMsg->card());
 	if (response == 0)
 		return 0;
 

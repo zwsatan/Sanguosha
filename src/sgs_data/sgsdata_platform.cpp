@@ -298,23 +298,17 @@ Message * Platform::analyze(Message * msg)
 		}
 
 		HeroType heroType = hurtMsg->to()->type();
-		if (heroType == XIAHOUDUN || heroType == SIMAYI)
+		bool isFromPlayerDead = hurtMsg->from() != 0 && hurtMsg->from()->status() & DEAD;
+		Interface * ai = hurtMsg->to()->input();
+		if (heroType == XIAHOUDUN && !isFromPlayerDead && hurtMsg->hurt() > 0 && ai->useSkillOrNot(GANGLIE, hurtMsg->from()))
 		{
-			bool isFromPlayerDead = hurtMsg->from() != 0 && hurtMsg->from()->status() & DEAD;
-			if (!isFromPlayerDead)
-			{
-				Interface * ai = hurtMsg->to()->input();
-				if (ai->useSkillOrNot(GANGLIE, hurtMsg->from()))
-				{
-					GangLieMessage * ganglieMsg = new GangLieMessage(hurtMsg->to(), hurtMsg->from());
-					return ganglieMsg;
-				}
-				else if (ai->useSkillOrNot(FANKUI, hurtMsg->from()))
-				{
-					FanKuiMessage * fankuiMsg = new FanKuiMessage(hurtMsg->to(), hurtMsg->from());
-					return fankuiMsg;
-				}
-			}
+			GangLieMessage * ganglieMsg = new GangLieMessage(hurtMsg->to(), hurtMsg->from());
+			return ganglieMsg;
+		}
+		else if (heroType == SIMAYI && !isFromPlayerDead && hurtMsg->hurt() > 0 &&ai->useSkillOrNot(FANKUI, hurtMsg->from()))
+		{
+			FanKuiMessage * fankuiMsg = new FanKuiMessage(hurtMsg->to(), hurtMsg->from());
+			return fankuiMsg;
 		}
 		else if (heroType == GUOJIA)
 		{
@@ -325,8 +319,8 @@ Message * Platform::analyze(Message * msg)
 					break;
 
 				YiJiMessage * yijiMsg = dynamic_cast<YiJiMessage *>(hurtMsg->to()->input()->getYiji(
-																	 ExternData::platform.get(),
-																	 ExternData::platform.get()));
+																		ExternData::platform.get(),
+																		ExternData::platform.get()));
 				ExternData::sgsout << yijiMsg;
 				ExternData::history.push(yijiMsg);
 
