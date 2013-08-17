@@ -433,10 +433,8 @@ void PlayerArea::paintEvent(QPaintEvent*)
 
 	for (int i = 0, j = ms_horizontalHPMargin; i < m_maxHP; ++i, j += horizontalDifference)
 	{
-		if (i < m_HP)
-			painter.drawPixmap(j, ms_verticalHPMargin, (smallHPPixmapStr(m_HP)));
-		else
-			painter.drawPixmap(j, ms_verticalHPMargin, (smallHPPixmapStr(0)));
+		int hp = (i < m_HP) ? m_HP : 0;
+		painter.drawPixmap(j, ms_verticalHPMargin, (smallHPPixmapStr(hp)));;
 	}
 
 	// take all numbers on small zhuangbei pixmap as SPADE (black color)

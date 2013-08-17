@@ -39,7 +39,7 @@ class ZhuangbeiArea;
 class WujiangArea;
 class PlayerArea;
 class AudioPlayer;
-class Shoupai;
+class ShoupaiButton;
 class BlockTimer;
 class AbstractPlayerArea;
 class GameOverBox;
@@ -103,8 +103,8 @@ public:
 	virtual std::pair<sgs::ConstData::CardColor, int> respondFanjian(sgs::DataType::Player * zhouyu);
 
 	void CardMsgReceived(const sgs::Derive::CardMessage * msg);
-	void SkillMsgReceived(const sgs::Derive::SkillMessage * message);
-	void HurtMsgReceived(const sgs::Derive::HurtMessage * message);
+	void SkillMsgReceived(const sgs::Derive::SkillMessage * msg);
+	void HurtMsgReceived(const sgs::Derive::HurtMessage * msg);
 	void TransCardMsgReceived(const sgs::Derive::TransCardMessage * message);
 	void SwitchPhaseMsgReceived(const sgs::Derive::SwitchPhaseMessage * message);
 	void DyingMsgReceived(const sgs::Derive::DyingMessage * message);
@@ -168,8 +168,8 @@ public slots:
 private slots:
 	virtual void cardClicked(CardButton * clickedCard);
 	virtual void zhuangbeiClicked(ZhuangbeiPic *clickedEquip);
-	int getIndex(Shoupai * clickedCard) const;
-	Shoupai * goToCard(const sgs::DataType::Card * card) const;
+	int getIndex(ShoupaiButton * clickedCard) const;
+	ShoupaiButton * goToCard(const sgs::DataType::Card * card) const;
 	void exec();
 	void pauseClicked();
 	void skillClicked(sgs::ConstData::HeroSkill, int skillIndex);
@@ -183,7 +183,7 @@ private slots:
 	void changeScreenState(bool fullscreen);
 	void addUsedCard(CardFrame* usedCard);
 	void addShoupai(const sgs::DataType::Card * card);
-	void removeShoupai(Shoupai *shoupaiToRemove);
+	void removeShoupai(ShoupaiButton *shoupaiToRemove);
 	void trustClicked(bool trust);
 
 	// these functions are for debug use
@@ -203,8 +203,8 @@ private:
 	CardButton* goToShoupai(unsigned shoupaiIndex);
 	AbstractPlayerArea* goToAbstractPlayerArea(int pressedKey);
 	void checkButtons();
-	void newSelectedCard(Shoupai * selectedCard);
-	void newUnselectedCard(Shoupai * unselectedCard);
+	void newSelectedCard(ShoupaiButton * selectedCard);
+	void newUnselectedCard(ShoupaiButton * unselectedCard);
 	void newSelectedPlayer(AbstractPlayerArea * playerArea);
 	void newUnselectedPlayer(AbstractPlayerArea * playerArea);
 	void collectDiscardedShoupai();
@@ -318,7 +318,7 @@ private:
 	CardViewer *				m_cardViewer;
 	ZhuangbeiLabel *			m_zhuangbeiLabel;
 
-	std::list<Shoupai *>		m_shoupaiList;
+	std::list<ShoupaiButton *>		m_shoupaiList;
 
 	PosAnimation *				m_cardAnimation;
 	PixmapAnimationWidget *		m_pixmapAnimationWidget;
@@ -349,16 +349,16 @@ private:
 	bool						m_cancelResponse;
 
 	// for abandonCard
-	std::vector<int>			m_discardIndexList;
-	std::list<Shoupai *>		m_selectedAbandonList;
-	unsigned					m_shoupaiNumToDiscard;
+	std::vector<int>				m_discardIndexList;
+	std::list<ShoupaiButton *>		m_selectedAbandonList;
+	unsigned						m_shoupaiNumToDiscard;
 
-	std::list<Shoupai *>		m_selectedShoupaiList;
-	unsigned					m_maxShoupaiSelect;
-	unsigned					m_minShoupaiSelect;
-	std::list<AbstractPlayerArea *> m_selectedPlayerAreaList;
-	unsigned					m_maxPlayerSelect;
-	unsigned					m_minPlayerSelect;
+	std::list<ShoupaiButton *>			m_selectedShoupaiList;
+	unsigned							m_maxShoupaiSelect;
+	unsigned							m_minShoupaiSelect;
+	std::list<AbstractPlayerArea *>		m_selectedPlayerAreaList;
+	unsigned							m_maxPlayerSelect;
+	unsigned							m_minPlayerSelect;
 
 	ZhuangbeiPic *				m_selectedZhuangbei;
 	sgs::ConstData::HeroSkill	m_selectedSkill;

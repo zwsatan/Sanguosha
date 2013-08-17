@@ -13,11 +13,13 @@ QString phasePixmapStr(sgs::ConstData::PlayerPhase phase, bool isDying, bool isR
 {
 	if (isResponding)
 		return QString("images/phase/response.png");
+
 	if (isDying)
 		return QString("images/phase/sos.png");
 
 	using namespace sgs::ConstData;
-	switch (phase) {
+	switch (phase)
+	{
 	case STARTPHASE:
 		return QString("images/phase/start.png");
 	case JUDGEMENTPHASE:

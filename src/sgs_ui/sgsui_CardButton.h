@@ -15,7 +15,7 @@ class CardButton
 {
 Q_OBJECT
 public:
-	CardButton(const sgs::DataType::Card * platformCard, AbstractCardContainer* container, bool visible = true, QWidget *parent = 0);
+	CardButton(const sgs::DataType::Card * platformCard, AbstractCardContainer * container, bool visible = true, QWidget *parent = 0);
 
 	bool isSelected() const;
 	bool isSelectable() const;

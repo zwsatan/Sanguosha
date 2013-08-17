@@ -456,21 +456,22 @@ Message * func::pcdfd(Message * m) {
 	printDebug("func::pcdfd: over");
 	return 0;
 }
-Message * func::pcweapon(Message * m) {
+Message * func::pcweapon(Message * msg)
+{
 	printDebug("func::pcweapon: start");
-	CardMessage * message = static_cast<CardMessage *>(m);
+	CardMessage * message = static_cast<CardMessage *>(msg);
 
 	// the following code has been revised by Hu Ronghang (order reversed)
-	if (message->from()->weapon() != 0) {
+	if (message->from()->weapon() != 0)
+	{
 		printDebug("func::pcarmor: abandon old weapon");
-		TransCardMessage * abandon = new TransCardMessage(PLAYER, DUST, true,
-				message->from(), PEQUIP);
+		TransCardMessage * abandon = new TransCardMessage(PLAYER, DUST, true, message->from(), PEQUIP);
 		abandon->transpush(0);
 		message->from()->setweapon(0);
 		ExternData::platform.analyze(abandon);
 	}
-	ExternData::sgsout << m;
-	ExternData::history.push(m);
+	ExternData::sgsout << msg;
+	ExternData::history.push(msg);
 
 	message->from()->setweapon(message->card());
 	printDebug(

@@ -160,7 +160,7 @@ Message * Hero::mainPhase(Player * player)
 			switch (message->pos().first)
 			{
 			case PHAND:
-				message->from()->popCard(std::pair<PlayerRegionType, int>(PHAND,message->pos().second ));
+				message->from()->popCard(std::pair<PlayerRegionType, int>(PHAND, message->pos().second ));
 				break;
 			default:
 				break;

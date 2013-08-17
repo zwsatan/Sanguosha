@@ -16,7 +16,8 @@ ZhuangbeiLabel::ZhuangbeiLabel(QWidget * parent/* = 0*/)
 	setFixedSize(fixedSize);
 }
 
-void ZhuangbeiLabel::showZhuangbei(sgs::ConstData::CardType equipCard, int equipDuration/* = GUIStaticData::showEquipDuration*/) {
+void ZhuangbeiLabel::showZhuangbei(sgs::ConstData::CardType equipCard, int equipDuration/* = GUIStaticData::showEquipDuration*/)
+{
 	if (equipDuration < 0)
 		equipDuration = GUIStaticData::showEquipDuration;
 

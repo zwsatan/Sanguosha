@@ -11,10 +11,10 @@ class Card;
 
 namespace sgsui {
 
-class Shoupai: public CardButton
+class ShoupaiButton: public CardButton
 {
 public:
-	Shoupai(const sgs::DataType::Card * card, AbstractCardContainer * container, QWidget *parent = 0);
+	ShoupaiButton(const sgs::DataType::Card * card, AbstractCardContainer * container, QWidget *parent = 0);
 
 private:
 	void mousePressEvent(QMouseEvent*);

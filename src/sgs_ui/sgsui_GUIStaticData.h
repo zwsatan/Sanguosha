@@ -17,6 +17,7 @@ namespace sgsui {
 
 enum PixmapAnimationType
 {
+	PixmapAnimationTypeNone,
 	BlackSlashAnimation,
 	RedSlashAnimation,
 	FireSlashAnimation,

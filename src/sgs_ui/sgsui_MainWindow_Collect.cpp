@@ -458,7 +458,7 @@ void MainWindow::cardClicked(CardButton * clickedCard)
 {
 	// newSelectedCard and newUnselectedCard will process skill choose card
 
-	Shoupai * clickedShoupai = static_cast<Shoupai *>(clickedCard);
+	ShoupaiButton * clickedShoupai = static_cast<ShoupaiButton *>(clickedCard);
 
 	if (m_responseType == DiscardCard)
 	{
@@ -521,7 +521,7 @@ void MainWindow::playerClicked(AbstractPlayerArea * clickedPlayerArea)
 		newSelectedPlayer(clickedPlayerArea);
 }
 
-int MainWindow::getIndex(Shoupai * clickedCard) const
+int MainWindow::getIndex(ShoupaiButton * clickedCard) const
 {
 	const sgs::DataType::Card * platformCard = clickedCard->platformCard();
 	sgs::DataType::Player * player = GUIStaticData::getPlayer(m_playerIndex);
@@ -539,7 +539,7 @@ int MainWindow::getIndex(Shoupai * clickedCard) const
 	return -1;
 }
 
-Shoupai* MainWindow::goToCard(const sgs::DataType::Card * card) const
+ShoupaiButton * MainWindow::goToCard(const sgs::DataType::Card * card) const
 {
 	for (auto iter = m_shoupaiList.begin(); iter != m_shoupaiList.end(); ++iter)
 	{
@@ -555,7 +555,7 @@ Shoupai* MainWindow::goToCard(const sgs::DataType::Card * card) const
 	return 0;
 }
 
-void MainWindow::newSelectedCard(Shoupai * selectedCard)
+void MainWindow::newSelectedCard(ShoupaiButton * selectedCard)
 {
 	if (!selectedCard)
 		return;
@@ -573,7 +573,7 @@ void MainWindow::newSelectedCard(Shoupai * selectedCard)
 	checkButtons();
 }
 
-void MainWindow::newUnselectedCard(Shoupai * unselectedCard)
+void MainWindow::newUnselectedCard(ShoupaiButton * unselectedCard)
 {
 	if (!unselectedCard)
 		return;

@@ -172,13 +172,13 @@ void MainWindow::addUsedCard(CardFrame * usedCard)
 
 void MainWindow::addShoupai(const sgs::DataType::Card * card)
 {
-	Shoupai* addedShoupai = new Shoupai(card, this);
+	ShoupaiButton* addedShoupai = new ShoupaiButton(card, this);
 	shoupaiLayout->addWidget(addedShoupai);
 	m_shoupaiList.push_back(addedShoupai);
 	printDebug("MainWindow::addShoupai: adding card " + cardFullDisplayName(card, false));
 }
 
-void MainWindow::removeShoupai(Shoupai * shoupaiToRemove)
+void MainWindow::removeShoupai(ShoupaiButton * shoupaiToRemove)
 {
 	shoupaiLayout->removeWidget(shoupaiToRemove);
 	m_shoupaiList.remove(shoupaiToRemove);
@@ -502,13 +502,13 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 
 		if (m_responseType == DiscardCard)
 		{
-			std::vector<Shoupai *> selected_copy(m_selectedAbandonList.begin(), m_selectedAbandonList.end());
+			std::vector<ShoupaiButton *> selected_copy(m_selectedAbandonList.begin(), m_selectedAbandonList.end());
 			for (auto iter = selected_copy.begin(); iter != selected_copy.end(); ++iter)
 				(*iter)->click();
 		}
 		else
 		{
-			std::vector<Shoupai *> selected_copy(m_selectedShoupaiList.begin(), m_selectedShoupaiList.end());
+			std::vector<ShoupaiButton *> selected_copy(m_selectedShoupaiList.begin(), m_selectedShoupaiList.end());
 			for (auto iter = selected_copy.begin(); iter != selected_copy.end(); ++iter)
 				(*iter)->click();
 		}
@@ -558,7 +558,7 @@ void MainWindow::runPixmapAnimation(int targetPlayerIndex, PixmapAnimationType a
 	{
 		if (targetPlayerIndex != m_playerIndex)
 		{
-			QWidget* target = otherPlayerAreaAtIndex(targetPlayerIndex)->parentWidget();
+			QWidget * target = otherPlayerAreaAtIndex(targetPlayerIndex)->parentWidget();
 			m_damageMovingAnimation->setTargetObject(target);
 			QPoint originPos = target->pos();
 			m_damageMovingAnimation->setStartValue(originPos);
@@ -691,7 +691,7 @@ void MainWindow::runLineAnimation(
 	m_lineAnimationWidget->lineAnimation(startPoint, targetPointVec);
 }
 
-PlayerArea* MainWindow::otherPlayerAreaAtIndex(int index) const
+PlayerArea * MainWindow::otherPlayerAreaAtIndex(int index) const
 {
 	if (index == m_playerIndex || index < 0 || index > m_playerCount)
 	{
@@ -921,14 +921,8 @@ void MainWindow::setDead(int targetPlayerIndex)
 
 void MainWindow::setRespodingPhase(int targetPlayerIndex, bool responding)
 {
-	if (targetPlayerIndex == m_playerIndex)
-	{
-		/*DO NOTHING, as GUI doesn't has the phase of human player*/
-	}
-	else
-	{
+	if (targetPlayerIndex != m_playerIndex)
 		otherPlayerAreaAtIndex(targetPlayerIndex)->setResponding(responding);
-	}
 }
 
 void MainWindow::setDying(int targetPlayerIndex, bool dying)

@@ -501,15 +501,10 @@ void Player::choosehero(std::vector<HeroType> &herovec, HeroType lord/* = sgs::C
 
 		HeroType choosenHero;
 		if (m_seat == 0)
-		{
 			choosenHero = sgsui::lordChoose(avaliable[0], avaliable[1], avaliable[2], avaliable[3], avaliable[4]);
-			herotrans(choosenHero);
-		}
 		else
-		{
 			choosenHero = avaliable[rand() % 5];
-			herotrans(choosenHero);
-		}
+		herotrans(choosenHero);
 
 		// 将已选武将移除选将列表
 		for (int i = 0; i < 5; ++i)

@@ -57,6 +57,7 @@ void PosAnimation::addCard(const QPoint &startPoint, const QPoint &finishPoint, 
 		m_cardAnimationVector.push_back(animation);
 		m_cardMovingAnimation->addAnimation(animation);
 	}
+
 	targetCard->show();
 	++m_addCardIndex;
 }

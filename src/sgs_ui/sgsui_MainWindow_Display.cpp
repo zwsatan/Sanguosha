@@ -1,10 +1,3 @@
-/*
- * sgsui_MainWindow_Display.cpp
- *
- *  Created on: Jun 20, 2012
- *      Author: latios
- */
-
 #include "sgsui_MainWindow.h"
 #include "sgsui_Shoupai.h"
 #include "sgsui_PlayerArea.h"
@@ -26,15 +19,15 @@ void MainWindow::CardMsgReceived(const sgs::Derive::CardMessage * msg)
 	sgs::ConstData::CardType cardType = msg->card()->type();
 	sgs::ConstData::CardType maskType = msg->card()->mask();
 	if (maskType != cardType)
-		printDebug("MainWindow::MCardReceived: card has mask");
+		printDebug("MainWindow::CardMsgReceived: card has mask");
 
 	// Convert platform player Index to GUI player index
 	// no matter whether the to is the from
 	int sourcePlayerIndex = msg->from()->seat() + 1;
 
 	int targetPlayerIndex[7] = {0};
-	for (int i = 0, j = 0; i < msg->targets(); ++i)
-		targetPlayerIndex[j++] = msg->to(i)->seat() + 1;
+	for (int i = 0, j = 0; i < msg->targets(); ++i, ++j)
+		targetPlayerIndex[j] = msg->to(i)->seat() + 1;
 
 	// only run line animation for HITCARD
 	if (msg->type() == sgs::ConstData::HITCARD)
@@ -56,28 +49,24 @@ void MainWindow::CardMsgReceived(const sgs::Derive::CardMessage * msg)
 		sourceAndTarget.append(QString::number(targetPlayerIndex[i]) + ", ");
 	printDebug(sourceAndTarget);
 
-	Shoupai * shoupai = 0;
-	bool useZhuangbei = false, hitZhuangbei = false;
-
 	QPoint sourcePoint, targetPoint;
 	bool abandon = true;
+	bool useZhuangbei = false, hitZhuangbei = false;
 	switch (msg->pos().first)
 	{
 	case sgs::ConstData::PHAND:
 		if (sourcePlayerIndex == m_playerIndex)
 		{
 			printDebug("MainWindow::MCardReceived: source player is human player, trying to remove shoupai");
-			shoupai = goToCard(msg->card());
+			ShoupaiButton * shoupai = goToCard(msg->card());
 			sourcePoint = realPos(shoupai);
-			printDebug("MainWindow::MCardReceived: remove shoupai "
-					   + cardFullDisplayName(shoupai->platformCard(), false));
+			printDebug("MainWindow::MCardReceived: remove shoupai " + cardFullDisplayName(shoupai->platformCard(), false));
 			removeShoupai(shoupai);
 		}
 		else
 		{
 			sourcePoint = cardPointAtIndex(sourcePlayerIndex);
-			otherPlayerAreaAtIndex(sourcePlayerIndex)->setShoupaiNumber(
-					msg->from()->handnum());
+			otherPlayerAreaAtIndex(sourcePlayerIndex)->setShoupaiNumber(msg->from()->handnum());
 		}
 		break;
 
@@ -121,10 +110,9 @@ void MainWindow::CardMsgReceived(const sgs::Derive::CardMessage * msg)
 	sgs::ConstData::CardColor cardColor = msg->card()->color();
 	if (maskType == sgs::ConstData::SHA)
 	{
-		if (cardColor == sgs::ConstData::SPADE || cardColor == sgs::ConstData::CLUB)
-			runPixmapAnimation(sourcePlayerIndex, BlackSlashAnimation);
-		else
-			runPixmapAnimation(sourcePlayerIndex, RedSlashAnimation);
+		bool isRedColor = cardColor == sgs::ConstData::SPADE || cardColor == sgs::ConstData::CLUB;
+		PixmapAnimationType animationType = isRedColor ? BlackSlashAnimation : RedSlashAnimation;
+		runPixmapAnimation(sourcePlayerIndex, animationType);
 	}
 
 	if (maskType == sgs::ConstData::WUXIE)
@@ -264,15 +252,15 @@ void MainWindow::CardMsgReceived(const sgs::Derive::CardMessage * msg)
 	printDebug("MainWindow::MCardReceived: over");
 }
 
-void MainWindow::SkillMsgReceived(const sgs::Derive::SkillMessage * message)
+void MainWindow::SkillMsgReceived(const sgs::Derive::SkillMessage * msg)
 {
-	int sourcePlayerIndex = message->from()->seat() + 1;
-	m_skillPlayer->playSound(message->skill(), sourcePlayerIndex);
-	showSkillAtIndex(sourcePlayerIndex, message->skill());
+	int sourcePlayerIndex = msg->from()->seat() + 1;
+	m_skillPlayer->playSound(msg->skill(), sourcePlayerIndex);
+	showSkillAtIndex(sourcePlayerIndex, msg->skill());
 
-	QString historyString(wujiangDisplayName(message->from()->type()));
+	QString historyString(wujiangDisplayName(msg->from()->type()));
 	historyString.append(trUtf8("使用了技能"));
-	historyString.append(skillDisplayName(message->skill()));
+	historyString.append(skillDisplayName(msg->skill()));
 	printHistory(historyString);
 
 	// if it is other's skill, pause some time
@@ -280,16 +268,16 @@ void MainWindow::SkillMsgReceived(const sgs::Derive::SkillMessage * message)
 		sleepSomeTime(GUIStaticData::skillBlockDuration);
 }
 
-void MainWindow::HurtMsgReceived(const sgs::Derive::HurtMessage * message)
+void MainWindow::HurtMsgReceived(const sgs::Derive::HurtMessage * msg)
 {
-	bool fromGod = !(message->from());
+	bool fromGod = !(msg->from());
 	sgs::ConstData::HeroType sourceHero = sgs::ConstData::heroTypeNone;
-	sgs::ConstData::HeroType targetHero = message->to()->type();
+	sgs::ConstData::HeroType targetHero = msg->to()->type();
 	if (!fromGod)
-		sourceHero = message->from()->type();
+		sourceHero = msg->from()->type();
 
-	int hurt = message->hurt();
-	int targetPlayer = message->to()->seat() + 1;
+	int hurt = msg->hurt();
+	int targetPlayer = msg->to()->seat() + 1;
 
 	// DO NOT play sound here, runPixmapAnimation will do it
 	if (hurt > 0)
@@ -299,19 +287,21 @@ void MainWindow::HurtMsgReceived(const sgs::Derive::HurtMessage * message)
 	}
 	setHPDamage(targetPlayer, hurt);
 
-	bool fromMyself = (message->from() == message->to());
+	bool fromMyself = (msg->from() == msg->to());
 	if (hurt > 0)
 	{
-		QString historyString(
-				(fromGod ? wujiangDisplayName(targetHero) + trUtf8("受到了无来源的")
-						 : wujiangDisplayName(sourceHero) + trUtf8("对") + (fromMyself ? trUtf8("自己") : wujiangDisplayName(targetHero)) + trUtf8("造成了")));
-		historyString.append(QString::number(hurt)).append(trUtf8("点伤害"));
+		QString historyString;
+		if (fromGod)
+			historyString = wujiangDisplayName(targetHero) + trUtf8("受到了无来源的");
+		else
+			historyString = wujiangDisplayName(sourceHero) + trUtf8("对") + (fromMyself ? trUtf8("自己") : wujiangDisplayName(targetHero));
+		historyString.append(trUtf8("造成了") + QString::number(hurt)).append(trUtf8("点伤害"));
 		printHistory(historyString);
 	}
 	else
 	{
 		QString historyString(wujiangDisplayName(targetHero));
-		if (!fromGod && (message->from() != message->to()))
+		if (!fromGod && (msg->from() != msg->to()))
 		{
 			historyString.append(trUtf8("在 "));
 			historyString.append(wujiangDisplayName(sourceHero));
@@ -326,7 +316,7 @@ void MainWindow::HurtMsgReceived(const sgs::Derive::HurtMessage * message)
 	if (platformHP != GUIHP)
 	{
 		printDebug("<font color=red><b>Warning: </b></font>"
-				   "MainWindow::MHurtReceived: HP mismatch, platform HP = "
+				   "MainWindow::HurtMsgReceived: HP mismatch, platform HP = "
 				   + QString::number(platformHP) + ", GUI HP = "
 				   + QString::number(GUIHP));
 		pause();
@@ -507,9 +497,9 @@ void MainWindow::TransCardMsgReceived(const sgs::Derive::TransCardMessage * mess
 			addCardDifference = cardFrameWidth;
 	}
 
-	std::list<Shoupai *> shoupaiToRemoveList;
+	std::list<ShoupaiButton *> shoupaiToRemoveList;
 	const sgs::DataType::Card * card = 0;
-	Shoupai * shoupaiToRemove = 0;
+	ShoupaiButton * shoupaiToRemove = 0;
 	for (int i = 0; i < cardCount; ++i)
 	{
 		card = message->trans(i);

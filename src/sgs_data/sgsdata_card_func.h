@@ -19,7 +19,7 @@ DataType::Message * pcatk(DataType::Message *);
 // 加一马的装备过程
 DataType::Message * pcdfd(DataType::Message *);
 // 武器的装备过程
-DataType::Message * pcweapon(DataType::Message *);
+DataType::Message * pcweapon(DataType::Message * msg);
 // 防具的装备过程
 DataType::Message * pcarmor(DataType::Message *);
 // 使用寒冰剑，传入参数为打杀的消息。不用检查玩家是否装备了寒冰剑，在本函数中有检查。主要被pcsha调用。
