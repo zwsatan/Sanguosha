@@ -88,6 +88,7 @@ sgs::DataType::Message * MainWindow::useCardResponse()
 		endResponse();
 		return useZhuangbei;
 	}
+
 	sgs::Derive::SkillMessage * useSkill = collectSkill();
 	if (useSkill)
 	{
@@ -295,11 +296,11 @@ sgs::DataType::Message * MainWindow::shanOrNot(sgs::DataType::Player * from, sgs
 	return returnMessage;
 }
 
-sgs::DataType::Message * MainWindow::shaOrNot(sgs::DataType::Player * from,
-											  const sgs::DataType::Card * card) {
-	if (AICheckBox->isChecked()) {
+sgs::DataType::Message * MainWindow::shaOrNot(sgs::DataType::Player * from, const sgs::DataType::Card * card)
+{
+	if (AICheckBox->isChecked())
 		return m_innerAI->shaOrNot(from, card);
-	}
+
 	printDebug("MainWindow::shaOrNot: start");
 
 	m_responseType = ShaOrNot;
@@ -309,26 +310,24 @@ sgs::DataType::Message * MainWindow::shaOrNot(sgs::DataType::Player * from,
 	skillNormalize();
 	checkButtons();
 
-	if (from && card && from != myPlayer()) {
-		showTipMessage(
-					wujiangDisplayName(from->type())
-					+ trUtf8("对你使用了")
-					+ cardFullDisplayName(card, false)
-					+ trUtf8("，请使用一张杀"));
-	} else {
-		showTipMessage(
-					trUtf8("你现在可以使用一张杀"));
-	}
+	if (from && card && from != myPlayer())
+		showTipMessage(wujiangDisplayName(from->type()) + trUtf8("对你使用了") + cardFullDisplayName(card, false) + trUtf8("，请使用一张杀"));
+	else
+		showTipMessage(trUtf8("你现在可以使用一张杀"));
+
 	exec();
 	sgs::Derive::CardMessage * useZhuangbei = collectZhuangbei();
-	if (useZhuangbei) {
+	if (useZhuangbei)
+	{
 		printDebug("MainWindow::shaOrNot: (use equip)");
 		printDebug(messageInterpret(useZhuangbei));
 		endResponse();
 		return useZhuangbei;
 	}
+
 	sgs::Derive::SkillMessage * useSkill = collectSkill();
-	if (useSkill) {
+	if (useSkill)
+	{
 		printDebug("MainWindow::shaOrNot: (use skill)");
 		printDebug(messageInterpret(useSkill));
 		endResponse();
@@ -336,26 +335,29 @@ sgs::DataType::Message * MainWindow::shaOrNot(sgs::DataType::Player * from,
 	}
 
 	sgs::Derive::CardMessage * returnMessage = 0;
-	if (m_cancelResponse) {
+	if (m_cancelResponse)
+	{
 		returnMessage = 0;
-	} else {
-
+	}
+	else
+	{
 		// Do not add target here
 		returnMessage = new sgs::Derive::CardMessage(false,
-											   GUIStaticData::getPlayer(m_playerIndex), sgs::ConstData::PHAND,
-											   getIndex(m_selectedShoupaiList.back()));
+													 GUIStaticData::getPlayer(m_playerIndex), sgs::ConstData::PHAND,
+													 getIndex(m_selectedShoupaiList.back()));
 	}
+
 	printDebug("MainWindow::shaOrNot: ");
 	printDebug(messageInterpret(returnMessage));
 	endResponse();
 	return returnMessage;
 }
 
-sgs::DataType::Message * MainWindow::shaOrNot(sgs::DataType::Player * from,
-											  sgs::ConstData::HeroSkill skillType) {
-	if (AICheckBox->isChecked()) {
+sgs::DataType::Message * MainWindow::shaOrNot(sgs::DataType::Player * from, sgs::ConstData::HeroSkill skillType)
+{
+	if (AICheckBox->isChecked())
 		return m_innerAI->shaOrNot(from, skillType);
-	}
+
 	printDebug("MainWindow::shaOrNot (skill version): start");
 
 	m_responseType = ShaOrNot;
@@ -365,14 +367,13 @@ sgs::DataType::Message * MainWindow::shaOrNot(sgs::DataType::Player * from,
 	skillNormalize();
 	checkButtons();
 
-	showTipMessage(
-				wujiangDisplayName(from->type())
-				+ trUtf8("使用了技能")
-				+ skillDisplayName(skillType)
-				+ trUtf8("，是否出杀？"));
+	showTipMessage(wujiangDisplayName(from->type()) + trUtf8("使用了技能") + skillDisplayName(skillType) + trUtf8("，是否出杀？"));
+
 	exec();
+
 	sgs::Derive::SkillMessage * useSkill = collectSkill();
-	if (useSkill) {
+	if (useSkill)
+	{
 		printDebug("MainWindow::shaOrNot (skill version): (use skill)");
 		printDebug(messageInterpret(useSkill));
 		endResponse();
@@ -380,29 +381,33 @@ sgs::DataType::Message * MainWindow::shaOrNot(sgs::DataType::Player * from,
 	}
 
 	sgs::Derive::CardMessage * returnMessage = 0;
-	if (m_cancelResponse) {
+	if (m_cancelResponse)
+	{
 		returnMessage = 0;
-	} else {
-
+	}
+	else
+	{
 		// Do not add target here
 		returnMessage = new sgs::Derive::CardMessage(false,
-											   GUIStaticData::getPlayer(m_playerIndex), sgs::ConstData::PHAND,
-											   getIndex(m_selectedShoupaiList.back()));
+													 GUIStaticData::getPlayer(m_playerIndex), sgs::ConstData::PHAND,
+													 getIndex(m_selectedShoupaiList.back()));
 	}
+
 	printDebug("MainWindow::shaOrNot (skill version): ");
 	printDebug(messageInterpret(returnMessage));
 	endResponse();
 	return returnMessage;
 }
 
-sgs::DataType::Message * MainWindow::wuxieOrNot(
-		sgs::DataType::Message * originMsg, int count) {
-	if (AICheckBox->isChecked()) {
+sgs::DataType::Message * MainWindow::wuxieOrNot(sgs::DataType::Message * originMsg, int count)
+{
+	if (AICheckBox->isChecked())
 		return m_innerAI->wuxieOrNot(originMsg, count);
-	}
+
 	printDebug("MainWindow::wuxieOrNot: start");
 
-	if (!Interface::haveWuxie()) {
+	if (!Interface::haveWuxie())
+	{
 		printDebug("MainWindow::wuxieOrNot: don't have wuxie, return 0");
 		printDebug("MainWindow::wuxieOrNot: over");
 		return 0;
@@ -414,26 +419,22 @@ sgs::DataType::Message * MainWindow::wuxieOrNot(
 	skillNormalize();
 	checkButtons();
 
-	sgs::Derive::CardMessage * messageToWixie =
-			static_cast<sgs::Derive::CardMessage *>(originMsg);
-
-	/*	if (messageToWixie->from() == myPlayer() && count == 0) {
-	 printDebug(
-	 "MainWindow::wuxieOrNot: from() == myPlayer() and count = 0, skip response, return 0");
-	 printDebug("MainWindow::wuxieOrNot: over");
-	 return 0;
-	 }*/
+	sgs::Derive::CardMessage * messageToWixie = static_cast<sgs::Derive::CardMessage *>(originMsg);
 
 	sgs::ConstData::CardType cardType = messageToWixie->card()->type();
 	QString question = (wujiangDisplayName(messageToWixie->from()->type()));
-	if (isJudgeCard(cardType)) {
+	if (isJudgeCard(cardType))
+	{
 		question.append(trUtf8("的判定牌"));
 		question.append(cardDisplayName(messageToWixie->card()->type()));
 		question.append(trUtf8("将要判定"));
-	} else {
+	}
+	else
+	{
 		question.append(trUtf8("使用了"));
 		question.append(cardDisplayName(messageToWixie->card()->type()));
 	}
+
 	if (count > 0)
 		question.append(trUtf8("，已经被无懈可击") + QString::number(count) + trUtf8("次"));
 
@@ -443,7 +444,8 @@ sgs::DataType::Message * MainWindow::wuxieOrNot(
 
 	exec();
 	sgs::Derive::SkillMessage * useSkill = collectSkill();
-	if (useSkill) {
+	if (useSkill)
+	{
 		printDebug("MainWindow::wuxieOrNot: (use skill) ");
 		printDebug(messageInterpret(useSkill));
 		endResponse();
@@ -451,127 +453,130 @@ sgs::DataType::Message * MainWindow::wuxieOrNot(
 	}
 
 	sgs::Derive::CardMessage * returnMessage = 0;
-	if (m_cancelResponse) {
+	if (m_cancelResponse)
+	{
 		returnMessage = 0;
-	} else {
-
+	}
+	else
+	{
 		// Do not add target here
 		returnMessage = new sgs::Derive::CardMessage(false,
-											   GUIStaticData::getPlayer(m_playerIndex), sgs::ConstData::PHAND,
-											   getIndex(m_selectedShoupaiList.back()));
+													 GUIStaticData::getPlayer(m_playerIndex), sgs::ConstData::PHAND,
+													 getIndex(m_selectedShoupaiList.back()));
 	}
+
 	printDebug("MainWindow::wuxieOrNot: ");
 	printDebug(messageInterpret(returnMessage));
 	endResponse();
 	return returnMessage;
 }
 
-bool MainWindow::useEquipOrNot(sgs::ConstData::CardType equipCardType,
-							   sgs::DataType::Player *targetPlayer) {
-	if (AICheckBox->isChecked()) {
+bool MainWindow::useEquipOrNot(sgs::ConstData::CardType equipCardType, sgs::DataType::Player *targetPlayer)
+{
+	if (AICheckBox->isChecked())
 		return m_innerAI->useEquipOrNot(equipCardType, targetPlayer);
-	}
+
 	printDebug("MainWindow::useEquipOrNot: start");
 	QString question;
-	if (targetPlayer) {
+	if (targetPlayer)
 		question.append(trUtf8("是否要对") + wujiangDisplayName(targetPlayer->type()) + trUtf8("发动"));
-	} else {
+	else
 		question.append(trUtf8("是否要发动"));
-	}
+
 	question.append(cardDisplayName(equipCardType));
 	question.append(trUtf8("的效果？"));
 	bool result = getDialogResponse(question);
-	printDebug(
-				QString("MainWindow::useEquipOrNot: over, return ")
-				+ QString(result ? "true" : "false"));
+	printDebug(QString("MainWindow::useEquipOrNot: over, return ") + QString(result ? "true" : "false"));
 	return result;
 }
 
-bool MainWindow::useSkillOrNot(sgs::ConstData::HeroSkill skillType,
-							   sgs::DataType::Player * targetPlayer) {
-	if (AICheckBox->isChecked()) {
+bool MainWindow::useSkillOrNot(sgs::ConstData::HeroSkill skillType, sgs::DataType::Player * targetPlayer)
+{
+	if (AICheckBox->isChecked())
 		return m_innerAI->useSkillOrNot(skillType, targetPlayer);
-	}
+
 	printDebug("MainWindow::useSkillOrNot: start");
 	QString question(trUtf8("是否要"));
-	if (targetPlayer) {
+	if (targetPlayer)
 		question.append(trUtf8("对") + wujiangDisplayName(targetPlayer->type()));
-	}
+
 	question.append(trUtf8("发动技能"));
 	question.append(skillDisplayName(skillType));
 	question.append(trUtf8("？"));
 	bool result = getDialogResponse(question);
-	printDebug(
-				QString("MainWindow::useSkillOrNot: over, return ")
-				+ QString(result ? "true" : "false"));
+	printDebug(QString("MainWindow::useSkillOrNot: over, return ") + QString(result ? "true" : "false"));
 	return result;
 }
 
-bool MainWindow::useSkillOrNot(sgs::ConstData::HeroSkill skillType,
-							   sgs::DataType::Message * message) {
-	if (AICheckBox->isChecked()) {
+bool MainWindow::useSkillOrNot(sgs::ConstData::HeroSkill skillType, sgs::DataType::Message * message)
+{
+	if (AICheckBox->isChecked())
 		return m_innerAI->useSkillOrNot(skillType, message);
-	}
+
 	printDebug("MainWindow::useSkillOrNot: start");
 
 	sgs::Derive::JudgeMessage * judgeMessage =
 			dynamic_cast<sgs::Derive::JudgeMessage *>(message);
-	if (!judgeMessage) {
-		printDebug(
-					"<font color=red><b>Warning: </b></font>MainWindow::useSkillOrNot (message vesion): message type is not MJudge, message: "
-					+ allMessageInterpret(message));
+	if (!judgeMessage)
+	{
+		printDebug("<font color=red><b>Warning: </b></font>"
+				   "MainWindow::useSkillOrNot (message vesion): "
+				   "message type is not MJudge, message: "
+				   + allMessageInterpret(message));
 		pause();
 	}
 
 	QString question(wujiangDisplayName(judgeMessage->from()->type()));
-	if (judgeMessage->cardJudge()) {
+	if (judgeMessage->cardJudge())
+	{
 		question.append(trUtf8("的判定牌"));
 		question.append(cardDisplayName(judgeMessage->card()->type()));
-	} else {
+	}
+	else
+	{
 		question.append(skillDisplayName(judgeMessage->skill()));
 	}
-	question.append(
-				judgeMessage->effect() ?
-					GUIStaticData::judgePositive :
-					GUIStaticData::judgeNegative);
+
+	question.append(judgeMessage->effect() ? GUIStaticData::judgePositive : GUIStaticData::judgeNegative);
 	question.append(trUtf8("是否改判？"));
 	bool result = getDialogResponse(question);
-	printDebug(
-				QString("MainWindow::useSkillOrNot (message vesion): over, return ")
-				+ QString(result ? "true" : "false"));
+	printDebug(QString("MainWindow::useSkillOrNot (message vesion): over, return ") + QString(result ? "true" : "false"));
 	return result;
 }
 
+
 std::vector<std::pair<sgs::ConstData::PlayerRegionType, int> > MainWindow::chooseCardResponse(
-		sgs::DataType::Player *targetPlayer, bool isHandSelectable,
-		bool isEquipSelectable, bool isJudgeSelectable, int num,
-		sgs::ConstData::CardType reason) {
-	if (AICheckBox->isChecked()) {
-		return m_innerAI->chooseCardResponse(targetPlayer, isHandSelectable,
-										   isEquipSelectable, isJudgeSelectable, num, reason);
-	}
+		sgs::DataType::Player *targetPlayer,
+		bool isHandSelectable,
+		bool isEquipSelectable,
+		bool isJudgeSelectable,
+		int num,
+		sgs::ConstData::CardType reason)
+{
+	if (AICheckBox->isChecked())
+		return m_innerAI->chooseCardResponse(targetPlayer, isHandSelectable, isEquipSelectable, isJudgeSelectable, num, reason);
 
 	QString text(trUtf8("选择"));
 	text.append(QString::number(num));
 	text.append(trUtf8("张卡牌"));
-	return m_cardContainer->chooseCard(text, targetPlayer, isHandSelectable,
-									 isEquipSelectable, isJudgeSelectable, num, reason);
+	return m_cardContainer->chooseCard(text, targetPlayer, isHandSelectable, isEquipSelectable, isJudgeSelectable, num, reason);
 }
 
 std::vector<std::pair<sgs::ConstData::PlayerRegionType, int> > MainWindow::chooseCardResponse(
-		sgs::DataType::Player *targetPlayer, bool isHandSelectable,
-		bool isEquipSelectable, bool isJudgeSelectable, int num,
-		sgs::ConstData::HeroSkill reason) {
-	if (AICheckBox->isChecked()) {
-		return m_innerAI->chooseCardResponse(targetPlayer, isHandSelectable,
-										   isEquipSelectable, isJudgeSelectable, num, reason);
-	}
+		sgs::DataType::Player *targetPlayer,
+		bool isHandSelectable,
+		bool isEquipSelectable,
+		bool isJudgeSelectable,
+		int num,
+		sgs::ConstData::HeroSkill reason)
+{
+	if (AICheckBox->isChecked())
+		return m_innerAI->chooseCardResponse(targetPlayer, isHandSelectable, isEquipSelectable, isJudgeSelectable, num, reason);
 
 	QString text(trUtf8("选择"));
 	text.append(QString::number(num));
 	text.append(trUtf8("张卡牌"));
-	return m_cardContainer->chooseCard(text, targetPlayer, isHandSelectable,
-									 isEquipSelectable, isJudgeSelectable, num, reason);
+	return m_cardContainer->chooseCard(text, targetPlayer, isHandSelectable, isEquipSelectable, isJudgeSelectable, num, reason);
 }
 
 bool MainWindow::yesOrNot(sgs::ConstData::CardType reason)
@@ -668,15 +673,16 @@ sgs::DataType::Message * MainWindow::getTuxi()
 		if (m_tuxiList.size() == 1)
 		{
 			returnMessage = new sgs::Derive::TuXiMessage(myPlayer(),
-												   m_tuxiList.front().second->getPlayer(),
-												   m_tuxiList.front().first);
+														 m_tuxiList.front().second->getPlayer(),
+														 m_tuxiList.front().first);
 		}
 		else
 		{
 			returnMessage = new sgs::Derive::TuXiMessage(myPlayer(),
-												   m_tuxiList.front().second->getPlayer(),
-												   m_tuxiList.front().first, m_tuxiList.back().second->getPlayer(),
-												   m_tuxiList.back().first);
+														 m_tuxiList.front().second->getPlayer(),
+														 m_tuxiList.front().first,
+														 m_tuxiList.back().second->getPlayer(),
+														 m_tuxiList.back().first);
 		}
 	}
 	printDebug("MainWindow::getTuxi: over");
@@ -685,35 +691,24 @@ sgs::DataType::Message * MainWindow::getTuxi()
 	return returnMessage;
 }
 
-sgs::DataType::Message * MainWindow::getYiji(const sgs::DataType::Card * card1,
-											 const sgs::DataType::Card * card2) {
-	if (AICheckBox->isChecked()) {
+sgs::DataType::Message * MainWindow::getYiji(const sgs::DataType::Card * card1, const sgs::DataType::Card * card2)
+{
+	if (AICheckBox->isChecked())
 		return m_innerAI->getYiji(card1, card2);
-	}
+
 	printDebug("MainWindow::getYiji: start");
 	m_responseType = GetYiji;
-	sgs::DataType::Player * player1, *player2;
 
-	m_cardViewer->setGeometry(
-				QRect(
-					mainFrame->geometry().center()
-					- QPoint(m_cardViewer->width() / 2,
-							 m_cardViewer->height() / 5),
-					m_cardViewer->size()));
+	m_cardViewer->setGeometry(QRect(mainFrame->geometry().center() - QPoint(m_cardViewer->width() / 2, m_cardViewer->height() / 5), m_cardViewer->size()));
 	m_cardViewer->showViewer(card1, card2);
 
 	cardNormalize();
 	playerChooseNormalize();
 	checkButtons();
 	exec();
-	player1 = m_selectedPlayerAreaList.back()->getPlayer();
+	sgs::DataType::Player * player1 = m_selectedPlayerAreaList.back()->getPlayer();
 
-	m_cardViewer->setGeometry(
-				QRect(
-					mainFrame->geometry().center()
-					- QPoint(m_cardViewer->width() / 2,
-							 m_cardViewer->height() / 5),
-					m_cardViewer->size()));
+	m_cardViewer->setGeometry(QRect(mainFrame->geometry().center() - QPoint(m_cardViewer->width() / 2, m_cardViewer->height() / 5), m_cardViewer->size()));
 	m_cardViewer->showSecondViewer();
 
 	cardNormalize();
@@ -721,57 +716,59 @@ sgs::DataType::Message * MainWindow::getYiji(const sgs::DataType::Card * card1,
 	checkButtons();
 	exec();
 	m_cardViewer->hide();
-	player2 = m_selectedPlayerAreaList.back()->getPlayer();
-	sgs::Derive::SkillMessage * returnMessage = new sgs::Derive::YiJiMessage(myPlayer(),
-																 player1, card1, player2, card2);
+	sgs::DataType::Player * player2 = m_selectedPlayerAreaList.back()->getPlayer();
+	sgs::Derive::SkillMessage * returnMessage = new sgs::Derive::YiJiMessage(myPlayer(), player1, card1, player2, card2);
 	printDebug("MainWindow::getYiji: over");
 	printDebug(messageInterpret(returnMessage));
 	endResponse();
 	return returnMessage;
 }
 
-sgs::DataType::Message * MainWindow::getLiuli(
-		sgs::DataType::Player * attacker) {
-	if (AICheckBox->isChecked()) {
+sgs::DataType::Message * MainWindow::getLiuli(sgs::DataType::Player * attacker)
+{
+	if (AICheckBox->isChecked())
 		return m_innerAI->getLiuli(attacker);
-	}
+
 	m_responseType = GetLiuli;
 	m_liuliAttacker = attacker;
 	printDebug("MainWindow::getLiuli: start");
-	if (getDialogResponse(
-			wujiangDisplayName(attacker->type()) + trUtf8("对你使用了杀，是否要使用技能流离？"))
-		== 0) {
+	if (getDialogResponse(wujiangDisplayName(attacker->type()) + trUtf8("对你使用了杀，是否要使用技能流离？")) == 0)
+	{
 		printDebug("MainWindow::getLiuli: response canceled by user");
 		endResponse();
 		return 0;
 	}
+
 	cardNormalize();
 	playerChooseNormalize();
 	checkButtons();
 	exec();
 
 	sgs::Derive::SkillMessage * returnMessage = 0;
-	if (m_cancelResponse) {
+	if (m_cancelResponse)
+	{
 		printDebug("MainWindow::getLiuli: cancelled");
 		returnMessage = 0;
-	} else {
+	}
+	else
+	{
 		CardPosPair liuliPair = m_selectedSkillCardVec.back();
 		returnMessage = new sgs::Derive::LiuLiMessage(myPlayer(), liuliPair.first, liuliPair.second, m_selectedPlayerAreaList.back()->getPlayer());
 	}
+
 	printDebug("MainWindow::getLiuli: over");
 	printDebug(messageInterpret(returnMessage));
 	endResponse();
 	return returnMessage;
 }
 
-std::pair<sgs::ConstData::CardColor, int> MainWindow::respondFanjian(
-		sgs::DataType::Player * zhouyu) {
+std::pair<sgs::ConstData::CardColor, int> MainWindow::respondFanjian(sgs::DataType::Player * zhouyu)
+{
 	sgs::ConstData::CardColor choosenColor = runFanjian();
 	QString text(trUtf8("选择周瑜的一张手牌"));
 	std::pair<sgs::ConstData::CardColor, int> choosen;
 	choosen.first = choosenColor;
-	choosen.second = m_cardContainer->chooseCard(text, zhouyu, true, false, false,
-											   1, sgs::ConstData::heroSkillNone).back().second;
+	choosen.second = m_cardContainer->chooseCard(text, zhouyu, true, false, false, 1, sgs::ConstData::heroSkillNone).back().second;
 	return choosen;
 }
 

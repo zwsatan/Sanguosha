@@ -351,7 +351,8 @@ void MainWindow::initiateAnimation()
 	m_blockTimer = new BlockTimer(this);
 }
 
-void MainWindow::initiateMusic() {
+void MainWindow::initiateMusic()
+{
 	printDebug("MainWindow::initiateMusic: start");
 
 	m_audioPlayer = new AudioPlayer(this);

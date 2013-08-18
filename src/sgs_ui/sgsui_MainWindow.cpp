@@ -144,7 +144,7 @@ bool MainWindow::isRespondingNoAnimation() const
 	return (m_responseType != NotResponding) && m_GUIresponding;
 }
 
-void MainWindow::setResponding(bool responding, BlockingFrame *blockWidget)
+void MainWindow::setResponding(bool responding, BlockingFrame * blockWidget)
 {
 	if (responding)
 	{
@@ -517,7 +517,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 	QMainWindow::keyPressEvent(event);
 }
 
-CardButton* MainWindow::goToShoupai(unsigned shoupaiIndex)
+CardButton * MainWindow::goToShoupai(unsigned shoupaiIndex)
 {
 	// shoupaiIndex starts from 0
 	if (m_shoupaiList.size() > shoupaiIndex)
@@ -531,7 +531,7 @@ CardButton* MainWindow::goToShoupai(unsigned shoupaiIndex)
 	return 0;
 }
 
-AbstractPlayerArea* MainWindow::goToAbstractPlayerArea(int pressedKey)
+AbstractPlayerArea * MainWindow::goToAbstractPlayerArea(int pressedKey)
 {
 	if (pressedKey <= 0)
 		return m_wujiangArea;
@@ -586,7 +586,7 @@ void MainWindow::showTipMessage(const QString &tip, bool richText/* = false*/, i
 	statusbar->showStatusBarMessage(tip, richText, duration);
 }
 
-void MainWindow::showPauseMessage(const QString &pause, bool richText)
+void MainWindow::showPauseMessage(const QString &pause, bool richText/* = false*/)
 {
 	QPoint pos = mainFrame->geometry().center() - QPoint(m_pauseBox->width() / 2, m_pauseBox->height() / 2);
 	QRect rect(pos, m_pauseBox->size());
@@ -598,7 +598,7 @@ void MainWindow::showPauseMessage(const QString &pause, bool richText)
 	statusbar->showStatusBarMessage(pause, richText, -1);
 }
 
-void MainWindow::showStatusBarMessage(const QString &tip, bool richText, int duration)
+void MainWindow::showStatusBarMessage(const QString &tip, bool richText/* = false*/, int duration/* = GUIStaticData::showTipDuration*/)
 {
 	statusbar->showStatusBarMessage(tip, richText, duration);
 }
@@ -659,12 +659,12 @@ sgs::ConstData::CardColor MainWindow::runFanjian()
 void MainWindow::runLineAnimation(
 		int sourcePlayerIndex,
 		int targetPlayerIndex1,
-		int targetPlayerIndex2,
-		int targetPlayerIndex3,
-		int targetPlayerIndex4,
-		int targetPlayerIndex5,
-		int targetPlayerIndex6,
-		int targetPlayerIndex7)
+		int targetPlayerIndex2/* = 0*/,
+		int targetPlayerIndex3/* = 0*/,
+		int targetPlayerIndex4/* = 0*/,
+		int targetPlayerIndex5/* = 0*/,
+		int targetPlayerIndex6/* = 0*/,
+		int targetPlayerIndex7/* = 0*/)
 {
 	int targetCandidates[7] =
 	{

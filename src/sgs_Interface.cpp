@@ -1,10 +1,3 @@
-/*
- * sgs_Interface.cpp
- *
- *  Created on: May 6, 2012
- *      Author: latios
- */
-
 #include "sgs_Interface.h"
 #include "sgsui_MainWindow.h"
 #include "sgsui_GUIStaticData.h"
@@ -176,7 +169,6 @@ bool Interface::canUseZhangba() const
 
 bool Interface::canUseJieyin() const
 {
-	bool returnValue = false;
 	if (myPlayer()->status() & sgs::ConstData::SkillOneUsed)
 		return false;
 
@@ -187,12 +179,11 @@ bool Interface::canUseJieyin() const
 	for (int i = 0; i < playerCount; ++i)
 	{
 		sgs::DataType::Player * player = ExternData::gamedata.players(i);
-		if (player->sex() == sgs::ConstData::MALE && player->hp() < player->maxHP()) {
-			returnValue = true;
-			break;
-		}
+		if (player->sex() == sgs::ConstData::MALE && player->hp() < player->maxHP())
+			return true;
 	}
-	return returnValue;
+
+	return false;
 }
 
 bool Interface::haveWuxie() const
@@ -342,11 +333,13 @@ bool Interface::haveDiamondCard() const
 	return false;
 }
 
-bool Interface::isDead(int seat) {
+bool Interface::isDead(int seat)
+{
 	return ExternData::gamedata.players(seat)->status() & ConstData::DEAD;
 }
 
-bool Interface::isDead(DataType::Player * player) {
+bool Interface::isDead(DataType::Player * player)
+{
 	return player->status() & ConstData::DEAD;
 }
 
@@ -376,8 +369,8 @@ bool Interface::hasShandianInJudge(DataType::Player * player)
 	return false;
 }
 
-void Interface::showWugu(
-		const std::vector<std::pair<const DataType::Card *, bool> >& wuguCards) {
+void Interface::showWugu(const std::vector<std::pair<const DataType::Card *, bool> >& wuguCards)
+{
 	sgsui::MainWindow::mainWindowPtr()->showWugu(wuguCards);
 }
 

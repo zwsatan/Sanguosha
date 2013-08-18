@@ -105,11 +105,11 @@ public:
 	void CardMsgReceived(const sgs::Derive::CardMessage * msg);
 	void SkillMsgReceived(const sgs::Derive::SkillMessage * msg);
 	void HurtMsgReceived(const sgs::Derive::HurtMessage * msg);
-	void TransCardMsgReceived(const sgs::Derive::TransCardMessage * message);
-	void SwitchPhaseMsgReceived(const sgs::Derive::SwitchPhaseMessage * message);
-	void DyingMsgReceived(const sgs::Derive::DyingMessage * message);
-	void KillMsgReceived(const sgs::Derive::KillMessage * message);
-	void JudgeMsgReceived(const sgs::Derive::JudgeMessage * message);
+	void TransCardMsgReceived(const sgs::Derive::TransCardMessage * msg);
+	void SwitchPhaseMsgReceived(const sgs::Derive::SwitchPhaseMessage * msg);
+	void DyingMsgReceived(const sgs::Derive::DyingMessage * msg);
+	void KillMsgReceived(const sgs::Derive::KillMessage * msg);
+	void JudgeMsgReceived(const sgs::Derive::JudgeMessage * msg);
 
 	bool isSingleStep() const;
 	void pause();

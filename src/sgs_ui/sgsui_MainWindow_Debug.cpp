@@ -35,7 +35,8 @@ void MainWindow::initiateDebug()
 	connect(debugButton4, SIGNAL(clicked()), this, SLOT(debug4()));
 }
 
-void MainWindow::debug1() {
+void MainWindow::debug1()
+{
 	printDebug("<font color=red><b>Debug1 called</b></font>");
 
 	using namespace sgs::ConstData;
@@ -48,8 +49,6 @@ void MainWindow::debug1() {
 void MainWindow::debug2()
 {
 	printDebug("<font color=red><b>Debug2 called</b></font>");
-
-	using namespace sgs::ConstData;
 }
 
 void MainWindow::debug3()

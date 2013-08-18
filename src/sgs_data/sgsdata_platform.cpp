@@ -46,7 +46,8 @@ char Platform::run()
 	Message * readMsg = 0;
 	while (!end)
 	{
-		msgInsert(m_player->round());
+		Message * roundMsg = m_player->round();
+		msgInsert(roundMsg);
 		while (!msgEmpty())
 		{
 			readMsg = msgRead();
@@ -66,6 +67,7 @@ char Platform::run()
 	FinaleMessage * finaleMsg = static_cast<FinaleMessage *>(readMsg);
 	return finaleMsg->finale();
 }
+
 void Platform::end()
 {
 	printDebug("Platform::end: cleaning cards");
@@ -79,6 +81,7 @@ void Platform::end()
 		m_groove.pop();
 	}
 }
+
 Message * Platform::analyze(Message * msg)
 {
 	if (msg == 0)

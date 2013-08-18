@@ -197,7 +197,8 @@ void WujiangArea::setDead()
 
 void WujiangArea::setDying(bool dying)
 {
-	if (m_isDying != dying) {
+	if (m_isDying != dying)
+	{
 		m_isDying = dying;
 		update();
 	}

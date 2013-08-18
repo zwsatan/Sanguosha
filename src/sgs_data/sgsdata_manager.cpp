@@ -79,26 +79,26 @@ Player * Manager::create(int playersCount)
 
 	std::vector<HeroType> heroes;
 	heroes.push_back(XIAHOUDUN);
-//	heroes.push_back(XUCHU);
-//	heroes.push_back(ZHENJI);
-//	heroes.push_back(GUOJIA);
-//	heroes.push_back(ZHANGLIAO);
+	heroes.push_back(XUCHU);
+	heroes.push_back(ZHENJI);
+	heroes.push_back(GUOJIA);
+	heroes.push_back(ZHANGLIAO);
 	heroes.push_back(SIMAYI);
 
-//	heroes.push_back(GUANYU);
-//	heroes.push_back(ZHANGFEI);
-//	heroes.push_back(ZHAOYUN);
-//	heroes.push_back(MACHAO);
-//	heroes.push_back(LAOZHUGE);
-//	heroes.push_back(HUANGYUEYING);
+	heroes.push_back(GUANYU);
+	heroes.push_back(ZHANGFEI);
+	heroes.push_back(ZHAOYUN);
+	heroes.push_back(MACHAO);
+	heroes.push_back(LAOZHUGE);
+	heroes.push_back(HUANGYUEYING);
 
-//	heroes.push_back(HUANGGAI);
-//	heroes.push_back(GANNING);
-//	heroes.push_back(LVMENG);
-//	heroes.push_back(DAQIAO);
-//	heroes.push_back(LUXUN);
-//	heroes.push_back(SUNSHANGXIANG);
-//	heroes.push_back(ZHOUYU);
+	heroes.push_back(HUANGGAI);
+	heroes.push_back(GANNING);
+	heroes.push_back(LVMENG);
+	heroes.push_back(DAQIAO);
+	heroes.push_back(LUXUN);
+	heroes.push_back(SUNSHANGXIANG);
+	heroes.push_back(ZHOUYU);
 
 	shuffleHero(heroes);
 

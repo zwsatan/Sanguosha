@@ -503,7 +503,7 @@ void Player::choosehero(std::vector<HeroType> &herovec, HeroType lord/* = sgs::C
 		if (m_seat == 0)
 			choosenHero = sgsui::lordChoose(avaliable[0], avaliable[1], avaliable[2], avaliable[3], avaliable[4]);
 		else
-			choosenHero = avaliable[2]; // avaliable[rand() % 5]; // 这里下默认选曹操作主公
+			choosenHero = avaliable[rand() % 5];
 		herotrans(choosenHero);
 
 		// 将已选武将移除选将列表

@@ -368,7 +368,6 @@ void MainWindow::okClicked()
 
 void MainWindow::cancelClicked()
 {
-
 	if (m_selectedSkill != sgs::ConstData::heroSkillNone)
 	{
 		printDebug("MainWindow::cancelClicked: handle skill");
@@ -482,7 +481,6 @@ void MainWindow::cardClicked(CardButton * clickedCard)
 			okButton->setEnabled();
 		else
 			okButton->setDisabled();
-
 	}
 	else
 	{

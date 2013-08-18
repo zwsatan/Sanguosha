@@ -323,45 +323,43 @@ void MainWindow::HurtMsgReceived(const sgs::Derive::HurtMessage * msg)
 	}
 }
 
-void MainWindow::TransCardMsgReceived(const sgs::Derive::TransCardMessage * message)
+void MainWindow::TransCardMsgReceived(const sgs::Derive::TransCardMessage * msg)
 {
 	printDebug("MainWindow::MTransCardReceived: start");
 
-	int cardCount = message->cards();
+	int cardCount = msg->cards();
 
 	printDebug("MainWindow::MTransCardReceived: number = " + QString::number(cardCount) + " cards");
 
-	bool open = message->open(), abandonCards = false;
-	bool addCardsToShoupai = false, removeCardsFromShoupai = false;
+	bool removeCardsFromShoupai = false;
 	bool fromPlayerArea = false, toPlayerArea = false;
-	bool toJudge = message->tojudge();
+	bool toJudge = msg->tojudge();
 	int fromZuangbeiIndex = -1;
 	QPoint sourcePoint(0, 0), targetPoint(0, 0);
 	QPoint wuguPoint[8];
 	bool fromWugu = false;
-	int sourcePlayerIndex = 0;
 
 	// TODO confirm how to identify
 	// and revise the following code
 	using namespace sgs::ConstData;
-	sgs::DataType::Player * fromPlayer = message->from();
-	sgs::DataType::Player * toPlayer = message->to();
+	sgs::DataType::Player * fromPlayer = msg->from();
 	if (fromPlayer)
 	{
-		sourcePlayerIndex = fromPlayer->seat() + 1;
+		int sourcePlayerIndex = fromPlayer->seat() + 1;
 		if (sourcePlayerIndex == m_playerIndex)
 		{
-			switch (message->frompos())
+			switch (msg->frompos())
 			{
 			case PHAND:
 				removeCardsFromShoupai = true;
 				// the source point is handled below
 				break;
+
 			case PEQUIP:
 				sourcePoint = zhuangbeiPointAtIndex(sourcePlayerIndex);
-				for (int i = 0; i < message->cards(); ++i)
+				for (int i = 0; i < msg->cards(); ++i)
 				{
-					fromZuangbeiIndex = message->pos(i);
+					fromZuangbeiIndex = msg->pos(i);
 					switch (fromZuangbeiIndex)
 					{
 					case 0:
@@ -385,29 +383,32 @@ void MainWindow::TransCardMsgReceived(const sgs::Derive::TransCardMessage * mess
 					}
 				}
 				break;
+
 			case PJUDGE:
 				sourcePoint = judgePointAtIndex(sourcePlayerIndex);
-				for (int i = 0; i < message->cards(); ++i)
-					removeJudgeAtIndex(sourcePlayerIndex, message->trans(i)->type());
+				for (int i = 0; i < msg->cards(); ++i)
+					removeJudgeAtIndex(sourcePlayerIndex, msg->trans(i)->type());
 				break;
+
 			default:
 				break;
 			}
 		}
 		else
 		{
-			switch (message->frompos())
+			switch (msg->frompos())
 			{
 			case PHAND:
 				sourcePoint = cardPointAtIndex(fromPlayer->seat() + 1);
 				fromPlayerArea = true;
-				otherPlayerAreaAtIndex(sourcePlayerIndex)->setShoupaiNumber(message->from()->handnum());
+				otherPlayerAreaAtIndex(sourcePlayerIndex)->setShoupaiNumber(msg->from()->handnum());
 				break;
+
 			case PEQUIP:
 				sourcePoint = zhuangbeiPointAtIndex(sourcePlayerIndex);
-				for (int i = 0; i < message->cards(); ++i)
+				for (int i = 0; i < msg->cards(); ++i)
 				{
-					fromZuangbeiIndex = message->pos(i);
+					fromZuangbeiIndex = msg->pos(i);
 					switch (fromZuangbeiIndex)
 					{
 					case 0:
@@ -431,11 +432,13 @@ void MainWindow::TransCardMsgReceived(const sgs::Derive::TransCardMessage * mess
 					}
 				}
 				break;
+
 			case PJUDGE:
 				sourcePoint = judgePointAtIndex(sourcePlayerIndex);
-				for (int i = 0; i < message->cards(); ++i)
-					removeJudgeAtIndex(sourcePlayerIndex, message->trans(i)->type());
+				for (int i = 0; i < msg->cards(); ++i)
+					removeJudgeAtIndex(sourcePlayerIndex, msg->trans(i)->type());
 				break;
+
 			default:
 				break;
 			}
@@ -443,11 +446,11 @@ void MainWindow::TransCardMsgReceived(const sgs::Derive::TransCardMessage * mess
 	}
 	else
 	{
-		if (message->fromtype() == sgs::ConstData::DESK && m_wugufengdengBox->isVisible())
+		if (msg->fromtype() == sgs::ConstData::DESK && m_wugufengdengBox->isVisible())
 		{
 			fromWugu = true;
-			for (int i = 0; i < message->cards(); ++i)
-				wuguPoint[i] = m_wugufengdengBox->removeCard(message->pos(i));
+			for (int i = 0; i < msg->cards(); ++i)
+				wuguPoint[i] = m_wugufengdengBox->removeCard(msg->pos(i));
 		}
 		else
 		{
@@ -455,12 +458,15 @@ void MainWindow::TransCardMsgReceived(const sgs::Derive::TransCardMessage * mess
 		}
 	}
 
+	bool addCardsToShoupai = false;
+	bool abandonCards = false;
 	int targetPlayerIndex = 0;
+	sgs::DataType::Player * toPlayer = msg->to();
 	if (toPlayer)
 	{
 		targetPlayerIndex = toPlayer->seat() + 1;
 		abandonCards = false;
-		if (message->tojudge())
+		if (msg->tojudge())
 		{
 			targetPoint = judgePointAtIndex(targetPlayerIndex);
 		}
@@ -477,7 +483,7 @@ void MainWindow::TransCardMsgReceived(const sgs::Derive::TransCardMessage * mess
 	}
 	else
 	{
-		if (message->totype() == sgs::ConstData::POOLTOP)
+		if (msg->totype() == sgs::ConstData::POOLTOP)
 		{
 			targetPoint = cardDeckPoint();
 			abandonCards = false;
@@ -502,7 +508,7 @@ void MainWindow::TransCardMsgReceived(const sgs::Derive::TransCardMessage * mess
 	ShoupaiButton * shoupaiToRemove = 0;
 	for (int i = 0; i < cardCount; ++i)
 	{
-		card = message->trans(i);
+		card = msg->trans(i);
 		if (removeCardsFromShoupai)
 		{
 			shoupaiToRemove = goToCard(card);
@@ -517,18 +523,17 @@ void MainWindow::TransCardMsgReceived(const sgs::Derive::TransCardMessage * mess
 		if (toPlayerArea)
 			targetPoint += QPoint(15, 0);
 
-		if (fromWugu)
-		{
-			m_cardAnimation->addCard(wuguPoint[i], targetPoint,
-								   (open ? new CardFrame(card->type(), card->color(), card->number(), this)
-										 : new CardFrame(this)), abandonCards);
-		}
+		bool isOpen = msg->open();
+		CardFrame * cardFrame = NULL;
+		if (isOpen)
+			cardFrame = new CardFrame(card->type(), card->color(), card->number(), this);
 		else
-		{
-			m_cardAnimation->addCard(sourcePoint, targetPoint,
-								   (open ? new CardFrame(card->type(), card->color(), card->number(), this)
-										 : new CardFrame(this)), abandonCards);
-		}
+			cardFrame = new CardFrame(this);
+
+		if (fromWugu)
+			m_cardAnimation->addCard(wuguPoint[i], targetPoint, cardFrame, abandonCards);
+		else
+			m_cardAnimation->addCard(sourcePoint, targetPoint, cardFrame, abandonCards);
 	}
 
 	// remove should be done before animation
@@ -545,16 +550,16 @@ void MainWindow::TransCardMsgReceived(const sgs::Derive::TransCardMessage * mess
 	{
 		for (int i = 0; i < cardCount; ++i)
 		{
-			card = message->trans(i);
+			card = msg->trans(i);
 			addShoupai(card);
 		}
 	}
 
 	if (toPlayerArea)
-		otherPlayerAreaAtIndex(targetPlayerIndex)->setShoupaiNumber(message->to()->handnum());
+		otherPlayerAreaAtIndex(targetPlayerIndex)->setShoupaiNumber(msg->to()->handnum());
 
 	if (toJudge)
-		addJudgeAtIndex(toPlayer->seat() + 1, message->trans(0)->type());
+		addJudgeAtIndex(targetPlayerIndex, msg->trans(0)->type());
 
 // TODO change Zhuangbei
 // TODO printHistory
@@ -562,9 +567,9 @@ void MainWindow::TransCardMsgReceived(const sgs::Derive::TransCardMessage * mess
 	printDebug("MainWindow::MTransCardReceived: over");
 }
 
-void MainWindow::SwitchPhaseMsgReceived(const sgs::Derive::SwitchPhaseMessage * message)
+void MainWindow::SwitchPhaseMsgReceived(const sgs::Derive::SwitchPhaseMessage * msg)
 {
-	int targetPlayerIndex = message->from()->seat() + 1;
+	int targetPlayerIndex = msg->from()->seat() + 1;
 	if (m_currentPlayerSeat + 1 != targetPlayerIndex && m_currentPlayerSeat >= 0)
 	{
 		// currentPlayerSeat is set to -1 when initializing
@@ -573,29 +578,29 @@ void MainWindow::SwitchPhaseMsgReceived(const sgs::Derive::SwitchPhaseMessage * 
 
 	if (targetPlayerIndex != m_playerIndex)
 	{
-		otherPlayerAreaAtIndex(targetPlayerIndex)->setPhase(message->after());
+		otherPlayerAreaAtIndex(targetPlayerIndex)->setPhase(msg->after());
 
 		// sleep some time to make the phase change visible
 		sleepSomeTime(GUIStaticData::switchPhaseDuration);
 	}
 }
 
-void MainWindow::DyingMsgReceived(const sgs::Derive::DyingMessage * message)
+void MainWindow::DyingMsgReceived(const sgs::Derive::DyingMessage * msg)
 {
 	using sgs::ExternData::gamedata;
-	setDying(message->from()->seat() + 1, true);
+	setDying(msg->from()->seat() + 1, true);
 	sleepSomeTime(GUIStaticData::dyingDuration);
 }
 
-void MainWindow::KillMsgReceived(const sgs::Derive::KillMessage * message)
+void MainWindow::KillMsgReceived(const sgs::Derive::KillMessage * msg)
 {
-	bool fromGod = !(message->from());
-	sgs::ConstData::HeroType sourceHero, targetHero = message->to()->type();
+	bool fromGod = !(msg->from());
+	sgs::ConstData::HeroType sourceHero, targetHero = msg->to()->type();
 	if (!fromGod)
-		sourceHero = message->from()->type();
+		sourceHero = msg->from()->type();
 
-	setDead(message->to()->seat() + 1);
-	roleFrame->setDead(message->to()->role());
+	setDead(msg->to()->seat() + 1);
+	roleFrame->setDead(msg->to()->role());
 	m_audioPlayer->playSound(targetHero);
 
 	QString historyMessage(wujiangDisplayName(targetHero)
@@ -605,30 +610,31 @@ void MainWindow::KillMsgReceived(const sgs::Derive::KillMessage * message)
 	sleepSomeTime(GUIStaticData::killDuration);
 }
 
-void MainWindow::JudgeMsgReceived(const sgs::Derive::JudgeMessage * message)
+void MainWindow::JudgeMsgReceived(const sgs::Derive::JudgeMessage * msg)
 {
-	sgs::ConstData::HeroType heroType = message->from()->type();
-	sgs::ConstData::CardType cardType = message->result()->type();
-	sgs::ConstData::CardColor cardColor = message->result()->color();
-	int number = message->result()->number();
-	m_cardAnimation->addCard(cardDeckPoint(), usedCardPoint(), new CardFrame(heroType, cardType, cardColor, number, message->effect(), this), true);
+	sgs::ConstData::CardType cardType = msg->result()->type();
+	sgs::ConstData::CardColor cardColor = msg->result()->color();
+	sgs::ConstData::HeroType heroType = msg->from()->type();
+	int number = msg->result()->number();
+	CardFrame * cardFrame = new CardFrame(heroType, cardType, cardColor, number, msg->effect(), this);
+	m_cardAnimation->addCard(cardDeckPoint(), usedCardPoint(), cardFrame, true);
 	m_cardAnimation->runAnimation();
 
 	QString historyString(wujiangDisplayName(heroType));
-	if (message->cardJudge())
+	if (msg->cardJudge())
 	{
 		historyString.append(trUtf8("的判定牌"));
-		historyString.append(cardFullDisplayName(message->card()));
+		historyString.append(cardFullDisplayName(msg->card()));
 		historyString.append(trUtf8("判定结果为"));
 	}
 	else
 	{
-		historyString.append(skillDisplayName(message->skill()));
+		historyString.append(skillDisplayName(msg->skill()));
 		historyString.append(trUtf8("判定结果为"));
 	}
 
-	historyString.append(cardFullDisplayName(message->result()));
-	historyString.append(message->effect() ? GUIStaticData::judgePositive : GUIStaticData::judgeNegative);
+	historyString.append(cardFullDisplayName(msg->result()));
+	historyString.append(msg->effect() ? GUIStaticData::judgePositive : GUIStaticData::judgeNegative);
 	printHistory(historyString);
 }
 
