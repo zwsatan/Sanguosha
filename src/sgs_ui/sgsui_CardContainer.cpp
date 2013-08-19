@@ -8,7 +8,7 @@
 
 namespace sgsui {
 
-QSize CardContainer::m_fixedSize(700, 346);
+QSize CardContainer::ms_fixedSize(700, 346);
 
 CardContainer::CardContainer(QWidget *parent)
 	: BlockingFrame(parent)
@@ -24,7 +24,7 @@ CardContainer::CardContainer(QWidget *parent)
 {
 	setupUi(this);
 
-	setFixedSize(m_fixedSize);
+	setFixedSize(ms_fixedSize);
 
 	okButton->setEnabledPixmap(QPixmap("images/button/ok.png"));
 	okButton->setDisabledPixmap(QPixmap("images/button/ok-disabled.png"));

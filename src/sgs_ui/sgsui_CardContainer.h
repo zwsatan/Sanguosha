@@ -18,6 +18,7 @@ class CardContainer
 {
 	Q_OBJECT
 
+
 public:
 	explicit CardContainer(QWidget *parent = 0);
 	virtual ~CardContainer();

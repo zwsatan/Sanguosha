@@ -9,6 +9,7 @@ namespace sgsui {
 class CardFrame : public QWidget
 {
 	Q_OBJECT
+
 public:
 	CardFrame(sgs::ConstData::CardType cardType,
 			  sgs::ConstData::CardColor cardColor,

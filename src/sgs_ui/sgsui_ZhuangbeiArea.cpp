@@ -5,29 +5,29 @@
 
 namespace sgsui {
 
-const QSize ZhuangbeiArea::fixedSize(164, 170);
+const QSize ZhuangbeiArea::ms_fixedSize(164, 170);
 
 ZhuangbeiArea::ZhuangbeiArea(MainWindow * mainWindowPtr, QWidget * parent)
 	: QWidget(parent)
-	, mainWindow(mainWindowPtr)
-	, wuqiCard(0)
-	, fangjuCard(0)
-	, jianmaCard(0)
-	, jiamaCard(0)
-	, wuqiPic(0)
-	, fangjuPic(0)
-	, jianmaPic(0)
-	, jiamaPic(0)
-	, lebuPixmap("images/status/indulgence.png")
-	, shandianPixmap("images/status/lightning.png")
-	, bingliangPixmap("images/status/supply_shortage.png") // 兵粮寸断图片缺失
+	, m_mainWindow(mainWindowPtr)
+	, m_wuqiCard(0)
+	, m_fangjuCard(0)
+	, m_jianmaCard(0)
+	, m_jiamaCard(0)
+	, m_wuqiPic(0)
+	, m_fangjuPic(0)
+	, m_jianmaPic(0)
+	, m_jiamaPic(0)
+	, m_lebuPixmap("images/status/indulgence.png")				// 乐不思蜀图片
+	, m_shandianPixmap("images/status/lightning.png")			// 闪电图片
+	, m_bingliangPixmap("images/status/supply_shortage.png")	// 兵粮寸断图片缺失
 {
 	setupUi(this);
-	setFixedSize(fixedSize);
+	setFixedSize(ms_fixedSize);
 
-	judgeLabel[0] = judge0;
-	judgeLabel[1] = judge1;
-	judgeLabel[2] = judge2;
+	m_judgeLabel[0] = judge0;
+	m_judgeLabel[1] = judge1;
+	m_judgeLabel[2] = judge2;
 
 	judge0->hide();
 	judge1->hide();
@@ -36,42 +36,42 @@ ZhuangbeiArea::ZhuangbeiArea(MainWindow * mainWindowPtr, QWidget * parent)
 
 const CardFrame * ZhuangbeiArea::getWuqi() const
 {
-	return wuqiCard;
+	return m_wuqiCard;
 }
 
 const CardFrame * ZhuangbeiArea::getFangju() const
 {
-	return fangjuCard;
+	return m_fangjuCard;
 }
 
 const CardFrame * ZhuangbeiArea::getJianma() const
 {
-	return jianmaCard;
+	return m_jianmaCard;
 }
 
 const CardFrame * ZhuangbeiArea::getJiama() const
 {
-	return jiamaCard;
+	return m_jiamaCard;
 }
 
 ZhuangbeiPic * ZhuangbeiArea::getWuqiPic() const
 {
-	return wuqiPic;
+	return m_wuqiPic;
 }
 
 ZhuangbeiPic * ZhuangbeiArea::getFangjuPic() const
 {
-	return fangjuPic;
+	return m_fangjuPic;
 }
 
 ZhuangbeiPic * ZhuangbeiArea::getJianmaPic() const
 {
-	return jianmaPic;
+	return m_jianmaPic;
 }
 
 ZhuangbeiPic * ZhuangbeiArea::getJiamaPic() const
 {
-	return jiamaPic;
+	return m_jiamaPic;
 }
 
 bool ZhuangbeiArea::isSelected(int zhuangbeiIndex)
@@ -79,28 +79,29 @@ bool ZhuangbeiArea::isSelected(int zhuangbeiIndex)
 	switch (zhuangbeiIndex)
 	{
 	case 0:
-		if (wuqiPic)
-			return wuqiPic->isSelected();
-		printDebug("<font color=red><b>Warning: </b></font>"
-				   "ZhuangbeiArea::isSelected: trying to get the status of weapon, while there is no weapon!");
+		if (m_wuqiPic)
+			m_wuqiPic->isSelected();
+		else
+			printDebug("<font color=red><b>Warning: </b></font>"
+					   "ZhuangbeiArea::isSelected: trying to get the status of weapon, while there is no weapon!");
 		break;
 	case 1:
-		if (fangjuPic)
-			fangjuPic->isSelected();
+		if (m_fangjuPic)
+			m_fangjuPic->isSelected();
 		else
 			printDebug("<font color=red><b>Warning: </b></font>"
 					   "ZhuangbeiArea::isSelected: trying to get the status of armor, while there is no armor!");
 		break;
 	case 2:
-		if (jianmaPic)
-			jianmaPic->isSelected();
+		if (m_jianmaPic)
+			m_jianmaPic->isSelected();
 		else
 			printDebug("<font color=red><b>Warning: </b></font>"
 					   "ZhuangbeiArea::isSelected: trying to get the status of dfdhorse, while there is no dfdhorse!");
 		break;
 	case 3:
-		if (jiamaPic)
-			jiamaPic->isSelected();
+		if (m_jiamaPic)
+			m_jiamaPic->isSelected();
 		else
 			printDebug("<font color=red><b>Warning: </b></font>"
 					   "ZhuangbeiArea::isSelected: trying to get the status of atkhorse, while there is no atkhorse!");
@@ -118,28 +119,28 @@ bool ZhuangbeiArea::isSelectable(int zhuangbeiIndex)
 	switch (zhuangbeiIndex)
 	{
 	case 0:
-		if (wuqiPic)
-			return wuqiPic->isSelectable();
+		if (m_wuqiPic)
+			return m_wuqiPic->isSelectable();
 		printDebug("<font color=red><b>Warning: </b></font>"
 				   "ZhuangbeiArea::isSelectable: trying to get the status of weapon, while there is no weapon!");
 		break;
 	case 1:
-		if (fangjuPic)
-			fangjuPic->isSelectable();
+		if (m_fangjuPic)
+			m_fangjuPic->isSelectable();
 		else
 			printDebug("<font color=red><b>Warning: </b></font>"
 					   "ZhuangbeiArea::isSelectable: trying to get the status of armor, while there is no armor!");
 		break;
 	case 2:
-		if (jianmaPic)
-			jianmaPic->isSelectable();
+		if (m_jianmaPic)
+			m_jianmaPic->isSelectable();
 		else
 			printDebug("<font color=red><b>Warning: </b></font>"
 					   "ZhuangbeiArea::isSelectable: trying to get the status of dfdhorse, while there is no dfdhorse!");
 		break;
 	case 3:
-		if (jiamaPic)
-			jiamaPic->isSelectable();
+		if (m_jiamaPic)
+			m_jiamaPic->isSelectable();
 		else
 			printDebug("<font color=red><b>Warning: </b></font>"
 					   "ZhuangbeiArea::isSelectable: trying to get the status of atkhorse, while there is no atkhorse!");
@@ -157,29 +158,29 @@ void ZhuangbeiArea::setSelected(int zhuangbeiIndex, bool selected, bool force/* 
 	switch (zhuangbeiIndex)
 	{
 	case 0:
-		if (wuqiPic)
-			wuqiPic->setSelected(selected);
+		if (m_wuqiPic)
+			m_wuqiPic->setSelected(selected);
 		else if (!force)
 			printDebug("<font color=red><b>Warning: </b></font>"
 					   "ZhuangbeiArea::setSelected: trying to change the status of weapon, while there is no weapon!");
 		break;
 	case 1:
-		if (fangjuPic)
-			fangjuPic->setSelected(selected);
+		if (m_fangjuPic)
+			m_fangjuPic->setSelected(selected);
 		else if (!force)
 			printDebug("<font color=red><b>Warning: </b></font>"
 					   "ZhuangbeiArea::setSelected: trying to change the status of armor, while there is no armor!");
 		break;
 	case 2:
-		if (jianmaPic)
-			jianmaPic->setSelected(selected);
+		if (m_jianmaPic)
+			m_jianmaPic->setSelected(selected);
 		else if (!force)
 			printDebug("<font color=red><b>Warning: </b></font>"
 					   "ZhuangbeiArea::setSelected: trying to change the status of dfdhorse, while there is no dfdhorse!");
 		break;
 	case 3:
-		if (jiamaPic)
-			jiamaPic->setSelected(selected);
+		if (m_jiamaPic)
+			m_jiamaPic->setSelected(selected);
 		else if (!force)
 			printDebug("<font color=red><b>Warning: </b></font>"
 					   "ZhuangbeiArea::setSelected: trying to change the status of atkhorse, while there is no atkhorse!");
@@ -196,32 +197,32 @@ void ZhuangbeiArea::setSelectable(int zhuangbeiIndex, bool selectable, bool forc
 	switch (zhuangbeiIndex)
 	{
 	case 0:
-		if (wuqiPic)
-			wuqiPic->setSelectable(selectable);
+		if (m_wuqiPic)
+			m_wuqiPic->setSelectable(selectable);
 		else if (!force)
 			printDebug("<font color=red><b>Warning: </b></font>"
 					   "ZhuangbeiArea::setSelectable: trying to change the status of weapon, while there is no weapon!");
 		break;
 
 	case 1:
-		if (fangjuPic)
-			fangjuPic->setSelectable(selectable);
+		if (m_fangjuPic)
+			m_fangjuPic->setSelectable(selectable);
 		else if (!force)
 			printDebug("<font color=red><b>Warning: </b></font>"
 					   "ZhuangbeiArea::setSelectable: trying to change the status of armor, while there is no armor!");
 		break;
 
 	case 2:
-		if (jianmaPic)
-			jianmaPic->setSelectable(selectable);
+		if (m_jianmaPic)
+			m_jianmaPic->setSelectable(selectable);
 		else if (!force)
 			printDebug("<font color=red><b>Warning: </b></font>"
 					   "ZhuangbeiArea::setSelectable: trying to change the status of dfdhorse, while there is no dfdhorse!");
 		break;
 
 	case 3:
-		if (jiamaPic)
-			jiamaPic->setSelectable(selectable);
+		if (m_jiamaPic)
+			m_jiamaPic->setSelectable(selectable);
 		else if (!force)
 			printDebug("<font color=red><b>Warning: </b></font>"
 					   "ZhuangbeiArea::setSelectable: trying to change the status of atkhorse, while there is no atkhorse!");
@@ -236,140 +237,147 @@ void ZhuangbeiArea::setSelectable(int zhuangbeiIndex, bool selectable, bool forc
 
 void ZhuangbeiArea::addWuqi(CardFrame * newWuqiCard)
 {
-	if (wuqiCard)
+	if (m_wuqiCard)
 	{
-		delete wuqiCard;
-		delete wuqiPic;
+		delete m_wuqiCard;
+		delete m_wuqiPic;
 	}
 
-	wuqiCard = newWuqiCard;
-	wuqiPic = new ZhuangbeiPic(wuqiCard, mainWindow, wuqiWidget);
-	wuqiPic->show();
+	m_wuqiCard = newWuqiCard;
+	m_wuqiPic = new ZhuangbeiPic(m_wuqiCard, m_mainWindow, wuqiWidget);
+	m_wuqiPic->show();
 }
 
 void ZhuangbeiArea::addFangju(CardFrame * newFangjuCard)
 {
-	if (fangjuCard)
+	if (m_fangjuCard)
 	{
-		delete fangjuCard;
-		delete fangjuPic;
+		delete m_fangjuCard;
+		delete m_fangjuPic;
 	}
 
-	fangjuCard = newFangjuCard;
-	fangjuPic = new ZhuangbeiPic(fangjuCard, mainWindow, fangjuWidget);
-	fangjuPic->show();
+	m_fangjuCard = newFangjuCard;
+	m_fangjuPic = new ZhuangbeiPic(m_fangjuCard, m_mainWindow, fangjuWidget);
+	m_fangjuPic->show();
 }
 
 void ZhuangbeiArea::addJianma(CardFrame * newJianmaCard)
 {
-	if (jianmaCard)
+	if (m_jianmaCard)
 	{
-		delete jianmaCard;
-		delete jianmaPic;
+		delete m_jianmaCard;
+		delete m_jianmaPic;
 	}
 
-	jianmaCard = newJianmaCard;
-	jianmaPic = new ZhuangbeiPic(jianmaCard, mainWindow, jianmaWidget);
-	jianmaPic->show();
+	m_jianmaCard = newJianmaCard;
+	m_jianmaPic = new ZhuangbeiPic(m_jianmaCard, m_mainWindow, jianmaWidget);
+	m_jianmaPic->show();
 }
 
 void ZhuangbeiArea::addJiama(CardFrame *newJiamaCard)
 {
-	if (jiamaCard)
+	if (m_jiamaCard)
 	{
-		delete jiamaCard;
-		delete jiamaPic;
+		delete m_jiamaCard;
+		delete m_jiamaPic;
 	}
 
-	jiamaCard = newJiamaCard;
-	jiamaPic = new ZhuangbeiPic(jiamaCard, mainWindow, jiamaWidget);
-	jiamaPic->show();
+	m_jiamaCard = newJiamaCard;
+	m_jiamaPic = new ZhuangbeiPic(m_jiamaCard, m_mainWindow, jiamaWidget);
+	m_jiamaPic->show();
 }
 
 void ZhuangbeiArea::removeWuqi()
 {
-	if (wuqiCard)
+	if (m_wuqiCard)
 	{
-		delete wuqiCard;
-		delete wuqiPic;
+		delete m_wuqiCard;
+		delete m_wuqiPic;
 	}
 
-	wuqiPic = 0;
-	wuqiCard = 0;
+	m_wuqiPic = 0;
+	m_wuqiCard = 0;
 }
 
 void ZhuangbeiArea::removeFangju()
 {
-	if (fangjuCard)
+	if (m_fangjuCard)
 	{
-		delete fangjuCard;
-		delete fangjuPic;
+		delete m_fangjuCard;
+		delete m_fangjuPic;
 	}
 
-	fangjuPic = 0;
-	fangjuCard = 0;
+	m_fangjuPic = 0;
+	m_fangjuCard = 0;
 }
 
 void ZhuangbeiArea::removeJianma()
 {
-	if (jianmaCard)
+	if (m_jianmaCard)
 	{
-		delete jianmaCard;
-		delete jianmaPic;
+		delete m_jianmaCard;
+		delete m_jianmaPic;
 	}
 
-	jianmaPic = 0;
-	jianmaCard = 0;
+	m_jianmaPic = 0;
+	m_jianmaCard = 0;
 }
 
 void ZhuangbeiArea::removeJiama()
 {
-	if (jiamaCard)
+	if (m_jiamaCard)
 	{
-		delete jiamaCard;
-		delete jiamaPic;
+		delete m_jiamaCard;
+		delete m_jiamaPic;
 	}
 
-	jiamaPic = 0;
-	jiamaCard = 0;
+	m_jiamaPic = 0;
+	m_jiamaCard = 0;
 }
 
 void ZhuangbeiArea::addJudge(sgs::ConstData::CardType judgeCard)
 {
-	judgeList.push_back(judgeCard);
+	m_judgeList.push_back(judgeCard);
 	refreshJudge();
 }
 
 void ZhuangbeiArea::removeJudge(sgs::ConstData::CardType judgeCard)
 {
-	judgeList.remove(judgeCard);
+	m_judgeList.remove(judgeCard);
 	refreshJudge();
 }
 
 void ZhuangbeiArea::refreshJudge()
 {
-	int i = 0;
-	for (auto iter = judgeList.begin(); iter != judgeList.end(); ++iter, ++i)
+	for (int i = 0; i < 3; ++i)
+		m_judgeLabel[i]->hide();
+
+	int index = 0;
+	for (auto iter = m_judgeList.begin(); iter != m_judgeList.end(); ++iter)
 	{
+		const QPixmap * pix =	NULL;
 		switch (*iter)
 		{
 		case sgs::ConstData::SHANDIAN:
-			judgeLabel[i]->setPixmap(shandianPixmap);
+			pix = &m_shandianPixmap;
 			break;
 		case sgs::ConstData::SISHU:
-			judgeLabel[i]->setPixmap(lebuPixmap);
+			pix = &m_lebuPixmap;
 			break;
 		case sgs::ConstData::BINGLIANG:
-			judgeLabel[i]->setPixmap(bingliangPixmap);
+			pix = &m_bingliangPixmap;
 			break;
 		default:
 			break;
 		}
-		judgeLabel[i]->show();
-	}
 
-	for (; i < 3; ++i)
-		judgeLabel[i]->hide();
+		if (pix)
+		{
+			m_judgeLabel[index]->setPixmap(*pix);
+			m_judgeLabel[index]->show();
+			++index;
+		}
+	}
 }
 
 } /* namespace sgsui */

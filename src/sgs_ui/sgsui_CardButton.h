@@ -12,6 +12,7 @@ class AbstractCardContainer;
 class CardButton : public QFrame, protected Ui::CardButton
 {
 	Q_OBJECT
+
 public:
 	CardButton(const sgs::DataType::Card * platformCard,
 			   AbstractCardContainer * container,

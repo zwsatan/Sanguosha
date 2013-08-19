@@ -290,7 +290,8 @@ void MainWindow::createPlayers()
 		}
 	}
 
-	connect(m_wujiangArea, SIGNAL(skillClicked(sgs::ConstData::HeroSkill, int)), this, SLOT(skillClicked(sgs::ConstData::HeroSkill, int)));
+	connect(m_wujiangArea, SIGNAL(skillClicked(sgs::ConstData::HeroSkill, int)),
+			this, SLOT(skillClicked(sgs::ConstData::HeroSkill, int)));
 
 	QApplication::processEvents();
 

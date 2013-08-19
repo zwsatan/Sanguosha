@@ -11,6 +11,7 @@ namespace sgsui {
 class BlockTimer : public QObject
 {
 	Q_OBJECT
+
 public:
 	explicit BlockTimer(QObject * parent);
 	virtual ~BlockTimer();

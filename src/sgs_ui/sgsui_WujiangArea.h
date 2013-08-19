@@ -15,7 +15,7 @@ class WujiangArea
 		, protected Ui::WujiangArea
 		, public AbstractPlayerArea
 {
-Q_OBJECT
+	Q_OBJECT
 
 public:
 	WujiangArea(int playerIndex, QWidget * parent);

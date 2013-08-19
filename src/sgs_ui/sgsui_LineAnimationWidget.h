@@ -21,7 +21,7 @@ public:
 public slots:
 	void lineAnimation(const QPoint &source,
 					   const std::vector<QPoint> &targetVec,
-					   int duration/* = GUIStaticData::lineAnimationDuration*/);
+					   int duration = GUIStaticData::lineAnimationDuration);
 
 private:
 	void paintEvent(QPaintEvent*);

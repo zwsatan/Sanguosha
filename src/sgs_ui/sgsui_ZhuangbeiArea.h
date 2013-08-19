@@ -46,26 +46,28 @@ public:
 
 private:
 	void refreshJudge();
-	MainWindow * mainWindow;
 
-	CardFrame * wuqiCard;
-	CardFrame * fangjuCard;
-	CardFrame * jianmaCard;
-	CardFrame * jiamaCard;
+private:
+	MainWindow *									m_mainWindow;
 
-	ZhuangbeiPic * wuqiPic;
-	ZhuangbeiPic * fangjuPic;
-	ZhuangbeiPic * jianmaPic;
-	ZhuangbeiPic * jiamaPic;
+	CardFrame *										m_wuqiCard;
+	CardFrame *										m_fangjuCard;
+	CardFrame *										m_jianmaCard;
+	CardFrame *										m_jiamaCard;
 
-	const QPixmap lebuPixmap;
-	const QPixmap shandianPixmap;
-	const QPixmap bingliangPixmap;
+	ZhuangbeiPic *									m_wuqiPic;
+	ZhuangbeiPic *									m_fangjuPic;
+	ZhuangbeiPic *									m_jianmaPic;
+	ZhuangbeiPic *									m_jiamaPic;
 
-	std::list<sgs::ConstData::CardType> judgeList;
-	QLabel * judgeLabel[3];
+	const QPixmap									m_lebuPixmap;
+	const QPixmap									m_shandianPixmap;
+	const QPixmap									m_bingliangPixmap;
 
-	const static QSize fixedSize;
+	std::list<sgs::ConstData::CardType>				m_judgeList;
+	QLabel *										m_judgeLabel[3];
+
+	const static QSize								ms_fixedSize;
 };
 
 } /* namespace sgsui */
