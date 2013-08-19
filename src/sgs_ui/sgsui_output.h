@@ -1,10 +1,3 @@
-/*
- * sgsui_output.h
- *
- *  Created on: Mar 25, 2012
- *      Author: latios
- */
-
 #ifndef SGSUI_OUTPUT_H_
 #define SGSUI_OUTPUT_H_
 

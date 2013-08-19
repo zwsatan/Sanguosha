@@ -5,10 +5,10 @@
 
 namespace sgsui {
 
-class SkillButton: public BlockableButton
+class SkillButton : public BlockableButton
 {
 public:
-	SkillButton(QString Skilltext, QWidget *parent = 0);
+	SkillButton(QString Skilltext, QWidget * parent = 0);
 	explicit SkillButton(QWidget * parent = 0);
 };
 

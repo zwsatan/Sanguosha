@@ -51,7 +51,8 @@ const CardFrame* CardButton::card() const
 
 void CardButton::click()
 {
-	QMouseEvent temp(QEvent::MouseButtonRelease, QPoint(width() / 2, height() / 2), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+	QPoint pos(width() / 2, height() / 2);
+	QMouseEvent temp(QEvent::MouseButtonRelease, pos, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
 	mousePressEvent(&temp);
 	mouseReleaseEvent(&temp);
 }
@@ -87,7 +88,8 @@ void CardButton::setSelectable(bool selectable/* = true*/)
 	m_cardFrame->setNotDimed(m_cardSelectable);
 }
 
-void CardButton::setUnselectable(bool unselectable) {
+void CardButton::setUnselectable(bool unselectable/* = true*/)
+{
 	setSelectable(!unselectable);
 }
 

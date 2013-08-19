@@ -7,11 +7,10 @@
 
 namespace sgsui {
 
-class FanjianBox
-		: public BlockingFrame
-		, protected Ui::FanjianBox
+class FanjianBox : public BlockingFrame, protected Ui::FanjianBox
 {
-Q_OBJECT
+	Q_OBJECT
+
 public:
 	explicit FanjianBox(QWidget * parent = 0);
 	sgs::ConstData::CardColor getFanjianColor();

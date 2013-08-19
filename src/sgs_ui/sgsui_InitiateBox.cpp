@@ -12,15 +12,15 @@ char datamain(int playerNumber);
 
 namespace sgsui {
 
-const QSize InitiateBox::fixedSize(400, 300);
-const QString InitiateBox::playAgain(trUtf8("再来一局"));
+const QSize InitiateBox::ms_fixedSize(400, 300);
+const QString InitiateBox::ms_playAgain(trUtf8("再来一局"));
 
 InitiateBox::InitiateBox()
-	: roleViewer(0)
+	: m_roleViewer(0)
 {
 	setWindowIcon(QIcon("images/icon.png"));
 	setupUi(this);
-	setFixedSize(fixedSize);
+	setFixedSize(ms_fixedSize);
 
 	QApplication::setApplicationName("SanguoshaEX");
 	QApplication::setOverrideCursor(QCursor(QPixmap("images/cursor/1.png")));
@@ -32,14 +32,14 @@ InitiateBox::InitiateBox()
 
 InitiateBox::~InitiateBox()
 {
-	if (roleViewer)
-		delete roleViewer;
+	if (m_roleViewer)
+		delete m_roleViewer;
 }
 
 void InitiateBox::start()
 {
-	if (roleViewer)
-		roleViewer->hide();
+	if (m_roleViewer)
+		m_roleViewer->hide();
 
 	int options = 0, package = 0;
 
@@ -88,15 +88,15 @@ void InitiateBox::start()
 	mainWindow->gameOver(result); // show game result
 	delete mainWindow;
 
-	startButton->setText(playAgain);
+	startButton->setText(ms_playAgain);
 	show();
 }
 
 void InitiateBox::showRoleViewer()
 {
-	if (!roleViewer)
-		roleViewer = new RoleViewer();
-	roleViewer->show();
+	if (!m_roleViewer)
+		m_roleViewer = new RoleViewer();
+	m_roleViewer->show();
 }
 
 void InitiateBox::closeEvent(QCloseEvent *event)

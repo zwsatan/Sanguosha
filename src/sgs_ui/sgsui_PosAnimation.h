@@ -21,6 +21,7 @@ class CardFrame;
 class PosAnimation : public QObject
 {
 	Q_OBJECT
+
 public:
 	PosAnimation(QFrame * usedCardFrame, QHBoxLayout * usedCardLayout, QObject * parent = 0);
 	~PosAnimation();

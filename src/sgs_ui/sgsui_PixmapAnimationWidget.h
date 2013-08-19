@@ -13,7 +13,8 @@ namespace sgsui {
 
 class PixmapAnimationWidget : public QLabel
 {
-Q_OBJECT
+	Q_OBJECT
+
 public:
 	explicit PixmapAnimationWidget(QWidget * parent = 0);
 	~PixmapAnimationWidget();

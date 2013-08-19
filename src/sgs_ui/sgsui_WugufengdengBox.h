@@ -16,7 +16,7 @@ class WugufengdengBox
 		, protected AbstractCardContainer
 {
 public:
-	explicit WugufengdengBox(QWidget *parent = 0);
+	explicit WugufengdengBox(QWidget * parent = 0);
 
 	void showContainer(const std::vector<std::pair<const sgs::DataType::Card *, bool> > &wugoInfo);
 	QPoint removeCard(int index);

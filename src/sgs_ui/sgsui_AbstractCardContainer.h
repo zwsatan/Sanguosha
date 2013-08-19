@@ -15,10 +15,9 @@ class CardButton;
 class AbstractCardContainer
 {
 public:
+	virtual ~AbstractCardContainer() {}
+
 	virtual void cardClicked(CardButton* clickedCard) = 0;
-	virtual ~AbstractCardContainer()
-	{
-	}
 };
 
 } /* namespace sgsui */

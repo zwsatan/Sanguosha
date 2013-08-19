@@ -9,20 +9,18 @@ class QTimer;
 
 namespace sgsui {
 
-class BlockingFrame: public QFrame
+class BlockingFrame : public QFrame
 {
-Q_OBJECT
+	Q_OBJECT
 
 public:
 	explicit BlockingFrame(QWidget * parent = 0);
+	virtual ~BlockingFrame() {}
 
 	// this function should be overrided by any child class that need to process Enter key
 	virtual void enterKeyPressedEvent();
 	// this function should be overrided by any child class that need to process ESC key
 	virtual void escapeKeyPressedEvent();
-	virtual ~BlockingFrame()
-	{
-	}
 
 protected slots:
 	void exec(bool hide = true);

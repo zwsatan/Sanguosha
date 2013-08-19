@@ -15,10 +15,10 @@ public:
 	static void terminateAllLoops();
 
 private:
-	QEventLoop blocker;
+	QEventLoop							m_blocker;
 
-	static std::list<QEventLoop *> blockLoopList;
-	static bool isTerminated;
+	static std::list<QEventLoop *>		ms_blockLoopList;
+	static bool							ms_isTerminated;
 };
 
 } /* namespace sgsui */

@@ -13,13 +13,12 @@ namespace sgsui {
 
 class CardFrame;
 
-class CardViewer
-		: public QFrame
-		, protected Ui::CardViewer
+class CardViewer : public QFrame, protected Ui::CardViewer
 {
 public:
 	CardViewer(QWidget * parent = 0);
-	void showViewer(const sgs::DataType::Card * _card1, const sgs::DataType::Card * card2);
+
+	void showViewer(const sgs::DataType::Card * card1, const sgs::DataType::Card * card2);
 	void showSecondViewer();
 
 private:

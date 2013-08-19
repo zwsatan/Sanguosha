@@ -95,7 +95,7 @@ CardPosPairVec CardContainer::chooseCard(
 
 CardPosPairVec CardContainer::chooseCard(
 		const QString &message,
-		sgs::DataType::Player *targetPlayer,
+		sgs::DataType::Player * targetPlayer,
 		bool handSelectable,
 		bool equipSelectable,
 		bool judgeSelectable,

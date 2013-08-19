@@ -7,13 +7,18 @@
 
 namespace sgsui {
 
-class DragableCardFrame: public CardFrame
+class DragableCardFrame : public CardFrame
 {
 public:
-	DragableCardFrame(QWidget * dragBorderWidget, AbstractDragProcessor * dragProcessor, const sgs::DataType::Card * card, const QPoint &pos);
+	DragableCardFrame(QWidget * dragBorderWidget,
+					  AbstractDragProcessor * dragProcessor,
+					  const sgs::DataType::Card * card,
+					  const QPoint &pos);
 
 	// NO pos version of constructor
-	DragableCardFrame(QWidget* dragBorderWidget, AbstractDragProcessor * dragProcessor, const sgs::DataType::Card * card);
+	DragableCardFrame(QWidget* dragBorderWidget,
+					  AbstractDragProcessor * dragProcessor,
+					  const sgs::DataType::Card * card);
 
 	const sgs::DataType::Card * card() const;
 	const QPoint& getLastPos() const;

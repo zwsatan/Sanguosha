@@ -3,14 +3,14 @@
 
 namespace sgsui {
 
-QSize AboutFrame::fixedSize(560, 346);
+QSize AboutFrame::ms_fixedSize(560, 346);
 
 AboutFrame::AboutFrame(QWidget *parent)
 	: BlockingFrame(parent)
 {
 	setupUi(this);
 
-	setFixedSize(fixedSize);
+	setFixedSize(ms_fixedSize);
 
 	okButton->setEnabledPixmap(QPixmap("images/button/ok.png"));
 	setStyleSheet("QFrame#AboutFrame{background-image:url(images/frame/aboutFrame.png)}");

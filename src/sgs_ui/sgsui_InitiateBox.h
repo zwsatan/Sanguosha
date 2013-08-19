@@ -9,9 +9,10 @@ namespace sgsui {
 
 class RoleViewer;
 
-class InitiateBox: public QDialog, protected Ui::InitiateBox
+class InitiateBox : public QDialog, protected Ui::InitiateBox
 {
 	Q_OBJECT
+
 public:
 	InitiateBox();
 	~InitiateBox();
@@ -25,10 +26,10 @@ private:
 	void keyPressEvent(QKeyEvent *event);
 
 private:
-	const static QSize fixedSize;
-	const static QString playAgain;
+	const static QSize			ms_fixedSize;
+	const static QString		ms_playAgain;
 
-	RoleViewer * roleViewer;
+	RoleViewer *				m_roleViewer;
 };
 
 } /* namespace sgsui */

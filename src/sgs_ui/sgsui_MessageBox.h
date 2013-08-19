@@ -8,9 +8,9 @@ class QGraphicsOpacityEffect;
 
 namespace sgsui {
 
-class SGSMessageBox: public QLabel
+class SGSMessageBox : public QLabel
 {
-Q_OBJECT
+	Q_OBJECT
 
 public:
 	explicit SGSMessageBox(QWidget * parent = 0);
@@ -24,13 +24,13 @@ private slots:
 	void fading();
 
 private:
-	qreal opacity;
-	QTimer * showTextTimer;
-	QTimer * fadeTimer;
-	QGraphicsOpacityEffect * tipEffect;
-	int textDuration;
+	qreal							m_opacity;
+	QTimer *						m_showTextTimer;
+	QTimer *						m_fadeTimer;
+	QGraphicsOpacityEffect *		m_tipEffect;
+	int								m_textDuration;
 
-	const static QSize fixedSize;
+	const static QSize				ms_fixedSize;
 };
 
 } /* namespace sgsui */

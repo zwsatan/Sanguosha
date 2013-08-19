@@ -10,11 +10,10 @@ namespace sgsui {
 
 class ZhuangbeiPic;
 
-class ZhuangbeiArea
-		: public QWidget
-		, protected Ui::ZhuangbeiArea
+class ZhuangbeiArea : public QWidget, protected Ui::ZhuangbeiArea
 {
-Q_OBJECT
+	Q_OBJECT
+
 public:
 	explicit ZhuangbeiArea(MainWindow * mainWindowPtr, QWidget * parent);
 

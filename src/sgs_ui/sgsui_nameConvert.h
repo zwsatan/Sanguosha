@@ -45,7 +45,10 @@ bool isJudgeCard(sgs::ConstData::CardType cardType);
 
 QString cardDisplayName(sgs::ConstData::CardType cardType);
 QString cardFullDisplayName(const sgs::DataType::Card * card, bool richText = true);
-QString cardFullDisplayName(sgs::ConstData::CardType cardType, sgs::ConstData::CardColor cardColor, int number, bool richText = true);
+QString cardFullDisplayName(sgs::ConstData::CardType cardType,
+							sgs::ConstData::CardColor cardColor,
+							int number,
+							bool richText = true);
 QString cardNumberChar(int number);
 QString zhuangbeiPixmapStr(sgs::ConstData::CardType cardType);
 QString smallZhuangbeiPixmapStr(sgs::ConstData::CardType cardType);

@@ -8,7 +8,7 @@ namespace sgsui {
 
 class WujiangChooseBox: public BlockingFrame, protected Ui::WujiangChooseBox
 {
-Q_OBJECT
+	Q_OBJECT
 
 public:
 	explicit WujiangChooseBox(QWidget *parent);

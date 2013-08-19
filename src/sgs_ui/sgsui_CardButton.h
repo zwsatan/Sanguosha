@@ -9,13 +9,14 @@ namespace sgsui {
 
 class AbstractCardContainer;
 
-class CardButton
-		: public QFrame
-		, protected Ui::CardButton
+class CardButton : public QFrame, protected Ui::CardButton
 {
-Q_OBJECT
+	Q_OBJECT
 public:
-	CardButton(const sgs::DataType::Card * platformCard, AbstractCardContainer * container, bool visible = true, QWidget *parent = 0);
+	CardButton(const sgs::DataType::Card * platformCard,
+			   AbstractCardContainer * container,
+			   bool visible = true,
+			   QWidget * parent = 0);
 
 	bool isSelected() const;
 	bool isSelectable() const;

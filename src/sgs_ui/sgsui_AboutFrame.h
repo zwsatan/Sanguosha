@@ -8,10 +8,10 @@ namespace sgsui {
 
 class AboutFrame : public BlockingFrame, protected Ui::AboutFrame
 {
-Q_OBJECT
+	Q_OBJECT
 
 public:
-	explicit AboutFrame(QWidget *parent = 0);
+	explicit AboutFrame(QWidget * parent = 0);
 	void enterKeyPressedEvent();
 	void escapeKeyPressedEvent();
 
@@ -19,7 +19,7 @@ public slots:
 	void showAboutInfo();
 
 private:
-	static QSize fixedSize;
+	static QSize ms_fixedSize;
 };
 
 } /* namespace sgsui */

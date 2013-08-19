@@ -68,7 +68,7 @@ class MainWindow
 		, public AbstractEquipProcessor
 		, public sgs::Interface
 {
-Q_OBJECT
+	Q_OBJECT
 public:
 	MainWindow();
 	~MainWindow();

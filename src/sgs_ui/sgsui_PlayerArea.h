@@ -17,7 +17,7 @@ class PlayerArea
 		, protected Ui::PlayerArea
 		, public AbstractPlayerArea
 {
-Q_OBJECT
+	Q_OBJECT
 
 public:
 	PlayerArea(int thisPlayerIndex, QWidget * parent);

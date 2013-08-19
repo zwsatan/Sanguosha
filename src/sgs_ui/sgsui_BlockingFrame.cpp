@@ -5,7 +5,7 @@
 
 namespace sgsui {
 
-BlockingFrame::BlockingFrame(QWidget *parent)
+BlockingFrame::BlockingFrame(QWidget * parent/* = 0*/)
 	: QFrame(parent)
 {
 	setFont(GUIStaticData::headingFont);
@@ -21,7 +21,7 @@ void BlockingFrame::escapeKeyPressedEvent()
 	// this function should be overrided by any child class that need to process ESC key
 }
 
-void BlockingFrame::exec(bool hide)
+void BlockingFrame::exec(bool hide/* = true*/)
 {
 	if (!blockLoop.isRunning())
 	{

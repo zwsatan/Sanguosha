@@ -8,11 +8,11 @@ class QTimer;
 
 namespace sgsui {
 
-class BlockTimer: public QObject
+class BlockTimer : public QObject
 {
-Q_OBJECT
+	Q_OBJECT
 public:
-	explicit BlockTimer(QObject *parent);
+	explicit BlockTimer(QObject * parent);
 	virtual ~BlockTimer();
 
 	void block(int blockTime);
@@ -21,8 +21,8 @@ private slots:
 	void unblock();
 
 private:
-	QTimer * blockTimer;
-	BlockLoop blockLoop;
+	QTimer *		m_blockTimer;
+	BlockLoop		m_blockLoop;
 };
 
 } /* namespace sgsui */

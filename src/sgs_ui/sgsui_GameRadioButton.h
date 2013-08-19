@@ -5,7 +5,7 @@
 
 namespace sgsui {
 
-class GameRadioButton: public QRadioButton
+class GameRadioButton : public QRadioButton
 {
 public:
 	GameRadioButton(QWidget *parent = 0,

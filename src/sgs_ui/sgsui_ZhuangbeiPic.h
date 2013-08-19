@@ -12,7 +12,8 @@ class AbstractEquipProcessor;
 
 class ZhuangbeiPic : public QWidget
 {
-Q_OBJECT
+	Q_OBJECT
+
 public:
 	ZhuangbeiPic(const CardFrame *newZhuangbeiCard, AbstractEquipProcessor * processor, QWidget * parent = 0);
 	void click();

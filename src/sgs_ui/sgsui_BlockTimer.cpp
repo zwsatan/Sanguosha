@@ -8,9 +8,9 @@ namespace sgsui {
 BlockTimer::BlockTimer(QObject *parent)
 	: QObject(parent)
 {
-	blockTimer = new QTimer(this);
-	blockTimer->setSingleShot(true);
-	connect(blockTimer, SIGNAL(timeout()), this, SLOT(unblock()));
+	m_blockTimer = new QTimer(this);
+	m_blockTimer->setSingleShot(true);
+	connect(m_blockTimer, SIGNAL(timeout()), this, SLOT(unblock()));
 }
 
 BlockTimer::~BlockTimer()
@@ -19,7 +19,7 @@ BlockTimer::~BlockTimer()
 
 void BlockTimer::block(int blockTime)
 {
-	if (blockLoop.isRunning())
+	if (m_blockLoop.isRunning())
 	{
 		printDebug("<font color=red><b>Warning: </b></font>"
 				   "BlockTimer::block: it is already blocked");
@@ -33,17 +33,17 @@ void BlockTimer::block(int blockTime)
 		blockTime = GUIStaticData::basicAnimationDuration;
 	}
 
-	blockTimer->start(blockTime);
+	m_blockTimer->start(blockTime);
 	printDebug("<font color=red><b>Notice: </b></font>"
 			   "BlockTimer::block: block start");
-	blockLoop.exec();
+	m_blockLoop.exec();
 	printDebug("<font color=red><b>Notice: </b></font>"
 			   "BlockTimer::block: block over");
 }
 
 void BlockTimer::unblock()
 {
-	blockLoop.quit();
+	m_blockLoop.quit();
 }
 
 } /* namespace sgsui */

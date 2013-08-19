@@ -1,10 +1,3 @@
-/*
- * sgsui_AbstractPlayerArea.h
- *
- *  Created on: May 6, 2012
- *      Author: latios
- */
-
 #ifndef SGSUI_ABSTRACTPLAYERAREA_H_
 #define SGSUI_ABSTRACTPLAYERAREA_H_
 
@@ -18,8 +11,11 @@ class Player;
 
 namespace sgsui {
 
-class AbstractPlayerArea {
+class AbstractPlayerArea
+{
 public:
+	virtual ~AbstractPlayerArea() {}
+
 	virtual sgs::DataType::Player * getPlayer() = 0;
 	virtual void click() = 0;
 	virtual bool isSelected() = 0;
@@ -33,8 +29,6 @@ public:
 	virtual sgs::ConstData::PlayerRole getRole() const = 0;
 	virtual int playerIndex() const = 0;
 	virtual int getHP() const = 0;
-	virtual ~AbstractPlayerArea() {
-	}
 };
 
 } /* namespace sgsui */

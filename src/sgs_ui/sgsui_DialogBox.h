@@ -8,14 +8,12 @@
 namespace sgsui {
 
 // Qt5.1 Windows上DialogBox是WinApi的一个宏名
-class SGS_DialogBox
-		: public BlockingFrame
-		, protected Ui::SGS_DialogBox
+class SGS_DialogBox : public BlockingFrame, protected Ui::SGS_DialogBox
 {
-Q_OBJECT
+	Q_OBJECT
 
 public:
-	explicit SGS_DialogBox(QWidget *parent = 0);
+	explicit SGS_DialogBox(QWidget * parent = 0);
 
 	void enterKeyPressedEvent();
 	void escapeKeyPressedEvent();
@@ -26,9 +24,9 @@ private slots:
 	void reject();
 
 private:
-	int m_returnValue;
+	int						m_returnValue;
 
-	const static QSize fixedSize;
+	const static QSize		ms_fixedSize;
 };
 
 } /* namespace sgsui */

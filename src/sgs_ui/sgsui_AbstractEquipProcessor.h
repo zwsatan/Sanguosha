@@ -8,10 +8,9 @@ class ZhuangbeiPic;
 class AbstractEquipProcessor
 {
 public:
+	virtual ~AbstractEquipProcessor() {}
+
 	virtual void zhuangbeiClicked(ZhuangbeiPic *clickEquip) = 0;
-	virtual ~AbstractEquipProcessor()
-	{
-	}
 };
 
 } /* namespace sgsui */

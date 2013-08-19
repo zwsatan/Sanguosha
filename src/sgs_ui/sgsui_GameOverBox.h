@@ -12,9 +12,7 @@ namespace sgsui {
 
 class ResultPlayerLabel;
 
-class GameOverBox
-		: public BlockingFrame
-		, protected Ui::GameOverBox
+class GameOverBox : public BlockingFrame, protected Ui::GameOverBox
 {
 public:
 	explicit GameOverBox(QWidget * parent = 0);

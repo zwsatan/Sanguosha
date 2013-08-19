@@ -5,7 +5,7 @@
 
 namespace sgsui {
 
-class GameCheckBox: public QCheckBox
+class GameCheckBox : public QCheckBox
 {
 public:
 	GameCheckBox(QWidget * parent = 0,

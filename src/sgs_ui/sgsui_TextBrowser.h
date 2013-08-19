@@ -5,7 +5,7 @@
 
 namespace sgsui {
 
-class TextBrowser: public QTextBrowser
+class TextBrowser : public QTextBrowser
 {
 public:
 	explicit TextBrowser(QWidget * parent = 0);

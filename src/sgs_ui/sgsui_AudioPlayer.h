@@ -21,9 +21,9 @@ enum SoundType
 	PlayersCreated
 };
 
-class AudioPlayer: public QObject
+class AudioPlayer : public QObject
 {
-Q_OBJECT
+	Q_OBJECT
 
 public:
 	explicit AudioPlayer(MainWindow *parent = 0);
@@ -45,9 +45,9 @@ private:
 	void playSoundStr(const QString &file);
 
 private:
-	QMediaPlayer					* m_backgroundMusic;		// 只用来播放背景音乐
-	QMediaPlaylist					* m_backgroundMusicList;	// 通过播放链表反复播放背景音乐
-	const MainWindow				* m_mainWindow;
+	QMediaPlayer *					m_backgroundMusic;		// 只用来播放背景音乐
+	QMediaPlaylist *				m_backgroundMusicList;	// 通过播放链表反复播放背景音乐
+	const MainWindow *				m_mainWindow;
 	std::vector<QMediaPlayer *>		m_soundVec;
 
 	sgs::ConstData::HeroSkill		m_lastSkill;

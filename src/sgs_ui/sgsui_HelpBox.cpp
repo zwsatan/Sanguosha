@@ -3,13 +3,13 @@
 
 namespace sgsui {
 
-const QSize HelpBox::fixedSize(1024, 600);
+const QSize HelpBox::ms_fixedSize(1024, 600);
 
 HelpBox::HelpBox(QWidget * parent)
 	: BlockingFrame(parent)
 {
 	setupUi(this);
-	setFixedSize(fixedSize);
+	setFixedSize(ms_fixedSize);
 	setStyleSheet("QFrame#HelpBox{background-image:url(images/frame/helpBox.png)}");
 
 	okButton->setEnabledPixmap(QPixmap("images/button/ok.png"));

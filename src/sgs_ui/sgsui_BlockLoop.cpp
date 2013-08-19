@@ -4,14 +4,14 @@
 
 namespace sgsui {
 
-std::list<QEventLoop *> BlockLoop::blockLoopList;
-bool BlockLoop::isTerminated = false;
+std::list<QEventLoop *> BlockLoop::ms_blockLoopList;
+bool BlockLoop::ms_isTerminated = false;
 
 void BlockLoop::exec()
 {
-	blockLoopList.push_back(&blocker);
-	blocker.exec();
-	if (isTerminated)
+	ms_blockLoopList.push_back(&m_blocker);
+	m_blocker.exec();
+	if (ms_isTerminated)
 	{
 		// this code is to make the thread sleep with little CPU cost
 		while (true)
@@ -19,24 +19,24 @@ void BlockLoop::exec()
 	}
 	else
 	{
-		blockLoopList.remove(&blocker);
+		ms_blockLoopList.remove(&m_blocker);
 	}
 }
 
 bool BlockLoop::isRunning() const
 {
-	return blocker.isRunning();
+	return m_blocker.isRunning();
 }
 
 void BlockLoop::quit()
 {
-	blocker.quit();
+	m_blocker.quit();
 }
 
 void BlockLoop::terminateAllLoops()
 {
-	isTerminated = true;
-	for (auto iter = blockLoopList.begin(); iter != blockLoopList.end(); ++iter)
+	ms_isTerminated = true;
+	for (auto iter = ms_blockLoopList.begin(); iter != ms_blockLoopList.end(); ++iter)
 		(*iter)->quit();
 	printDebug("BlockLoop::terminateAllLoops: all loops terminated");
 }

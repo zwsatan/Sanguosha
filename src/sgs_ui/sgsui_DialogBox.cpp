@@ -4,14 +4,14 @@
 
 namespace sgsui {
 
-const QSize SGS_DialogBox::fixedSize(480, 200);
+const QSize SGS_DialogBox::ms_fixedSize(480, 200);
 
 SGS_DialogBox::SGS_DialogBox(QWidget *parent)
 	: BlockingFrame(parent)
 	, m_returnValue(-1)
 {
 	setupUi(this);
-	setFixedSize(fixedSize);
+	setFixedSize(ms_fixedSize);
 
 	okButton->setEnabledPixmap(QPixmap("images/button/ok.png"));
 	okButton->setDisabledPixmap(QPixmap("images/button/ok-disabled.png"));

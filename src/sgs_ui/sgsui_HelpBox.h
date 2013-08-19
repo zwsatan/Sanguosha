@@ -6,9 +6,9 @@
 
 namespace sgsui {
 
-class HelpBox: public BlockingFrame, protected Ui::HelpBox
+class HelpBox : public BlockingFrame, protected Ui::HelpBox
 {
-Q_OBJECT
+	Q_OBJECT
 
 public:
 	explicit HelpBox(QWidget * parent = 0);
@@ -19,7 +19,7 @@ public slots:
 	void displayHelp();
 
 private:
-	const static QSize fixedSize;
+	const static QSize ms_fixedSize;
 };
 
 } /* namespace sgsui */

@@ -13,8 +13,8 @@ namespace sgsui {
 
 enum ArrangeType
 {
-	BySeat,
-	ByThreat
+	BySeat,		// 按座位排序
+	ByThreat	// 按威胁性排序
 };
 
 class PlayerSort

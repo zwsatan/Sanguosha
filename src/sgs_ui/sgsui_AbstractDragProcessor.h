@@ -8,10 +8,9 @@ class DragableCardFrame;
 class AbstractDragProcessor
 {
 public:
+	virtual ~AbstractDragProcessor() {}
+
 	virtual QPoint processDrag(DragableCardFrame * card) = 0;
-	virtual ~AbstractDragProcessor()
-	{
-	}
 };
 
 } /* namespace sgsui */

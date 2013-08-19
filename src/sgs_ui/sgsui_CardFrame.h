@@ -8,11 +8,19 @@ namespace sgsui {
 
 class CardFrame : public QWidget
 {
-Q_OBJECT
+	Q_OBJECT
 public:
-	CardFrame(sgs::ConstData::CardType cardType, sgs::ConstData::CardColor cardColor, int number, QWidget *parent = 0);
-	CardFrame(sgs::ConstData::HeroType heroType, sgs::ConstData::CardType cardType, sgs::ConstData::CardColor cardColor, int number, bool result, QWidget *parent = 0);
-	explicit CardFrame(QWidget * parent = 0);
+	CardFrame(sgs::ConstData::CardType cardType,
+			  sgs::ConstData::CardColor cardColor,
+			  int number,
+			  QWidget * parent = 0);
+	CardFrame(sgs::ConstData::HeroType heroType,
+			  sgs::ConstData::CardType cardType,
+			  sgs::ConstData::CardColor cardColor,
+			  int number,
+			  bool result,
+			  QWidget *parent = 0);
+	CardFrame(QWidget * parent = 0);
 
 	QPoint topLeftPoint() const;
 	bool isDimed() const;

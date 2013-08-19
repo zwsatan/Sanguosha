@@ -11,7 +11,7 @@ class Card;
 
 namespace sgsui {
 
-class ShoupaiButton: public CardButton
+class ShoupaiButton : public CardButton
 {
 public:
 	ShoupaiButton(const sgs::DataType::Card * card, AbstractCardContainer * container, QWidget *parent = 0);

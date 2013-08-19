@@ -9,7 +9,8 @@ namespace sgsui {
 
 class WujiangButton : public QLabel
 {
-Q_OBJECT
+	Q_OBJECT
+
 public:
 	explicit WujiangButton(QWidget * parent = 0);
 

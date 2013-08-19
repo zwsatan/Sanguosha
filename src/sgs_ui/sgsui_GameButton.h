@@ -5,7 +5,7 @@
 
 namespace sgsui {
 
-class GameButton: public QLabel
+class GameButton : public QLabel
 {
 	Q_OBJECT
 

@@ -13,8 +13,8 @@ public:
 	void showZhuangbei(sgs::ConstData::CardType equipCard, int equipDuration = GUIStaticData::showEquipDuration);
 
 private:
-	QTimer * zhuangbeiTimer;
-	const static QSize fixedSize;
+	QTimer *						m_zhuangbeiTimer;
+	const static QSize				ms_fixedSize;
 };
 
 } /* namespace sgsui */

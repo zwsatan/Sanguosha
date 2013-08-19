@@ -6,9 +6,7 @@
 
 namespace sgsui {
 
-class RoleFrame
-		: public QFrame
-		, protected Ui::RoleFrame
+class RoleFrame : public QFrame, protected Ui::RoleFrame
 {
 public:
 	explicit RoleFrame(QWidget * parent = 0);

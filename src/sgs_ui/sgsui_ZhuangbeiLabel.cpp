@@ -4,16 +4,16 @@
 
 namespace sgsui {
 
-const QSize ZhuangbeiLabel::fixedSize(150, 50);
+const QSize ZhuangbeiLabel::ms_fixedSize(150, 50);
 
 ZhuangbeiLabel::ZhuangbeiLabel(QWidget * parent/* = 0*/)
 	: QLabel(parent)
 {
-	zhuangbeiTimer = new QTimer(this);
-	zhuangbeiTimer->setSingleShot(true);
-	connect(zhuangbeiTimer, SIGNAL(timeout()), this, SLOT(hide()));
+	m_zhuangbeiTimer = new QTimer(this);
+	m_zhuangbeiTimer->setSingleShot(true);
+	connect(m_zhuangbeiTimer, SIGNAL(timeout()), this, SLOT(hide()));
 	setFont(GUIStaticData::equipFont);
-	setFixedSize(fixedSize);
+	setFixedSize(ms_fixedSize);
 }
 
 void ZhuangbeiLabel::showZhuangbei(sgs::ConstData::CardType equipCard, int equipDuration/* = GUIStaticData::showEquipDuration*/)
@@ -22,7 +22,7 @@ void ZhuangbeiLabel::showZhuangbei(sgs::ConstData::CardType equipCard, int equip
 		equipDuration = GUIStaticData::showEquipDuration;
 
 	setText(setColored(cardDisplayName(equipCard), false));
-	zhuangbeiTimer->start(equipDuration);
+	m_zhuangbeiTimer->start(equipDuration);
 	show();
 }
 
