@@ -31,7 +31,8 @@ const int WujiangArea::ms_maxVerticalHPDifference = 30;
 const int WujiangArea::ms_maxHPHeight = 153;
 
 WujiangArea::WujiangArea(int playerIndex, QWidget * parent)
-	: QWidget(parent), m_playerIndex(playerIndex)
+	: QWidget(parent)
+	, m_playerIndex(playerIndex)
 	, m_role(GUIStaticData::getPlayerRole(m_playerIndex))
 	, m_heroType(GUIStaticData::getPlayerType(m_playerIndex))
 	, m_sex(GUIStaticData::getPlayerSex(m_playerIndex))
