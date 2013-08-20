@@ -13,9 +13,9 @@ CardButton::CardButton(const sgs::DataType::Card * platformCard,
 					   bool visible/* = true*/,
 					   QWidget * parent/* = 0*/)
 	: QFrame(parent)
+	, m_plaformCard(platformCard)
 	, m_cardContainer(container)
 	, m_cardSelectable(true)
-	, m_plaformCard(platformCard)
 {
 	setupUi(this);
 	setFixedSize(ms_fixedSize);

@@ -20,7 +20,7 @@ class CardContainer
 
 
 public:
-	explicit CardContainer(QWidget *parent = 0);
+	explicit CardContainer(QWidget * parent = 0);
 	virtual ~CardContainer();
 
 	void enterKeyPressedEvent();
@@ -48,15 +48,21 @@ private slots:
 
 private:
 	virtual void cardClicked(CardButton * clickedCard);
-	void constructContainer();
+	void constructContainer();		// 调用Helper函数构造卡牌容器
+	void constructHandHelper();		// 辅助构造手牌CardButton
+	void constructEquipHelper();	// 辅助构造装备卡牌CardButton
+	void constructJudgeHelper();	// 辅助构造判定卡牌CardButton
+
 	void collectData();
 	void clearContainer();
 
-	virtual int getIndexAtHand(CardButton * clickedCard) const;
-	virtual int getIndexAtEquip(CardButton * clickedCard) const;
+	int getIndexAtHand(CardButton * clickedCard) const;
+	int getIndexAtJudge(CardButton * clickedCard) const;
 
+	QString getMessageBySkill(sgs::ConstData::HeroSkill skill);
 	bool addThisCardInSkill(sgs::ConstData::HeroSkill skill, const sgs::DataType::Card * card) const;
 	unsigned cardNum(sgs::ConstData::HeroSkill skill) const;
+
 
 private:
 	unsigned						m_maxCardSelect;

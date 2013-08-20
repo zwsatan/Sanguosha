@@ -36,10 +36,10 @@ protected:
 	AbstractCardContainer * container() const;
 
 private:
+	const sgs::DataType::Card * const	m_plaformCard;
 	AbstractCardContainer * const		m_cardContainer;
 	CardFrame *							m_cardFrame;
 	bool								m_cardSelectable;
-	const sgs::DataType::Card * const	m_plaformCard;
 
 	const static QSize					ms_fixedSize;
 };

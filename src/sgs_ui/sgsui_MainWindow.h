@@ -167,7 +167,7 @@ public slots:
 
 private slots:
 	virtual void cardClicked(CardButton * clickedCard);
-	virtual void zhuangbeiClicked(ZhuangbeiPic *clickedEquip);
+	virtual void zhuangbeiClicked(ZhuangbeiPic * clickedEquip);
 	int getIndex(ShoupaiButton * clickedCard) const;
 	ShoupaiButton * goToCard(const sgs::DataType::Card * card) const;
 	void exec();

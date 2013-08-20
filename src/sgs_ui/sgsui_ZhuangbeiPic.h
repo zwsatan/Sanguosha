@@ -15,7 +15,7 @@ class ZhuangbeiPic : public QWidget
 	Q_OBJECT
 
 public:
-	ZhuangbeiPic(const CardFrame *newZhuangbeiCard, AbstractEquipProcessor * processor, QWidget * parent = 0);
+	ZhuangbeiPic(const CardFrame * newZhuangbeiCard, AbstractEquipProcessor * processor, QWidget * parent = 0);
 	void click();
 	bool isSelected() const;
 	bool isSelectable() const;

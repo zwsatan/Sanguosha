@@ -18,7 +18,6 @@
 
 namespace sgsui {
 
-// 决定最小和最大的手牌可选数目
 void MainWindow::cardNormalize()
 {
 	printDebug("MainWindow::cardNormalize: start");
@@ -35,7 +34,8 @@ void MainWindow::cardNormalize()
 
 	if (m_selectedSkill != sgs::ConstData::heroSkillNone)
 	{
-		printDebug("<font color=red><b>Warning: </b></font>MainWindow::cardNormalize: selectedSkill not empty");
+		printDebug("<font color=red><b>Warning: </b></font>"
+				   "MainWindow::cardNormalize: selectedSkill not empty");
 		skillCardNormalize();
 		return;
 	}
