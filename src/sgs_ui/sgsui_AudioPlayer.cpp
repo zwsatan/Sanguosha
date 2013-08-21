@@ -21,9 +21,10 @@ AudioPlayer::AudioPlayer(MainWindow * parent)
 
 	// make enough enqueue to ensure that background music never ends
 	QMediaContent media(QUrl::fromLocalFile(gs_curDir + GUIStaticData::backgroundMusicLocation));
-	for (int i = 0; i < 100; ++i)
-		m_backgroundMusicList->addMedia(media);
+	m_backgroundMusicList->addMedia(media);
+//	for (int i = 0; i < 100; ++i)
 	m_backgroundMusicList->setCurrentIndex(0);
+	m_backgroundMusicList->setPlaybackMode(QMediaPlaylist::CurrentItemInLoop);
 	m_backgroundMusic->setPlaylist(m_backgroundMusicList);
 
 	ms_audioPlayerList.push_back(this);

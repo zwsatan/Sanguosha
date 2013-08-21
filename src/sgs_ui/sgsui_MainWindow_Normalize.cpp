@@ -40,9 +40,9 @@ void MainWindow::cardNormalize()
 		return;
 	}
 
-	// handle those case that are not using skills
+	// 处理非技能下的卡牌状态
 
-	// handle equipCard
+	// 处理装备卡情况
 	disableAllZhuangbei();
 	switch (m_responseType)
 	{
@@ -56,7 +56,7 @@ void MainWindow::cardNormalize()
 		break;
 	}
 
-	// handle handCard
+	// 处理手牌情况
 	using namespace sgs::ConstData;
 	switch (m_responseType)
 	{
@@ -224,7 +224,7 @@ void MainWindow::cardNormalize()
 	printDebug("MainWindow::cardNormalize: over");
 }
 
-// 处理player点击卡牌之后,包括技能或手牌或装备卡,确定最小和最大的可选目标数目
+// 处理点击卡牌之后,包括技能或手牌或装备卡,确定最小和最大的可选Player数目
 void MainWindow::playerChooseNormalize()
 {
 	printDebug("MainWindow::playerChooseNormalize: start");

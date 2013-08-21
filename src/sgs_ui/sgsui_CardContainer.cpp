@@ -267,7 +267,7 @@ void CardContainer::cardClicked(CardButton * clickedCard)
 		}
 	}
 
-	int selectedSize = m_selectedCardList.size();
+	unsigned selectedSize = m_selectedCardList.size();
 	if (m_minCardSelect <= selectedSize && selectedSize <= m_maxCardSelect)
 		okButton->setEnabled();
 	else

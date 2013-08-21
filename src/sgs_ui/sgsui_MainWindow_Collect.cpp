@@ -133,14 +133,13 @@ void MainWindow::enableShaTarget()
 void MainWindow::enableJiedaoVictim(int attackerIndex)
 {
 	// this function does not disable players that is already selected
-	// kira is the Japaese version of English word "Killer"
-	sgs::DataType::Player * kiraPlayer = GUIStaticData::getPlayer(attackerIndex);
+	sgs::DataType::Player * killerPlayer = GUIStaticData::getPlayer(attackerIndex);
 
 	for (int i = 1; i <= m_playerCount; ++i)
 	{
 		if (i == m_playerIndex)
 		{
-			m_wujiangArea->setSelectable(kiraPlayer->distance(myPlayer()) <= kiraPlayer->range());
+			m_wujiangArea->setSelectable(killerPlayer->distance(myPlayer()) <= killerPlayer->range());
 			m_wujiangArea->setUnselected();
 			continue;
 		}
@@ -154,7 +153,7 @@ void MainWindow::enableJiedaoVictim(int attackerIndex)
 			playerArea->setUnselectable();
 			continue;
 		}
-		playerArea->setSelectable(kiraPlayer->distance(otherPlayer) <= kiraPlayer->range());
+		playerArea->setSelectable(killerPlayer->distance(otherPlayer) <= killerPlayer->range());
 		playerArea->setUnselected();
 	}
 }
@@ -403,12 +402,10 @@ void MainWindow::cancelClicked()
 		switch (m_responseType)
 		{
 		case UseCard:
-			for (unsigned int i = 0; i < m_selectedShoupaiList.size(); ++i)
-			{
+			for (unsigned i = 0; i < m_selectedShoupaiList.size(); ++i)
 				newUnselectedCard(m_selectedShoupaiList.back());
-				// Do not call popback here, newUnselectedCard will remove cards
-			}
 			break;
+
 		default:
 			m_cancelResponse = true;
 			unblock();

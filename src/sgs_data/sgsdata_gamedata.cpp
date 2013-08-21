@@ -31,7 +31,9 @@ void GameData::initialize(Platform * platform)
 
 	for (int i = 0; i < m_playernum; ++i)
 		m_players[i] = platform->m_player->find(i);
-	m_open = platform->m_player->find(0);//将第一个玩家设置为开放玩家
+
+	// 将第一个玩家设置为开放玩家
+	m_open = platform->m_player->find(0);
 }
 
 bool GameData::clear()
@@ -39,6 +41,7 @@ bool GameData::clear()
 	m_playernum = 0;
 	if (m_players != 0)
 		delete [] m_players;
+	m_players = 0;
 	return true;
 }
 
@@ -47,12 +50,12 @@ int GameData::playernum() const
 	return m_playernum;
 }
 
-Player *GameData::players(int seat) const
+Player * GameData::players(int seat) const
 {
 	return m_open->find(seat);
 }
 
-Player *GameData::open() const
+Player * GameData::open() const
 {
 	return m_open;
 }
