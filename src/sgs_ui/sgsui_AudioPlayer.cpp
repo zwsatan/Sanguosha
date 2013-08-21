@@ -22,7 +22,6 @@ AudioPlayer::AudioPlayer(MainWindow * parent)
 	// make enough enqueue to ensure that background music never ends
 	QMediaContent media(QUrl::fromLocalFile(gs_curDir + GUIStaticData::backgroundMusicLocation));
 	m_backgroundMusicList->addMedia(media);
-//	for (int i = 0; i < 100; ++i)
 	m_backgroundMusicList->setCurrentIndex(0);
 	m_backgroundMusicList->setPlaybackMode(QMediaPlaylist::CurrentItemInLoop);
 	m_backgroundMusic->setPlaylist(m_backgroundMusicList);
@@ -58,7 +57,7 @@ void AudioPlayer::terminateThisPlayer()
 
 void AudioPlayer::terminateAllPlayers()
 {
-	foreach (AudioPlayer *player, ms_audioPlayerList)
+	foreach (AudioPlayer * player, ms_audioPlayerList)
 		player->terminateThisPlayer();
 }
 
@@ -170,12 +169,14 @@ void AudioPlayer::playSoundStr(const QString &file)
 		}
 	}
 
-	QMediaPlayer *soundEffect = new QMediaPlayer();
+	QMediaPlayer * soundEffect = new QMediaPlayer();
 	soundEffect->setMedia(media);
 	soundEffect->play();
 	m_soundVec.push_back(soundEffect);
 
-	static const QString s_playSoundStr = "<font color=red><b>Notice: </b></font>AudioPlayer::playSoundStr: creating new MediaObject, current MediaObject count = ";
+	static const QString s_playSoundStr = "<font color=red><b>Notice: </b></font>"
+										  "AudioPlayer::playSoundStr: "
+										  "creating new MediaObject, current MediaObject count = ";
 	printDebug(s_playSoundStr + QString::number(static_cast<unsigned>(m_soundVec.size())));
 }
 

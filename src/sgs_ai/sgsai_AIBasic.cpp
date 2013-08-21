@@ -12,7 +12,7 @@
 
 namespace sgsai {
 
-const AIBasic::JieDaoPair AIBasic::ms_invalidJiedaoPair((sgs::DataType::Player *) 0, (sgs::DataType::Player *) 0);
+const AIBasic::JieDaoPair AIBasic::ms_invalidJiedaoPair(NULL, NULL);
 
 AIBasic::AIBasic(int seat)
 	: QObject(sgsui::MainWindow::mainWindowPtr())
@@ -23,22 +23,20 @@ AIBasic::AIBasic(int seat)
 
 std::vector<int> AIBasic::discardCard(unsigned int cardNumToDiscard)
 {
-	printDebug(
-			"AIBasic::discardCard: start, AI's seat = "
-					+ QString::number(mySeat()));
+	using namespace sgs::ConstData;
+	printDebug("AIBasic::discardCard: start, AI's seat = " + QString::number(mySeat()));
+	printDebug("AIBasic::useCardResponse: discard cards other than sha, shan, tao and wuxie");
 
+	// 电脑弃牌的选择就是,手牌中,非杀,非闪,非桃且非无懈的就可以弃掉
 	std::vector<int> returnValue;
-
-	printDebug(
-			"AIBasic::useCardResponse: discard cards other than sha, shan, tao and wuxie");
-	sgs::ConstData::CardType type;
-	for (int i = 0; i < myPlayer()->handnum(); ++i) {
-		type = myPlayer()->hand(i)->type();
-		if (type != sgs::ConstData::SHA && type != sgs::ConstData::SHAN
-				&& type != sgs::ConstData::TAO
-				&& type != sgs::ConstData::WUXIE) {
+	for (int i = 0; i < myPlayer()->handnum(); ++i)
+	{
+		CardType type = myPlayer()->hand(i)->type();
+		if (type != SHA && type != SHAN && type != TAO && type != WUXIE)
+		{
 			returnValue.push_back(i);
-			if (returnValue.size() >= cardNumToDiscard) {
+			if (returnValue.size() >= cardNumToDiscard)
+			{
 				printDebug(sgsui::discardInterpret(returnValue, myPlayer()));
 				printDebug("AIBasic::discardCard: over");
 				return returnValue;
@@ -46,11 +44,15 @@ std::vector<int> AIBasic::discardCard(unsigned int cardNumToDiscard)
 		}
 	}
 
+	// 当迫不得已时,选择优先弃杀
 	printDebug("AIBasic::useCardResponse: discard sha");
-	for (int i = 0; i < myPlayer()->handnum(); ++i) {
-		if (myPlayer()->hand(i)->type() == sgs::ConstData::SHA) {
+	for (int i = 0; i < myPlayer()->handnum(); ++i)
+	{
+		if (myPlayer()->hand(i)->type() == SHA)
+		{
 			returnValue.push_back(i);
-			if (returnValue.size() >= cardNumToDiscard) {
+			if (returnValue.size() >= cardNumToDiscard)
+			{
 				printDebug(sgsui::discardInterpret(returnValue, myPlayer()));
 				printDebug("AIBasic::discardCard: over");
 				return returnValue;
@@ -58,12 +60,15 @@ std::vector<int> AIBasic::discardCard(unsigned int cardNumToDiscard)
 		}
 	}
 
+	// 继续,迫不得已弃掉闪或无懈
 	printDebug("AIBasic::useCardResponse: discard shan and wuxie");
-	for (int i = 0; i < myPlayer()->handnum(); ++i) {
-		if (myPlayer()->hand(i)->type() == sgs::ConstData::SHAN
-				|| myPlayer()->hand(i)->type() == sgs::ConstData::WUXIE) {
+	for (int i = 0; i < myPlayer()->handnum(); ++i)
+	{
+		if (myPlayer()->hand(i)->type() == SHAN || myPlayer()->hand(i)->type() == WUXIE)
+		{
 			returnValue.push_back(i);
-			if (returnValue.size() >= cardNumToDiscard) {
+			if (returnValue.size() >= cardNumToDiscard)
+			{
 				printDebug(sgsui::discardInterpret(returnValue, myPlayer()));
 				printDebug("AIBasic::discardCard: over");
 				return returnValue;
@@ -71,11 +76,15 @@ std::vector<int> AIBasic::discardCard(unsigned int cardNumToDiscard)
 		}
 	}
 
+	// 开始弃桃了
 	printDebug("AIBasic::useCardResponse: discard tao");
-	for (int i = 0; i < myPlayer()->handnum(); ++i) {
-		if (myPlayer()->hand(i)->type() == sgs::ConstData::TAO) {
+	for (int i = 0; i < myPlayer()->handnum(); ++i)
+	{
+		if (myPlayer()->hand(i)->type() == TAO)
+		{
 			returnValue.push_back(i);
-			if (returnValue.size() >= cardNumToDiscard) {
+			if (returnValue.size() >= cardNumToDiscard)
+			{
 				printDebug(sgsui::discardInterpret(returnValue, myPlayer()));
 				printDebug("AIBasic::discardCard: over");
 				return returnValue;
@@ -88,58 +97,59 @@ std::vector<int> AIBasic::discardCard(unsigned int cardNumToDiscard)
 	return returnValue;
 }
 
-sgs::DataType::Message * AIBasic::useCardResponse() {
-	printDebug(
-			"AIBasic::useCardResponse: start, AI's seat = "
-					+ QString::number(mySeat()));
+sgs::DataType::Message * AIBasic::useCardResponse()
+{
+	printDebug("AIBasic::useCardResponse: start, AI's seat = " + QString::number(mySeat()));
 
 	sgs::Derive::CardMessage * returnMessage = 0;
 
-	if (!returnMessage) {
+	if (!returnMessage)
+	{
 		printDebug("AIBasic::useCardResponse: trying to use zhangba");
 		returnMessage = useZhangba();
 	}
 
-	if (!returnMessage) {
+	if (!returnMessage)
+	{
 		printDebug("AIBasic::useCardResponse: trying to use equip");
 		returnMessage = installEquip();
 	}
 
-	if (!returnMessage) {
-		printDebug(
-				"AIBasic::useCardResponse: trying to use jinnang (not wuxie)");
+	if (!returnMessage)
+	{
+		printDebug("AIBasic::useCardResponse: trying to use jinnang (not wuxie)");
 		returnMessage = useJinnang();
 	}
 
-	if (!returnMessage) {
+	if (!returnMessage)
+	{
 		printDebug("AIBasic::useCardResponse: trying to use tao");
 		returnMessage = useTao();
 	}
 
-	if (!returnMessage) {
+	if (!returnMessage)
+	{
 		printDebug("AIBasic::useCardResponse: trying to use sha");
 		returnMessage = useSha();
 	}
 
-	if (!returnMessage) {
+	if (!returnMessage)
 		printDebug("AIBasic::useCardResponse: no suitable card to use");
-	}
+
 	printDebug(sgsui::messageInterpret(returnMessage));
 	printDebug("AIBasic::useCardResponse: over");
 	return returnMessage;
 }
 
-sgs::DataType::Message * AIBasic::taoOrNot(sgs::DataType::Player * from,
-		int /*neededTaoNumber*/) {
-	printDebug(
-			"AIBasic::taoOrNot: start, AI's seat = "
-					+ QString::number(mySeat()));
+sgs::DataType::Message * AIBasic::taoOrNot(sgs::DataType::Player * from, int /*neededTaoNumber*/)
+{
+	printDebug("AIBasic::taoOrNot: start, AI's seat = " + QString::number(mySeat()));
 
 	sgs::Derive::CardMessage * returnMessage = 0;
 
-	if (from != myPlayer()) {
-		sgs::ConstData::PlayerRole myRole = myPlayer()->role(), fromRole =
-				from->role();
+	if (from != myPlayer())
+	{
+		sgs::ConstData::PlayerRole myRole = myPlayer()->role(), fromRole = from->role();
 		bool shouldNotSave = false;
 		if ((myRole == sgs::ConstData::ZHU || myRole == sgs::ConstData::ZHONG)
 				&& fromRole == sgs::ConstData::FAN) {

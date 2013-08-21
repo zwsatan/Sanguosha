@@ -68,7 +68,7 @@ void GuanxingBox::enterKeyPressedEvent()
 	okButton->click();
 }
 
-void GuanxingBox::chooseGuanxing(std::vector<const sgs::DataType::Card *>& top, std::vector<const sgs::DataType::Card *>& buttom)
+void GuanxingBox::chooseGuanxing(std::vector<const sgs::DataType::Card *> &top, std::vector<const sgs::DataType::Card *> &buttom)
 {
 	printDebug("GuanxingBox::chooseGuanxing: start");
 	int x = window()->width() / 2 - width() / 2;

@@ -24,7 +24,8 @@ GameButton::GameButton(QWidget * parent,
 
 void GameButton::click()
 {
-	QMouseEvent temp(QEvent::MouseButtonRelease, QPoint(width() / 2, height() / 2), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+	QPoint centerPos(width() / 2, height() / 2);
+	QMouseEvent temp(QEvent::MouseButtonRelease, centerPos, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
 	mousePressEvent(&temp);
 	mouseReleaseEvent(&temp);
 }
@@ -58,12 +59,12 @@ void GameButton::setEnabledPixmap(const QPixmap& enabledPixmap)
 	}
 }
 
-void GameButton::setPressedPixmap(const QPixmap& pressedPixmap)
+void GameButton::setPressedPixmap(const QPixmap &pressedPixmap)
 {
 	m_buttonPressedPixmap = pressedPixmap;
 }
 
-void GameButton::setDisabledPixmap(const QPixmap& disabledPixmap)
+void GameButton::setDisabledPixmap(const QPixmap &disabledPixmap)
 {
 	m_buttonDisabledPixmap = disabledPixmap;
 	if (!m_buttonEnabled)

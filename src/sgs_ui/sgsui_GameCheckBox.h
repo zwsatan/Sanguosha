@@ -9,8 +9,8 @@ class GameCheckBox : public QCheckBox
 {
 public:
 	GameCheckBox(QWidget * parent = 0,
-				 const QPixmap& noncheckedPixmap = QPixmap("images/button/nonchecked.png"),
-				 const QPixmap& checkedPixmap = QPixmap("images/button/checked.png"));
+				 const QPixmap &noncheckedPixmap = QPixmap("images/button/nonchecked.png"),
+				 const QPixmap &checkedPixmap = QPixmap("images/button/checked.png"));
 
 private:
 	void paintEvent(QPaintEvent *);

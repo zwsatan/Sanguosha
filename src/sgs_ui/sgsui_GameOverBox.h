@@ -16,11 +16,12 @@ class GameOverBox : public BlockingFrame, protected Ui::GameOverBox
 {
 public:
 	explicit GameOverBox(QWidget * parent = 0);
+
 	void showResult(char result);
 	virtual void enterKeyPressedEvent();
 
 private:
-	bool getResult(int Index);
+	bool getResult(int index);
 
 private:
 	char									m_result;

@@ -107,10 +107,10 @@ void GameOverBox::showResult(char result)
 	// now InitiateBox will determinate whether to quit or to play again
 }
 
-bool GameOverBox::getResult(int Index)
+bool GameOverBox::getResult(int index)
 {
-	--Index;
-	return (m_result >> Index) & 1;
+	--index;
+	return (m_result >> index) & 1;
 }
 
 } /* namespace sgsui */

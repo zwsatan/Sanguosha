@@ -15,13 +15,14 @@ class GuanxingBox
 {
 public:
 	explicit GuanxingBox(QWidget * parent);
+
 	void enterKeyPressedEvent();
-	void chooseGuanxing(std::vector<const sgs::DataType::Card *>& top, std::vector<const sgs::DataType::Card *>& buttom);
+	void chooseGuanxing(std::vector<const sgs::DataType::Card *> &top, std::vector<const sgs::DataType::Card *> &buttom);
 
 private:
 	QPoint processDrag(DragableCardFrame * card);
 	DragableCardFrame*& getPointer(const QPoint &currectPos);
-	QPoint posOfPointer(DragableCardFrame * const & pointer) const;
+	QPoint posOfPointer(DragableCardFrame * const &pointer) const;
 	void clearData();
 
 private:

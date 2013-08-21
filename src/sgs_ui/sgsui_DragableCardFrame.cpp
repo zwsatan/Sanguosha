@@ -39,7 +39,7 @@ const QPoint& DragableCardFrame::getLastPos() const
 	return m_lastPos;
 }
 
-void DragableCardFrame::mousePressEvent(QMouseEvent *event)
+void DragableCardFrame::mousePressEvent(QMouseEvent * event)
 {
 	if (event->button() == Qt::LeftButton)
 	{
@@ -49,7 +49,7 @@ void DragableCardFrame::mousePressEvent(QMouseEvent *event)
 	}
 }
 
-void DragableCardFrame::mouseMoveEvent(QMouseEvent *event)
+void DragableCardFrame::mouseMoveEvent(QMouseEvent * event)
 {
 	if (!m_pressed)
 		return;

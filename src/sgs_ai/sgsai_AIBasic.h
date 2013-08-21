@@ -58,14 +58,14 @@ protected:
 	JieDaoPair makeJiedaoPair();
 
 private:
-	sgs::DataType::Player * m_lord;
+	sgs::DataType::Player *		m_lord;
 
-	PlayerVec m_shaTargetVec;
-	PlayerVec m_sishuTargetVec;
-	PlayerVec m_guochaiTargetVec;
-	PlayerVec m_juedouTargetVec;
+	PlayerVec					m_shaTargetVec;
+	PlayerVec					m_sishuTargetVec;
+	PlayerVec					m_guochaiTargetVec;
+	PlayerVec					m_juedouTargetVec;
 
-	const static JieDaoPair	ms_invalidJiedaoPair;
+	const static JieDaoPair		ms_invalidJiedaoPair;
 };
 
 } /* namespace sgsai */

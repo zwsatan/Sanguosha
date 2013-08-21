@@ -19,7 +19,7 @@ public:
 	bool isEnabled();
 	void click();
 
-	signals:
+signals:
 	void clicked();
 
 public slots:

@@ -16,7 +16,7 @@ public:
 					  const QPoint &pos);
 
 	// NO pos version of constructor
-	DragableCardFrame(QWidget* dragBorderWidget,
+	DragableCardFrame(QWidget * dragBorderWidget,
 					  AbstractDragProcessor * dragProcessor,
 					  const sgs::DataType::Card * card);
 

@@ -15,7 +15,7 @@ ResultPlayerLabel::ResultPlayerLabel(QWidget * parent)
 	setFixedSize(ms_fixedSize);
 }
 
-void ResultPlayerLabel::showResult(sgs::ConstData::HeroType heroType, bool isDead)
+void ResultPlayerLabel::showResult(sgs::ConstData::HeroType heroType, bool isDead/* = false*/)
 {
 	m_heroType = heroType;
 	m_isDead = isDead;

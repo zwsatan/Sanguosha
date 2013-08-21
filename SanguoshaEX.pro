@@ -18,7 +18,6 @@ HEADERS += \
 	src/sgs_ui/sgsui_ZhuangbeiLabel.h \
 	src/sgs_ui/sgsui_SkillLabel.h \
 	src/sgs_ui/sgsui_TextBrowser.h \
-	src/sgs_ui/sgsui_GameRadioButton.h \
 	src/sgs_ui/sgsui_Outstream.h \
 	src/sgs_ui/sgsui_BlockLoop.h \
 	src/sgs_ui/sgsui_ResultPlayerLabel.h \
@@ -122,7 +121,6 @@ SOURCES += \
 	src/sgs_ui/sgsui_MainWindow_Display.cpp \
 	src/sgs_ui/sgsui_SkillLabel.cpp \
 	src/sgs_ui/sgsui_TextBrowser.cpp \
-	src/sgs_ui/sgsui_GameRadioButton.cpp \
 	src/sgs_ui/sgsui_Outstream.cpp \
 	src/sgs_ui/sgsui_BlockLoop.cpp \
 	src/sgs_ui/sgsui_ResultPlayerLabel.cpp \
