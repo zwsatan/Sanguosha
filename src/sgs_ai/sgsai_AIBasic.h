@@ -10,9 +10,7 @@ typedef std::vector<sgs::DataType::Player *>				PlayerVec;
 
 namespace sgsai {
 
-class AIBasic
-		: public QObject
-		, public sgs::Interface
+class AIBasic : public QObject, public sgs::Interface
 {
 public:
 	explicit AIBasic(int seat);

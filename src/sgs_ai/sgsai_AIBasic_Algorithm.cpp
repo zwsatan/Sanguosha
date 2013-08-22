@@ -1,10 +1,3 @@
-/*
- * sgsai_AIBasic_Algorithm.cpp
- *
- *  Created on: Jun 28, 2012
- *      Author: latios
- */
-
 #include "sgsai_AIBasic.h"
 #include "sgsui_MainWindow.h"
 #include "sgsui_PlayerSort.h"
@@ -18,29 +11,31 @@
 #include "sgsdata_gamedata.h"
 #include <algorithm>
 
+using namespace sgs::DataType;
+using namespace sgs::ConstData;
+using sgs::ExternData::gamedata;
+
 namespace sgsai {
 
-const PlayerVec& AIBasic::shaTarget() {
+const PlayerVec& AIBasic::shaTarget()
+{
 	m_shaTargetVec.clear();
-	using sgs::ExternData::gamedata;
-	sgs::DataType::Player * enemy = 0;
 
-	for (int i = 0; i < gamedata.playernum(); ++i) {
+	for (int i = 0; i < gamedata.playernum(); ++i)
+	{
 		if (i == mySeat())
 			continue;
 
-		enemy = gamedata.players(i);
-		if (enemy->status() & sgs::ConstData::DEAD)
+		Player * enemy = gamedata.players(i);
+		if (enemy->status() & DEAD)
 			continue;
 
-		// zhugeliang cannot be the target of sha if he has no handcards
-		if (enemy->type() == sgs::ConstData::LAOZHUGE && enemy->handnum() == 0)
+		// 略过手牌为0的老诸葛
+		if (enemy->type() == LAOZHUGE && enemy->handnum() == 0)
 			continue;
 
-		if (!isMyFriend(enemy)
-				&& (myPlayer()->distance(enemy) <= myPlayer()->range())) {
+		if (!isMyFriend(enemy) && (myPlayer()->distance(enemy) <= myPlayer()->range()))
 			m_shaTargetVec.push_back(enemy);
-		}
 	}
 
 	sgsui::PlayerSort arrange(mySeat(), sgsui::ByThreat);
@@ -49,25 +44,24 @@ const PlayerVec& AIBasic::shaTarget() {
 	return m_shaTargetVec;
 }
 
-const PlayerVec& AIBasic::juedouTarget() {
+const PlayerVec& AIBasic::juedouTarget()
+{
 	m_juedouTargetVec.clear();
-	using sgs::ExternData::gamedata;
-	sgs::DataType::Player * enemy = 0;
-	for (int i = 0; i < gamedata.playernum(); ++i) {
+	for (int i = 0; i < gamedata.playernum(); ++i)
+	{
 		if (i == mySeat())
 			continue;
 
-		enemy = gamedata.players(i);
-		if (enemy->status() & sgs::ConstData::DEAD)
+		Player * enemy = gamedata.players(i);
+		if (enemy->status() & DEAD)
 			continue;
 
-		// zhugeliang cannot be the target of juedou if he has no handcards
-		if (enemy->type() == sgs::ConstData::LAOZHUGE && enemy->handnum() == 0)
+		// 略过手牌为0的老诸葛
+		if (enemy->type() == LAOZHUGE && enemy->handnum() == 0)
 			continue;
 
-		if (!isMyFriend(enemy)) {
+		if (!isMyFriend(enemy))
 			m_juedouTargetVec.push_back(enemy);
-		}
 	}
 	sgsui::PlayerSort arrange(mySeat(), sgsui::ByThreat);
 	std::sort(m_juedouTargetVec.begin(), m_juedouTargetVec.end(), arrange);
@@ -75,24 +69,23 @@ const PlayerVec& AIBasic::juedouTarget() {
 	return m_juedouTargetVec;
 }
 
-const PlayerVec& AIBasic::sishuTarget() {
+const PlayerVec& AIBasic::sishuTarget()
+{
 	m_sishuTargetVec.clear();
-	using sgs::ExternData::gamedata;
-	sgs::DataType::Player * enemy = 0;
 
-	for (int i = 0; i < gamedata.playernum(); ++i) {
+	for (int i = 0; i < gamedata.playernum(); ++i)
+	{
 		if (i == mySeat())
 			continue;
 
-		enemy = gamedata.players(i);
-		if (enemy->type() == sgs::ConstData::LUXUN)
+		Player * enemy = gamedata.players(i);
+		if (enemy->type() == LUXUN)
 			continue;
-		if (enemy->status() & sgs::ConstData::DEAD)
+		if (enemy->status() & DEAD)
 			continue;
 
-		if (!isMyFriend(enemy) && !hasSishuInJudge(enemy)) {
+		if (!isMyFriend(enemy) && !hasSishuInJudge(enemy))
 			m_sishuTargetVec.push_back(enemy);
-		}
 	}
 
 	sgsui::PlayerSort arrange(mySeat(), sgsui::ByThreat);
@@ -101,25 +94,23 @@ const PlayerVec& AIBasic::sishuTarget() {
 	return m_sishuTargetVec;
 }
 
-const PlayerVec& AIBasic::guochaiTarget() {
+const PlayerVec& AIBasic::guochaiTarget()
+{
 	m_guochaiTargetVec.clear();
-	using sgs::ExternData::gamedata;
-	sgs::DataType::Player * enemy = 0;
 
-	for (int i = 0; i < gamedata.playernum(); ++i) {
+	for (int i = 0; i < gamedata.playernum(); ++i)
+	{
 		if (i == mySeat())
 			continue;
 
-		enemy = gamedata.players(i);
-		if (enemy->status() & sgs::ConstData::DEAD)
+		Player * enemy = gamedata.players(i);
+		if (enemy->status() & DEAD)
 			continue;
 
-		// Don't guochai enemy's judge card
-		if (!isMyFriend(enemy)
-				&& (totalCardNum(enemy) - enemy->judgenum() > 0)) {
-			printDebug(
-					"AIBasic::guochaiTarget: spoted target, seat = "
-							+ QString::number(i));
+		// 不拆对方判断卡牌区的卡
+		if (!isMyFriend(enemy) && (totalCardNum(enemy) - enemy->judgenum() > 0))
+		{
+			printDebug("AIBasic::guochaiTarget: spoted target, seat = " + QString::number(i));
 			m_guochaiTargetVec.push_back(enemy);
 		}
 	}
@@ -130,129 +121,126 @@ const PlayerVec& AIBasic::guochaiTarget() {
 	return m_guochaiTargetVec;
 }
 
-PlayerVec AIBasic::shunqianTarget() {
-	using sgs::ExternData::gamedata;
-	sgs::DataType::Player * enemy = 0;
-
-	// the player at back is most threatening
+// 返回可以顺手牵羊的目标
+PlayerVec AIBasic::shunqianTarget()
+{
+	// 尾部存放威胁性最大的玩家
 	PlayerVec targetVec;
 
-	for (int i = 0; i < gamedata.playernum(); ++i) {
+	for (int i = 0; i < gamedata.playernum(); ++i)
+	{
 		if (i == mySeat())
 			continue;
 
-		enemy = gamedata.players(i);
-		if (enemy->type() == sgs::ConstData::LUXUN)
+		Player * enemy = gamedata.players(i);
+		if (enemy->type() == LUXUN)
 			continue;
-		if (enemy->status() & sgs::ConstData::DEAD)
+		if (enemy->status() & DEAD)
 			continue;
 
-		// Don't shunqian enemy's judge card
-		if (!isMyFriend(enemy) && (totalCardNum(enemy) - enemy->judgenum() > 0)
-				&& ((myPlayer()->distance(enemy) <= 1)
-						|| myPlayer()->type() == sgs::ConstData::HUANGYUEYING)) {
-			printDebug(
-					"AIBasic::shunqianTarget: spoted target, seat = "
-							+ QString::number(i));
+		// 不顺对方的判定区的卡牌
+		if (!isMyFriend(enemy)
+			&& (totalCardNum(enemy) - enemy->judgenum() > 0)
+			&& ((myPlayer()->distance(enemy) <= 1) || myPlayer()->type() == HUANGYUEYING))
+		{
+			printDebug("AIBasic::shunqianTarget: spoted target, seat = " + QString::number(i));
 			targetVec.push_back(enemy);
 		}
 	}
 
+	// 排序,按威胁性排序
 	sgsui::PlayerSort arrange(mySeat(), sgsui::ByThreat);
 	std::sort(targetVec.begin(), targetVec.end(), arrange);
 
 	return targetVec;
 }
 
-PlayerVec AIBasic::playersHavingWeapon() {
-	using sgs::ExternData::gamedata;
-	sgs::DataType::Player * weaponOwner = 0;
-
-	// the player at back is most threatening
+PlayerVec AIBasic::playersHavingWeapon()
+{
 	PlayerVec weaponOwnerVec;
 
-	for (int i = 0; i < gamedata.playernum(); ++i) {
+	for (int i = 0; i < gamedata.playernum(); ++i)
+	{
 		if (i == mySeat())
 			continue;
 
-		weaponOwner = gamedata.players(i);
-		if (weaponOwner->status() & sgs::ConstData::DEAD)
+		Player * weaponOwner = gamedata.players(i);
+		if (weaponOwner->status() & DEAD)
 			continue;
 
-		if (weaponOwner->weapon()) {
-			printDebug(
-					"AIBasic::playersHavingWeapon: spoted weapon owner, seat = "
-							+ QString::number(i));
+		if (weaponOwner->weapon())
+		{
+			printDebug("AIBasic::playersHavingWeapon: spoted weapon owner, seat = " + QString::number(i));
 			weaponOwnerVec.push_back(weaponOwner);
 		}
 	}
 
-	// sort it, so enemis are at back and friends are at front
 	sgsui::PlayerSort arrange(mySeat(), sgsui::ByThreat);
 	std::sort(weaponOwnerVec.begin(), weaponOwnerVec.end(), arrange);
 
 	return weaponOwnerVec;
 }
 
-PlayerVec AIBasic::jiedaoTarget(sgs::DataType::Player * weaponWwner) {
-	using sgs::ExternData::gamedata;
-
-	sgs::DataType::Player * target;
-	// the player at back is most threatening
+PlayerVec AIBasic::jiedaoTarget(Player * weaponOwner)
+{
 	PlayerVec targetVec;
 
-	for (int i = 0; i < gamedata.playernum(); ++i) {
-
-		// skip the weapon owner
-		if (i == weaponWwner->seat())
+	for (int i = 0; i < gamedata.playernum(); ++i)
+	{
+		// 略过攻击者
+		if (i == weaponOwner->seat())
 			continue;
 
-		target = gamedata.players(i);
-		if (target->status() & sgs::ConstData::DEAD)
+		Player * target = gamedata.players(i);
+		if (target->status() & DEAD)
 			continue;
 
-		if (weaponWwner->range() >= weaponWwner->distance(target)) {
-			printDebug(
-					"AIBasic::jiedaoTarget: spoted target, seat = "
-							+ QString::number(i));
+		if (weaponOwner->range() >= weaponOwner->distance(target))
+		{
+			printDebug("AIBasic::jiedaoTarget: spoted target, seat = " + QString::number(i));
 			targetVec.push_back(target);
 		}
 	}
 
-	// sort it, so enemis are at back and friends are at front
 	sgsui::PlayerSort arrange(mySeat(), sgsui::ByThreat);
 	std::sort(targetVec.begin(), targetVec.end(), arrange);
 
 	return targetVec;
 }
 
-std::pair<sgs::DataType::Player *, sgs::DataType::Player *> AIBasic::makeJiedaoPair() {
+std::pair<Player *, Player *> AIBasic::makeJiedaoPair()
+{
 	PlayerVec attackerVec(playersHavingWeapon());
 	if (attackerVec.empty())
 		return ms_invalidJiedaoPair;
 
-	for (PlayerVec::const_iterator iter = attackerVec.begin();
-			iter != attackerVec.end(); ++iter) {
-
+	// 遍历所有有武器的目标
+	// 逐个让他们作为借刀的来源
+	// 只要他们的攻击范围内有目标
+	// 就返回他和依据他威胁性最大的敌人
+	for (auto iter = attackerVec.begin(); iter != attackerVec.end(); ++iter)
+	{
 		PlayerVec victimVec(jiedaoTarget(*iter));
 
 		if (!victimVec.empty())
-			return std::pair<sgs::DataType::Player *, sgs::DataType::Player *>(
-					*iter, victimVec.back());
+			return std::pair<Player *, Player *>(*iter, victimVec.back());
 	}
 	return ms_invalidJiedaoPair;
 }
 
-sgs::DataType::Player * AIBasic::lord() {
+Player * AIBasic::lord()
+{
 	printDebug("AIBasic::lord");
 
 	// when lord has not been marked, pick it out first
-	if (!m_lord) {
-		sgs::DataType::Player * player = 0;
-		using sgs::ExternData::gamedata;
-		for (int i = 0; i < gamedata.playernum(); ++i) {
+	if (!m_lord)
+	{
+		Player * player = 0;
+		for (int i = 0; i < gamedata.playernum(); ++i)
+		{
 			player = gamedata.players(i);
-			if (player->role() == sgs::ConstData::ZHU) {
+			if (player->role() == ZHU)
+			{
 				m_lord = player;
 				break;
 			}
@@ -265,18 +253,24 @@ sgs::DataType::Player * AIBasic::lord() {
 	return (isDead(m_lord) ? 0 : m_lord);
 }
 
-bool AIBasic::isMyFriend(sgs::DataType::Player * player) const {
-	using namespace sgs::ConstData;
-
-	if (!player) {
-		printDebug(
-				"<font color=red><b>Warning: </b></font>AIBasic::isMyFriend: null pointer");
+bool AIBasic::isMyFriend(Player * player) const
+{
+	if (!player)
+	{
+		printDebug("<font color=red><b>Warning: </b></font>AIBasic::isMyFriend: null pointer");
 		return false;
 	}
-	switch (myPlayer()->role()) {
+
+	// 主公和忠诚是friend
+	// 和内奸在反贼死亡前是friend
+	// 内奸,反贼则没死完,就同主公,反则死亡了,就马上反目
+	// 反贼和反贼是friend,和其他是敌人
+	switch (myPlayer()->role())
+	{
 	case ZHU:
 	case ZHONG:
-		switch (player->role()) {
+		switch (player->role())
+		{
 		case ZHU:
 		case ZHONG:
 			return true;
@@ -289,7 +283,8 @@ bool AIBasic::isMyFriend(sgs::DataType::Player * player) const {
 		}
 		break;
 	case NEI:
-		switch (player->role()) {
+		switch (player->role())
+		{
 		case ZHU:
 		case ZHONG:
 			return !isAllFanzeiDead();
@@ -302,7 +297,8 @@ bool AIBasic::isMyFriend(sgs::DataType::Player * player) const {
 		}
 		break;
 	case FAN:
-		switch (player->role()) {
+		switch (player->role())
+		{
 		case ZHU:
 		case ZHONG:
 		case NEI:
@@ -319,17 +315,15 @@ bool AIBasic::isMyFriend(sgs::DataType::Player * player) const {
 	return true;
 }
 
-bool AIBasic::isAllFanzeiDead() const {
-	using sgs::ExternData::gamedata;
-	using namespace sgs::ConstData;
-	PlayerRole role;
-	for (int i = 0; i < gamedata.playernum(); ++i) {
-
-		// skip the dead players
+bool AIBasic::isAllFanzeiDead() const
+{
+	for (int i = 0; i < gamedata.playernum(); ++i)
+	{
+		// 死亡Player不考虑
 		if (isDead(i))
 			continue;
 
-		role = gamedata.players(i)->role();
+		PlayerRole role = gamedata.players(i)->role();
 		if (role == FAN)
 			return false;
 	}
