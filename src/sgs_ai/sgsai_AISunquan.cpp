@@ -1,10 +1,3 @@
-/*
- * sgsai_AISunquan.cpp
- *
- *  Created on: May 15, 2012
- *      Author: latios
- */
-
 #include "sgsai_AISunquan.h"
 #include "sgsui_output.h"
 

@@ -1,10 +1,3 @@
-/*
- * sgsai_AIHuatuo.cpp
- *
- *  Created on: May 15, 2012
- *      Author: latios
- */
-
 #include "sgsai_AIHuatuo.h"
 #include "sgsui_output.h"
 #include "sgsdata_card.h"

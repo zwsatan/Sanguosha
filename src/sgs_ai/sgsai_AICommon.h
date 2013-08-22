@@ -1,10 +1,3 @@
-/*
- * sgsai_AICommon.h
- *
- *  Created on: May 15, 2012
- *      Author: latios
- */
-
 #ifndef SGSAI_AICOMMON_H_
 #define SGSAI_AICOMMON_H_
 

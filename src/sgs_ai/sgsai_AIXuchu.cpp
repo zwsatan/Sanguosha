@@ -1,10 +1,3 @@
-/*
- * sgsai_AIXuchu.cpp
- *
- *  Created on: May 15, 2012
- *      Author: latios
- */
-
 #include "sgsai_AIXuchu.h"
 #include "sgsdata_player.h"
 #include "sgsdata_card.h"

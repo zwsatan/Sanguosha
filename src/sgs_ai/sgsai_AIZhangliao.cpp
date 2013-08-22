@@ -1,10 +1,3 @@
-/*
- * sgsai_AIZhangliao.cpp
- *
- *  Created on: May 15, 2012
- *      Author: latios
- */
-
 #include "sgsai_AIZhangliao.h"
 #include "sgsui_output.h"
 

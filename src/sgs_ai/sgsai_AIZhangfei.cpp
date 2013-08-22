@@ -1,10 +1,3 @@
-/*
- * sgsai_AIZhangfei.cpp
- *
- *  Created on: May 15, 2012
- *      Author: latios
- */
-
 #include "sgsai_AIZhangfei.h"
 #include "sgsui_output.h"
 

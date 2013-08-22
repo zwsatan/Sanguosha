@@ -9,8 +9,7 @@ class AIZhangfei : public AICommon
 {
 public:
 	explicit AIZhangfei(int seat);
-	bool useSkillOrNot(sgs::ConstData::HeroSkill skillType,
-			sgs::DataType::Player * player);
+	bool useSkillOrNot(sgs::ConstData::HeroSkill skillType, sgs::DataType::Player * player);
 };
 
 } /* namespace sgsai */

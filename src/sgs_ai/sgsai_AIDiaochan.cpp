@@ -1,10 +1,3 @@
-/*
- * sgsai_AIDiaochan.cpp
- *
- *  Created on: May 15, 2012
- *      Author: latios
- */
-
 #include "sgsai_AIDiaochan.h"
 #include "sgsui_output.h"
 

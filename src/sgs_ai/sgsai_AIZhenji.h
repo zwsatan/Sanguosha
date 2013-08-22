@@ -16,7 +16,6 @@ private:
 	sgs::Derive::SkillMessage * useQingguoInShanOrNot();
 	const CardVec& blackShoupai();
 	CardVec blackShoupaiVec;
-
 };
 
 } /* namespace sgsai */

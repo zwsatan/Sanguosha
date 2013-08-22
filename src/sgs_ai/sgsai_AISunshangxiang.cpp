@@ -1,10 +1,3 @@
-/*
- * sgsai_AISunshangxiang.cpp
- *
- *  Created on: May 15, 2012
- *      Author: latios
- */
-
 #include "sgsai_AISunshangxiang.h"
 #include "sgsui_output.h"
 

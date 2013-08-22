@@ -5,7 +5,7 @@
 
 namespace sgsai {
 
-class AIGanning: public AICommon
+class AIGanning : public AICommon
 {
 public:
 	explicit AIGanning(int seat);

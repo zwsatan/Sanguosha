@@ -1,10 +1,3 @@
-/*
- * sgsai_AISimayi.cpp
- *
- *  Created on: May 15, 2012
- *      Author: latios
- */
-
 #include "sgsai_AISimayi.h"
 #include "sgsui_output.h"
 #include "sgsui_nameConvert.h"

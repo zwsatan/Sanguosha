@@ -1,10 +1,3 @@
-/*
- * sgsai_AILvbu.cpp
- *
- *  Created on: May 15, 2012
- *      Author: latios
- */
-
 #include "sgsai_AILvbu.h"
 #include "sgsui_output.h"
 
