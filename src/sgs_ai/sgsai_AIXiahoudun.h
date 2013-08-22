@@ -1,10 +1,3 @@
-/*
- * sgsai_AIXiahoudun.h
- *
- *  Created on: May 15, 2012
- *      Author: latios
- */
-
 #ifndef SGSAI_AIXIAHOUDUN_H_
 #define SGSAI_AIXIAHOUDUN_H_
 
@@ -12,11 +5,11 @@
 
 namespace sgsai {
 
-class AIXiahoudun: public AICommon {
+class AIXiahoudun : public AICommon
+{
 public:
 	explicit AIXiahoudun(int seat);
-	bool useSkillOrNot(sgs::ConstData::HeroSkill skillType,
-			sgs::DataType::Player * player);
+	bool useSkillOrNot(sgs::ConstData::HeroSkill skillType, sgs::DataType::Player * player);
 };
 
 } /* namespace sgsai */

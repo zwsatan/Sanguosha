@@ -1,10 +1,3 @@
-/*
- * sgsai_AIZhaoyun.h
- *
- *  Created on: May 15, 2012
- *      Author: latios
- */
-
 #ifndef SGSAI_AIZHAOYUN_H_
 #define SGSAI_AIZHAOYUN_H_
 
@@ -12,18 +5,16 @@
 
 namespace sgsai {
 
-class AIZhaoyun: public AICommon {
+class AIZhaoyun : public AICommon
+{
 public:
 	explicit AIZhaoyun(int seat);
-	bool useSkillOrNot(sgs::ConstData::HeroSkill skillType,
-			sgs::DataType::Player * player);
+	bool useSkillOrNot(sgs::ConstData::HeroSkill skillType, sgs::DataType::Player * player);
 
 private:
 	virtual sgs::DataType::Message * useCardResponse();
-	virtual sgs::DataType::Message * shaOrNot(sgs::DataType::Player * /*from*/,
-			const sgs::DataType::Card * /*card*/);
-	virtual sgs::DataType::Message * shanOrNot(sgs::DataType::Player * /*from*/,
-			const sgs::DataType::Card * /*card*/);
+	virtual sgs::DataType::Message * shaOrNot(sgs::DataType::Player * /*from*/, const sgs::DataType::Card * /*card*/);
+	virtual sgs::DataType::Message * shanOrNot(sgs::DataType::Player * /*from*/, const sgs::DataType::Card * /*card*/);
 	sgs::Derive::SkillMessage * useLongdanInUsecard();
 	sgs::Derive::SkillMessage * useLongdanInShaOrNot();
 	sgs::Derive::SkillMessage * useLongdanInShanOrNot();

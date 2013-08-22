@@ -5,7 +5,7 @@
 
 namespace sgsai {
 
-class AIGuanyu: public AICommon
+class AIGuanyu : public AICommon
 {
 public:
 	explicit AIGuanyu(int seat);

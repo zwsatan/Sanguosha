@@ -1,10 +1,3 @@
-/*
- * sgsai_AISujiang.h
- *
- *  Created on: Jun 30, 2012
- *      Author: latios
- */
-
 #ifndef SGSAI_AISUJIANG_H_
 #define SGSAI_AISUJIANG_H_
 
@@ -12,11 +5,11 @@
 
 namespace sgsai {
 
-class AISujiang: public AICommon {
+class AISujiang : public AICommon
+{
 public:
 	explicit AISujiang(int seat);
-	bool useSkillOrNot(sgs::ConstData::HeroSkill skillType,
-			sgs::DataType::Player * player);
+	bool useSkillOrNot(sgs::ConstData::HeroSkill skillType, sgs::DataType::Player * player);
 };
 
 } /* namespace sgsai */

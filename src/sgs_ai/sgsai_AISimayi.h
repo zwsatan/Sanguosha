@@ -1,10 +1,3 @@
-/*
- * sgsai_AISimayi.h
- *
- *  Created on: May 15, 2012
- *      Author: latios
- */
-
 #ifndef SGSAI_AISIMAYI_H_
 #define SGSAI_AISIMAYI_H_
 
@@ -18,13 +11,12 @@ class JudgeMessage;
 
 namespace sgsai {
 
-class AISimayi: public AICommon {
+class AISimayi : public AICommon
+{
 public:
 	explicit AISimayi(int seat);
-	bool useSkillOrNot(sgs::ConstData::HeroSkill skillType,
-			sgs::DataType::Player * player);
-	bool useSkillOrNot(sgs::ConstData::HeroSkill skillType,
-			sgs::DataType::Message * message);
+	bool useSkillOrNot(sgs::ConstData::HeroSkill skillType, sgs::DataType::Player * player);
+	bool useSkillOrNot(sgs::ConstData::HeroSkill skillType, sgs::DataType::Message * message);
 	std::vector<std::pair<sgs::ConstData::PlayerRegionType, int> > chooseCardResponse(
 			sgs::DataType::Player *targetPlayer, bool isHandSelectable,
 			bool isEquipSelectable, bool isJudgeSelectable, int num,

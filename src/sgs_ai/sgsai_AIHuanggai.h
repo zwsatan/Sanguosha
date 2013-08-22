@@ -1,10 +1,3 @@
-/*
- * sgsai_AIHuanggai.h
- *
- *  Created on: May 15, 2012
- *      Author: latios
- */
-
 #ifndef SGSAI_AIHUANGGAI_H_
 #define SGSAI_AIHUANGGAI_H_
 
@@ -12,11 +5,11 @@
 
 namespace sgsai {
 
-class AIHuanggai: public AICommon {
+class AIHuanggai : public AICommon
+{
 public:
 	explicit AIHuanggai(int seat);
-	bool useSkillOrNot(sgs::ConstData::HeroSkill skillType,
-			sgs::DataType::Player * player);
+	bool useSkillOrNot(sgs::ConstData::HeroSkill skillType, sgs::DataType::Player * player);
 	virtual sgs::DataType::Message * useCardResponse();
 
 private:

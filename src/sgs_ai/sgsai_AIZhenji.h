@@ -1,10 +1,3 @@
-/*
- * sgsai_AIZhenji.h
- *
- *  Created on: May 15, 2012
- *      Author: latios
- */
-
 #ifndef SGSAI_AIZHENJI_H_
 #define SGSAI_AIZHENJI_H_
 
@@ -12,13 +5,12 @@
 
 namespace sgsai {
 
-class AIZhenji: public AICommon {
+class AIZhenji : public AICommon
+{
 public:
 	explicit AIZhenji(int seat);
-	bool useSkillOrNot(sgs::ConstData::HeroSkill skillType,
-			sgs::DataType::Player * player);
-	virtual sgs::DataType::Message * shanOrNot(sgs::DataType::Player * /*from*/,
-			const sgs::DataType::Card * /*card*/);
+	bool useSkillOrNot(sgs::ConstData::HeroSkill skillType, sgs::DataType::Player * player);
+	virtual sgs::DataType::Message * shanOrNot(sgs::DataType::Player * /*from*/, const sgs::DataType::Card * /*card*/);
 
 private:
 	sgs::Derive::SkillMessage * useQingguoInShanOrNot();

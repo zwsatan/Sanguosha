@@ -1,10 +1,3 @@
-/*
- * sgsai_AIZhangfei.h
- *
- *  Created on: May 15, 2012
- *      Author: latios
- */
-
 #ifndef SGSAI_AIZHANGFEI_H_
 #define SGSAI_AIZHANGFEI_H_
 
@@ -12,7 +5,8 @@
 
 namespace sgsai {
 
-class AIZhangfei: public AICommon {
+class AIZhangfei : public AICommon
+{
 public:
 	explicit AIZhangfei(int seat);
 	bool useSkillOrNot(sgs::ConstData::HeroSkill skillType,

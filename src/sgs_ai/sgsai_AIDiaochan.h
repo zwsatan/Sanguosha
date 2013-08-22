@@ -1,10 +1,3 @@
-/*
- * sgsai_AIDiaochan.h
- *
- *  Created on: May 15, 2012
- *      Author: latios
- */
-
 #ifndef SGSAI_AIDIAOCHAN_H_
 #define SGSAI_AIDIAOCHAN_H_
 
@@ -12,11 +5,11 @@
 
 namespace sgsai {
 
-class AIDiaochan: public AICommon {
+class AIDiaochan : public AICommon
+{
 public:
 	explicit AIDiaochan(int seat);
-	bool useSkillOrNot(sgs::ConstData::HeroSkill skillType,
-			sgs::DataType::Player * player);
+	bool useSkillOrNot(sgs::ConstData::HeroSkill skillType, sgs::DataType::Player * player);
 };
 
 } /* namespace sgsai */
